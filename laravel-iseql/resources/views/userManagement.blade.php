@@ -147,7 +147,7 @@
                         </thead>
                         <tbody>
                         @foreach(\App\Models\User::all() as $user)
-                            @if((Auth::user()->id!=$user->id || $user->id !=1) && $user->role->name !="Patient" )
+                            @if(Auth::user()->id!=$user->id && $user->id !=1 && $user->role->name !="Patient" )
                                 <tr>
                                     <td>{{$user->email}}</td>
                                     <td>{{$user->name}}</td>

@@ -252,7 +252,7 @@ unset($__errorArgs, $__bag); ?>
                         </thead>
                         <tbody>
                         <?php $__currentLoopData = \App\Models\User::all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <?php if((Auth::user()->id!=$user->id || $user->id !=1) && $user->role->name !="Patient" ): ?>
+                            <?php if(Auth::user()->id!=$user->id && $user->id !=1 && $user->role->name !="Patient" ): ?>
                                 <tr>
                                     <td><?php echo e($user->email); ?></td>
                                     <td><?php echo e($user->name); ?></td>

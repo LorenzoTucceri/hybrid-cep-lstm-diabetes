@@ -102,16 +102,14 @@ class FeedbackController extends Controller
                 Notification::create([
                     'user_id' => $doctor->id,
                     'title' => "New Feedback from patient $patient->name $patient->surname",
-                    'message' => "A new feedback report is available for the file: $csv->csv_file_path.
-                  Time period: $csv->start_time - $csv->end_time.",
+                    'message' => "A new feedback report is available for the file: $csv->csv_file_path.\nTime period: $csv->start_time - $csv->end_time.",
                 ]);
             } else {
                 $patient_user= User::where('patient_id', $patient->id)->first();
                 Notification::create([
                     'user_id' => $patient_user->id,
                     'title' => "New Feedback from Dr. $doctor->name $doctor->surname",
-                    'message' => "A new feedback report is available for the file: $csv->csv_file_path.
-                  Time period: $csv->start_time - $csv->end_time.",
+                    'message' => "A new feedback report is available for the file: $csv->csv_file_path.\nTime period: $csv->start_time - $csv->end_time.",
                 ]);
             }
 
