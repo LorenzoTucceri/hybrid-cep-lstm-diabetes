@@ -821,8 +821,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let swingData = [
-                    @foreach ($data['time_swing'] as $swing)
-                {
+                    @foreach ($data['time_swing'] ?? [] as $swing)                {
                     day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",  // Formattazione della data
                     duration: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}", // Durata in formato HH:mm
                     time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}" // Tipo di evento (high-low, low-high)
@@ -904,7 +903,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             let anomalyData = [
-                    @foreach ($data['too_long_glucose_anomalies'] as $anomaly)
+                    @foreach ($data['too_long_glucose_anomalies'] ?? [] as $anomaly)
                 {
                     day: "{{ \Carbon\Carbon::parse($anomaly['day'])->format('d/m/Y') }}", // Formattazione della data
                     event: "{{ $anomaly['event'] }}",
@@ -999,7 +998,7 @@
         });
         document.addEventListener("DOMContentLoaded", function () {
             let frequencyData = [
-                    @foreach ($data['too_frequent_glucose_anomalies'] as $frequency)
+                    @foreach ($data['too_frequent_glucose_anomalies']   ?? [] as $frequency)
                 {
                     day: "{{ \Carbon\Carbon::parse($frequency['day'])->format('d/m/Y') }}", // Formattazione della data
                     high_count: {{ $frequency['high_count'] ?? 0 }},
@@ -1093,7 +1092,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             let frequentSwingData = [
-                    @foreach ($data['too_frequent_time_swings'] as $swing)
+                    @foreach ($data['too_frequent_time_swings'] ?? []  as $swing)
                 {
                     day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
                     durations: [
@@ -1223,7 +1222,7 @@
         });
         document.addEventListener("DOMContentLoaded", function () {
             let timeSwingData = [
-                    @foreach ($data['time_swing_with_too_long_glucose_anomalies'] as $swing)
+                    @foreach ($data['time_swing_with_too_long_glucose_anomalies'] ?? []  as $swing)
                 {
                     day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}", // Formattazione data
                     duration_time_swing: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}", // Durata in HH:mm

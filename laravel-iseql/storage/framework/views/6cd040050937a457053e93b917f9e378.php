@@ -843,8 +843,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let swingData = [
-                    <?php $__currentLoopData = $data['time_swing']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                {
+                    <?php $__currentLoopData = $data['time_swing'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>                {
                     day: "<?php echo e(\Carbon\Carbon::parse($swing['day'])->format('d/m/Y')); ?>",  // Formattazione della data
                     duration: "<?php echo e(\Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i')); ?>", // Durata in formato HH:mm
                     time_swing_type: "<?php echo e($swing['first_event']); ?> to <?php echo e($swing['second_event']); ?>" // Tipo di evento (high-low, low-high)
@@ -926,7 +925,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             let anomalyData = [
-                    <?php $__currentLoopData = $data['too_long_glucose_anomalies']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $anomaly): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $data['too_long_glucose_anomalies'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $anomaly): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 {
                     day: "<?php echo e(\Carbon\Carbon::parse($anomaly['day'])->format('d/m/Y')); ?>", // Formattazione della data
                     event: "<?php echo e($anomaly['event']); ?>",
@@ -1021,7 +1020,7 @@
         });
         document.addEventListener("DOMContentLoaded", function () {
             let frequencyData = [
-                    <?php $__currentLoopData = $data['too_frequent_glucose_anomalies']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $frequency): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $data['too_frequent_glucose_anomalies']   ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $frequency): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 {
                     day: "<?php echo e(\Carbon\Carbon::parse($frequency['day'])->format('d/m/Y')); ?>", // Formattazione della data
                     high_count: <?php echo e($frequency['high_count'] ?? 0); ?>,
@@ -1116,7 +1115,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             let frequentSwingData = [
-                    <?php $__currentLoopData = $data['too_frequent_time_swings']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $data['too_frequent_time_swings'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 {
                     day: "<?php echo e(\Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y')); ?>",
                     durations: [
@@ -1247,7 +1246,7 @@
         });
         document.addEventListener("DOMContentLoaded", function () {
             let timeSwingData = [
-                    <?php $__currentLoopData = $data['time_swing_with_too_long_glucose_anomalies']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $data['time_swing_with_too_long_glucose_anomalies'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $swing): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 {
                     day: "<?php echo e(\Carbon\Carbon::parse($swing['day'])->format('d/m/Y')); ?>", // Formattazione data
                     duration_time_swing: "<?php echo e(\Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i')); ?>", // Durata in HH:mm

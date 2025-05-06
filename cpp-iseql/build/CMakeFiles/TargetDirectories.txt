@@ -1,0 +1,5 @@
+/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/build/CMakeFiles/edit_cache.dir
+/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/build/CMakeFiles/rebuild_cache.dir
+/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/build/src/CMakeFiles/iseql.dir
+/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/build/src/CMakeFiles/edit_cache.dir
+/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/build/src/CMakeFiles/rebuild_cache.dir
