@@ -11,7 +11,7 @@ use App\Models\User;
  */
 class UserController extends Controller {
     public function userCount() {
-        // Ottenimento del numero di dottori (ID del ruolo pari a 3).
+        // Calcolo del numero di dottori.
         $count = User::where("role_id", "3")->count();
 
         return response()->json(

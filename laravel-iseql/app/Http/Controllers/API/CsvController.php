@@ -11,7 +11,7 @@ use App\Models\File;
  */
 class CsvController extends Controller {
     public function csvCount() {
-        // Ottenimento del numero di file CSV.
+        // Calcolo del numero di file CSV.
         $count = File::count();
 
         return response()->json(

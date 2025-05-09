@@ -11,7 +11,38 @@ use Illuminate\Http\Request;
  * @author Lorenzo Tucceri Cimini
  */
 class NotificationController extends Controller {
-    // Funziona alla perfezione!
+    public function markNotificationAsRead(int $id) {
+        // Ricerca della notifica tramite ID.
+        $notification = Notification::find($id);
+
+        if ($notification) {
+            if ($notification->status === "unread") {
+                // Aggiornamento dello stato della notifica.
+                $notification->update(['status' => 'read']);
+
+                return response()->json(
+                    [
+                        "success" => true,
+                        "message" => "Notification marked as read."
+                    ]);
+            }
+            else {
+                return response()->json(
+                    [
+                        "success" => false,
+                        "message" => "Notification already marked as read."
+                    ]);
+            }
+        }
+        else {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Notification doesn't exist."
+                ]);
+        }
+    }
+
     public function deleteNotification(int $id) {
         // Ricerca della notifica tramite ID.
         $notification = Notification::find($id);
@@ -25,7 +56,8 @@ class NotificationController extends Controller {
                     "success" => true,
                     "message" => "Notification deleted successfully."
                 ]);
-        } else {
+        }
+        else {
             return response()->json(
                 [
                     "success" => false,
@@ -34,13 +66,9 @@ class NotificationController extends Controller {
         }
     }
 
-    // Funziona alla perfezione!
     public function deleteNotifications(Request $request) {
-        // Ottenimento delle notifiche di un determinato utente (utente autenticato).
-        $notifications = Notification::where('user_id', $request->user()->id);
-
         // Rimozione delle notifiche.
-        $notifications->delete();
+        Notification::where('user_id', $request->user()->id)->delete();
 
         return response()->json(
             [
@@ -49,10 +77,8 @@ class NotificationController extends Controller {
             ]);
     }
 
-    // Funziona alla perfezione!
     public function notifications(Request $request) {
-        /* Ottenimento delle notifiche di un determinato utente (utente autenticato),
-        ordinate in modo decrescente per data di creazione. */
+        // Recupero delle notifiche, ordinate in modo decrescente per data di creazione.
         $notifications = Notification::where('user_id', $request->user()->id)->orderBy("created_at", "desc")->get();
 
         return response()->json(

@@ -30,7 +30,7 @@ class LoginController extends Controller {
         // Ricerca dell'utente per e-mail.
         $user = User::where("email", $request->email)->first();
 
-        // Autenticazione non avvenuta con successo.
+        // Autenticazione fallita.
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(
                 [
@@ -39,7 +39,7 @@ class LoginController extends Controller {
                 ]);
         }
 
-        // Autenticazione avvenuta con successo.
+        // Autenticazione riuscita.
         $user->role; $user->patient;
         $token = $user->createToken("mobile_token")->plainTextToken;
         return response()->json(

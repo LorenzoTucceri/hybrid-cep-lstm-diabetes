@@ -34,6 +34,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get("/feedbacks/count", [FeedbackController::class, "feedbackCount"]);
 
     // Notifiche.
+    Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
     Route::get("/notifications", [NotificationController::class, "notifications"]);
