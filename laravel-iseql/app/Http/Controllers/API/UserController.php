@@ -30,7 +30,7 @@ class UserController extends Controller {
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "surname" => "required",
-            "email" => "required|email",
+            "email" => "required|email|unique:users",
             "password" => "required|confirmed|min:6",
             "password_confirmation" => "required",
             "role" => "required|in:Admin,Doctor"
@@ -87,7 +87,7 @@ class UserController extends Controller {
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "surname" => "required",
-            "email" => "required|email",
+            "email" => "required|email|unique:users",
             "password" => "required|confirmed|min:6",
             "password_confirmation" => "required",
             "role" => "required|in:Admin,Doctor"
