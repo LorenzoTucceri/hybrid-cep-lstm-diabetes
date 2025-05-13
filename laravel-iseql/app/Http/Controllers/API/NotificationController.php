@@ -11,8 +11,20 @@ use Illuminate\Http\Request;
  * @author Lorenzo Tucceri Cimini
  */
 class NotificationController extends Controller {
+    public function notifications(Request $request) {
+        // Recupero delle notifiche, ordinate in modo decrescente per data di creazione.
+        $notifications = Notification::where('user_id', $request->user()->id)->orderBy("created_at", "desc")->get();
+
+        return response()->json(
+            [
+                "success" => true,
+                "notifications" => $notifications,
+                "user" => $request->user()
+            ]);
+    }
+
     public function markNotificationAsRead(int $id) {
-        // Ricerca della notifica tramite ID.
+        // Ricerca della notifica per ID.
         $notification = Notification::find($id);
 
         if ($notification) {
@@ -44,7 +56,7 @@ class NotificationController extends Controller {
     }
 
     public function deleteNotification(int $id) {
-        // Ricerca della notifica tramite ID.
+        // Ricerca della notifica per ID.
         $notification = Notification::find($id);
 
         if ($notification) {
@@ -74,18 +86,6 @@ class NotificationController extends Controller {
             [
                 "success" => true,
                 "message" => "Notifications deleted successfully."
-            ]);
-    }
-
-    public function notifications(Request $request) {
-        // Recupero delle notifiche, ordinate in modo decrescente per data di creazione.
-        $notifications = Notification::where('user_id', $request->user()->id)->orderBy("created_at", "desc")->get();
-
-        return response()->json(
-            [
-                "success" => true,
-                "notifications" => $notifications,
-                "user" => $request->user()
             ]);
     }
 }
