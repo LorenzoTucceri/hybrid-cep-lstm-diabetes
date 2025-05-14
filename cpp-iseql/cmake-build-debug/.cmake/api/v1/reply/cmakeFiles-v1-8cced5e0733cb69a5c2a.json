@@ -21,6 +21,11 @@
 		{
 			"isCMake" : true,
 			"isExternal" : true,
+			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.31/Modules/CMakeUnixFindMake.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
 			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.31/Modules/CMakeSystemSpecificInitialize.cmake"
 		},
 		{
@@ -644,12 +649,7 @@
 		{
 			"isCMake" : true,
 			"isExternal" : true,
-			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.31/Modules/Linker/AppleClang-CXX.cmake"
-		},
-		{
-			"isCMake" : true,
-			"isExternal" : true,
-			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.31/Modules/Linker/AppleClang.cmake"
+			"path" : "/Applications/CLion.app/Contents/bin/cmake/mac/aarch64/share/cmake-3.31/Modules/Platform/Linker/Apple-CXX.cmake"
 		},
 		{
 			"isCMake" : true,

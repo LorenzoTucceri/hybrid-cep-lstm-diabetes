@@ -9,7 +9,7 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'title', 'message', 'status'];
+    protected $fillable = ['user_id', 'title', 'message', 'status','file_id'];
 
     public function patient()
     {
@@ -20,5 +20,10 @@ class Notification extends Model
     public function users()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function file()
+    {
+        return $this->belongsTo(File::class);
     }
 }

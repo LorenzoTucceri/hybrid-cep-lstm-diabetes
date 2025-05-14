@@ -135,7 +135,6 @@ class PatientController extends Controller
     }
 
 
-
     public function deletePatient(Request $request)
     {
         $request->validate([
@@ -152,7 +151,7 @@ class PatientController extends Controller
             $files = File::where('patient_id', $patientId)->get();
             foreach ($files as $file) {
                 // Elimina il file fisico dal sistema
-                $filePath = 'patients_csv/'.$patientId.'/'. $file->csv_file_path;
+                $filePath = 'patients_csv/' . $patientId . '/' . $file->csv_file_path;
                 if (Storage::exists($filePath)) {
                     Storage::delete($filePath);
                 }
@@ -177,14 +176,44 @@ class PatientController extends Controller
             return back()->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()]);
         }
     }
+
+
     public function downloadPDF(Request $request, $id, $patientId)
     {
+        // Lista dei grafici
+        $chartNames = [
+            'glycemicSwingsChart',
+            'tooLongChart',
+            'tooFrequentChart',
+            'tooFrequentTimeSwingsDurationChart',
+            'tooFrequentTimeSwingsFrequencyChart',
+            'timeSwingTooLongChart'
+        ];
+
+        $imagePaths = [];
+
+        foreach ($chartNames as $chartName) {
+            $imageData = $request->input($chartName);
+
+            if (Str::startsWith($imageData, 'data:image/png;base64,')) {
+                $image = str_replace('data:image/png;base64,', '', $imageData);
+                $image = str_replace(' ', '+', $image);
+
+                $imageName = $chartName . '_' . time() . '.png';
+                $imagePath = 'charts/' . $imageName;
+                $imagePathAbsolute = storage_path('app/public/' . $imagePath);
+
+                Storage::disk('public')->put($imagePath, base64_decode($image));
+                $imagePaths[$chartName] = $imagePathAbsolute;
+            }
+        }
+
         // Recupera i dati del paziente
         $client = Patient::findOrFail($patientId);
         $csv = File::find($id);
 
         // Prepara il percorso del file CSV
-        $csvFilePath = storage_path('app/patients_csv/'.$patientId.'/'. $csv->csv_file_path);
+        $csvFilePath = storage_path('app/patients_csv/' . $patientId . '/' . $csv->csv_file_path);
 
         // Controlla se il file CSV esiste
         if (!file_exists($csvFilePath)) {
@@ -233,66 +262,30 @@ class PatientController extends Controller
         $too_long = $request->too_long;
         $too_frequent = $request->too_frequent;
         $too_frequent_time_swing = $request->too_frequent_time_swing;
-        $time_swing_too_long= $request->time_swing_too_long;
+        $time_swing_too_long = $request->time_swing_too_long;
 
-        // GESTIONE IMMAGINI - INIZIO
-        $images = [];
-        $chartNames = [
-            'glycemicSwingsChart',
-            'tooLongGlucoseAnomaliesChart',
-            'tooFrequentGlucoseAnomaliesChart',
-            'tooFrequentTimeSwingsDurationChart',
-            'tooFrequentTimeSwingsFrequencyChart',
-            'timeSwingTooLongGlucoseAnomaliesChart'
-        ];
-
-        // Crea una directory temporanea unica per questo PDF
-        $tempDir = 'pdf_charts/'.time();
-        Storage::disk('public')->makeDirectory($tempDir);
-
-        foreach ($chartNames as $chartName) {
-            if ($request->has($chartName)) {
-                try {
-                    $imageData = $request->input($chartName);
-
-                    // Estrai solo la parte base64
-                    $base64Image = preg_replace('#^data:image/\w+;base64,#i', '', $imageData);
-
-                    // Decodifica l'immagine
-                    $decodedImage = base64_decode($base64Image);
-
-                    if ($decodedImage === false) {
-                        throw new \Exception("Base64 decoding failed for $chartName");
-                    }
-
-                    // Salva l'immagine
-                    $imagePath = "$tempDir/$chartName.png";
-                    Storage::disk('public')->put($imagePath, $decodedImage);
-
-                    // Verifica che l'immagine sia stata salvata
-                    if (!Storage::disk('public')->exists($imagePath)) {
-                        throw new \Exception("Failed to save image $chartName");
-                    }
-
-                    // Aggiungi il percorso assoluto all'array images
-                    $images[$chartName] = storage_path("app/public/$imagePath");
-
-                } catch (\Exception $e) {
-                    // Log dell'errore ma continua con le altre immagini
-                    \Log::error("Error processing $chartName: ".$e->getMessage());
-                    continue;
-                }
-            }
-        }
-        // GESTIONE IMMAGINI - FINE
-
-        $pdf = PDF::loadView('pdf.patient-details', compact('client', 'data','images', 'detail', 'summary', 'time_swing','too_long', 'too_frequent', 'too_frequent_time_swing', 'time_swing_too_long'));
+        // Genera il PDF
+        $pdf = PDF::loadView('pdf.patient-details', compact(
+            'client',
+            'data',
+            'imagePaths',
+            'detail',
+            'summary',
+            'time_swing',
+            'too_long',
+            'too_frequent',
+            'too_frequent_time_swing',
+            'time_swing_too_long'
+        ));
 
         // Cancella le immagini temporanee dopo aver generato il PDF
-        Storage::disk('public')->deleteDirectory($tempDir);
+        foreach ($imagePaths as $imagePath) {
+            Storage::disk('public')->delete($imagePath);
+        }
 
         return $pdf->download('patient-details-' . $patientId . '.pdf');
     }
+
 
     public function showCsvPatient($patientId)
     {
@@ -308,7 +301,8 @@ class PatientController extends Controller
         }
     }
 
-    public function sendRegistration($patientId)
+    public
+    function sendRegistration($patientId)
     {
         try {
             // Recupera i dati del cliente e dell'utente attualmente loggato
@@ -361,7 +355,6 @@ class PatientController extends Controller
             ]);
         }
     }
-
 
 
 }

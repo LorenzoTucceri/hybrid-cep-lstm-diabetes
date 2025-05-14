@@ -23,6 +23,7 @@ class File extends Model
         'csv_file_path',
         'start_time',
         'end_time',
+        'gmi'
     ];
 
     /**

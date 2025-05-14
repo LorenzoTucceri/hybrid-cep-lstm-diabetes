@@ -10,26 +10,31 @@
             color: #333;
             background-color: #f9f9f9;
         }
+
         h1, h2, h3, h4 {
             margin: 0;
             padding: 10px 0;
             font-size: 18px;
             color: #333;
         }
+
         h2 {
             font-size: 16px;
             border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
         }
+
         h3 {
             font-size: 14px;
             border-bottom: 1px solid #ddd;
             padding-bottom: 5px;
         }
+
         p {
             font-size: 14px;
             margin: 5px 0;
         }
+
         .section {
             margin-bottom: 20px;
             background: #fff;
@@ -37,50 +42,61 @@
             border-radius: 4px;
             padding: 15px;
         }
+
         .section-header {
             font-size: 16px;
             font-weight: bold;
             color: #333;
             margin-bottom: 10px;
         }
+
         .section-content {
             font-size: 14px;
         }
+
         .section-content ul {
             list-style-type: none;
             padding-left: 0;
         }
+
         .section-content ul li {
             margin-bottom: 8px;
             padding: 5px;
             border-left: 2px solid #3498db;
             background-color: #f2f2f2;
         }
+
         .section-content ul li:nth-child(odd) {
             background-color: #fff;
         }
+
         .table-responsive {
             width: 100%;
             overflow-x: auto;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
+
         th, td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         @media print {
             body {
                 background-color: #fff;
                 margin: 0;
             }
+
             .section {
                 border: none;
                 border-radius: 0;
@@ -88,15 +104,19 @@
                 margin: 0;
                 page-break-inside: avoid;
             }
+
             table {
                 page-break-inside: auto;
             }
+
             thead {
                 display: table-header-group;
             }
+
             tbody {
                 display: table-row-group;
             }
+
             tfoot {
                 display: table-footer-group;
             }
@@ -111,7 +131,8 @@
 <div class="section" id="details" @if($detail!="on") style="display: none" @endif>
     <h2>Name: {{ $client->name ?? 'Not Specified' }} {{ $client->surname ?? 'Not Specified' }}</h2>
     <p>Email: {{ $client->email ?? 'Not Specified' }}</p>
-    <p>Date of Birth: {{ $client->birth ? \Carbon\Carbon::parse($client->birth)->format('Y/m/d') : 'Not Specified' }}</p>
+    <p>Date of
+        Birth: {{ $client->birth ? \Carbon\Carbon::parse($client->birth)->format('Y/m/d') : 'Not Specified' }}</p>
     <p>Phone Number: {{ $client->telephone_number ?? 'Not Specified' }}</p>
     <p>Address: {{ $client->address ?: 'Not Specified' }}</p>
     <p>Gender: {{ $client->gender ?? 'Not Specified' }}</p>
@@ -128,6 +149,21 @@
 
     <!-- Totals and Durations Section -->
     <div class="section-content">
+        <h3>Glycemic Trends</h3>
+        <p><strong>Average Glucose:</strong> {{ round($data['avg'],2) ?? 'N/A' }}</p>
+        <p><strong>GMI:</strong> {{ round($data['gmi'],2)."%"?? 'N/A' }}
+            @if($data['gmi'] < 7)
+                <span
+                    style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+            @elseif($data['gmi'] >= 7 && $data['gmi'] <= 8)
+                <span
+                    style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+            @else
+                <span
+                    style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+            @endif
+        </p>
+
         <h3>Totals and Durations</h3>
         <p><strong>Extremely High:</strong> {{ $data['totals_and_durations']['totals']['extremely_high'] ?? 'N/A' }}</p>
         <p><strong>Extremely Low:</strong> {{ $data['totals_and_durations']['totals']['extremely_low'] ?? 'N/A' }}</p>
@@ -137,22 +173,42 @@
 
         <p><strong>Duration (hours):</strong></p>
         <ul>
-            <li><strong>Extremely High:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['extremely_high'] ?? 0), 2) }}</li>
-            <li><strong>Extremely Low:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['extremely_low'] ?? 0), 2) }}</li>
-            <li><strong>High:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['high'] ?? 0), 2) }}</li>
-            <li><strong>Low:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['low'] ?? 0), 2) }}</li>
-            <li><strong>Normal:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['normal'] ?? 0), 2) }}</li>
+            <li><strong>Extremely
+                    High:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['extremely_high'] ?? 0), 2) }}
+            </li>
+            <li><strong>Extremely
+                    Low:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['extremely_low'] ?? 0), 2) }}
+            </li>
+            <li>
+                <strong>High:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['high'] ?? 0), 2) }}
+            </li>
+            <li>
+                <strong>Low:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['low'] ?? 0), 2) }}
+            </li>
+            <li>
+                <strong>Normal:</strong> {{ number_format((float)($data['totals_and_durations']['durations_hhmm']['normal'] ?? 0), 2) }}
+            </li>
         </ul>
     </div>
 
     <!-- Glycemic Swings Stats Section -->
-    <div class="section-content" >
+    <div class="section-content">
         <h3>Time Swings Statistics</h3>
-        <p><strong>Total Time Swing:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swings'] ?? 'N/A' }}</p>
-        <p><strong>Total Time Swing With Too Long Glucose Anomalies:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swing_too_long'] ?? 'N/A' }}</p>
-        <p><strong>Percentage of Time Swing With Too Long Glucose Anomalies:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_time_swing_too_long'] ?? 0), 2) }}%</p>
-        <p><strong>Percentage of Too Frequent Time Swings:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_too_frequent_time_swings'] ?? 0), 2) }}%</p>
-        <p><strong>Total Day of Too Frequent Time Swings:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_too_frequent_time_swings'] ?? 'N/A' }}</p>
+        <p><strong>Total Time
+                Swing:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swings'] ?? 'N/A' }}
+        </p>
+        <p><strong>Total Time Swing With Too Long Glucose
+                Anomalies:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swing_too_long'] ?? 'N/A' }}
+        </p>
+        <p><strong>Percentage of Time Swing With Too Long Glucose
+                Anomalies:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_time_swing_too_long'] ?? 0), 2) }}
+            %</p>
+        <p><strong>Percentage of Too Frequent Time
+                Swings:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_too_frequent_time_swings'] ?? 0), 2) }}
+            %</p>
+        <p><strong>Total Day of Too Frequent Time
+                Swings:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_too_frequent_time_swings'] ?? 'N/A' }}
+        </p>
     </div>
 
     <!-- Max Anomalous Day Section -->
@@ -160,11 +216,21 @@
         <h3>Max Anomalous Day</h3>
         <p><strong>Date:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['date'] ?? 'N/A' }}</p>
         <ul>
-            <li><strong>Extremely High Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely High Count'] ?? 'N/A' }}</li>
-            <li><strong>Extremely Low Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely Low Count'] ?? 'N/A' }}</li>
-            <li><strong>High Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['High Count'] ?? 'N/A' }}</li>
-            <li><strong>Low Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Low Count'] ?? 'N/A' }}</li>
-            <li><strong>Total Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Total Count'] ?? 'N/A' }}</li>
+            <li><strong>Extremely High
+                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely High Count'] ?? 'N/A' }}
+            </li>
+            <li><strong>Extremely Low
+                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely Low Count'] ?? 'N/A' }}
+            </li>
+            <li><strong>High
+                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['High Count'] ?? 'N/A' }}
+            </li>
+            <li><strong>Low
+                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Low Count'] ?? 'N/A' }}
+            </li>
+            <li><strong>Total
+                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Total Count'] ?? 'N/A' }}
+            </li>
         </ul>
     </div>
 </div>
@@ -173,7 +239,10 @@
 <div class="section">
 
 
-    <div class="section-header" @if(!$time_swing && !$too_long && !$too_frequent && !$too_frequent_time_swing && !$time_swing_too_long) style="display: none" @endif>>Analysis Results</div>
+    <div class="section-header"
+         @if(!$time_swing && !$too_long && !$too_frequent && !$too_frequent_time_swing && !$time_swing_too_long) style="display: none" @endif>
+        Analysis Results
+    </div>
 
     <!-- Time Swings Table -->
     <div class="section-content" id="time_swing" @if(!$time_swing) style="display: none" @endif>
@@ -204,8 +273,9 @@
         @else
             <p class="text-muted">No data found for time swings.</p>
         @endif
+        <br>
         <h3>Time Swing Chart</h3>
-        <img src="{{ $images['glycemicSwingsChart'] }}" style="width: 100%; max-width: 600px;">
+        <img src="{{ $imagePaths["glycemicSwingsChart"] }}" style="width: 100%; max-width: 600px;">
     </div>
 
     <!-- Time Swing Duration Table -->
@@ -239,6 +309,10 @@
         @else
             <p class="text-muted">No data found for swings followed by anomalous duration.</p>
         @endif
+        <br>
+        <h3>Too Long Glucose Anomalies Chart</h3>
+        <img src="{{ $imagePaths["tooLongChart"] }}" style="width: 100%; max-width: 600px;">
+
     </div>
 
     <!-- Anomalous Frequency Table -->
@@ -274,10 +348,14 @@
         @else
             <p class="text-muted">No data found for anomalous frequency.</p>
         @endif
+        <br>
+        <h3>Too Frequent Glucose Anomalies Chart</h3>
+        <img src="{{ $imagePaths["tooFrequentChart"] }}" style="width: 100%; max-width: 600px;">
     </div>
 
     <!-- Time Swing Too Frequent Table -->
-    <div class="section-content" id="too_frequent_time_swing" @if(!$too_frequent_time_swing) style="display: none" @endif>
+    <div class="section-content" id="too_frequent_time_swing"
+         @if(!$too_frequent_time_swing) style="display: none" @endif>
         <h3>Too Frequent Time Swings</h3>
         @if(isset($data['too_frequent_time_swings']) && count($data['too_frequent_time_swings']) > 0)
             <div class="table-responsive">
@@ -307,10 +385,16 @@
         @else
             <p class="text-muted">No data found for time swings too frequent.</p>
         @endif
+        <br>
+        <h3>Too Frequent Time Swings Chart</h3>
+        <img src="{{ $imagePaths["tooFrequentTimeSwingsDurationChart"] }}" style="width: 100%; max-width: 600px;">
+        <br>
+        <img src="{{ $imagePaths["tooFrequentTimeSwingsFrequencyChart"] }}" style="width: 100%; max-width: 600px;">
+
     </div>
 
     <!-- Time Swing With Too Long Glucose Anomalies Table -->
-    <div class="section-content" id="time_swing_too_long"  @if(!$time_swing_too_long) style="display: none" @endif>>
+    <div class="section-content" id="time_swing_too_long" @if(!$time_swing_too_long) style="display: none" @endif>
         <h3>Time Swing With Too Long Glucose Anomalies</h3>
         @if(isset($data['time_swing_with_too_long_glucose_anomalies']) && count($data['time_swing_with_too_long_glucose_anomalies']) > 0)
             <div class="table-responsive">
@@ -340,5 +424,8 @@
         @else
             <p class="text-muted">No data found for swings followed by anomalous duration.</p>
         @endif
+        <br>
+        <h3>Time Swing With Too Long Glucose Anomalies<Chart</h3>
+        <img src="{{ $imagePaths["timeSwingTooLongChart"] }}" style="width: 100%; max-width: 600px;">
     </div>
 </div>

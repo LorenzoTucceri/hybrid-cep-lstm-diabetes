@@ -10,6 +10,20 @@ font = {'size': 14}
 matplotlib.rc('font', **font)
 
 
+def calculate_avg_glucose(gluc_data):
+    count = 0
+    tot = 0
+    for level in gluc_data:
+        if(level=="Basso"):
+            tot+=50
+        else:
+            tot += int(level)
+        count += 1
+    return tot/count
+
+
+
+
 def calculate_totals_and_durations(intervals):
     """Calculate totals and durations for glucose intervals and return as a dictionary."""
     # Calculate totals for each glucose category
@@ -516,6 +530,13 @@ def prova():
                               'Valore del glucosio (mg/dL)']
 
     gl = gl[colonne_specifiche].iloc[18:]
+    print(gl['Valore del glucosio (mg/dL)'])
+    avg = calculate_avg_glucose(gl['Valore del glucosio (mg/dL)']);
+
+    print(avg)
+    gmi = 3.31 + 0.02392 * avg
+    print(f"{gmi}%")
+
     iseq = ISEQL()
     analyzer = IntervalActionDetector(gl)
     results = analyzer.offline_interval_action_detection()
@@ -557,6 +578,7 @@ def prova():
         dfgs = pd.DataFrame(data)
         dfgs.to_csv('time_swings_report.csv', index=False)
 
+
 if __name__ == "__main__":
-    main()
+    prova()
 

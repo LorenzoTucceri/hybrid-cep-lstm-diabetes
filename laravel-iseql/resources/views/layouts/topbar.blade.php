@@ -124,17 +124,28 @@
                             @foreach($notifications as $notification)
                                 <a href="#" class="dropdown-item notify-item"
                                    onclick="handleNotificationClick(
-       `{{ addslashes($notification->title) }}`,
-       `{{ addslashes($notification->message) }}`,
-       `{{ $notification->id }}`,
-       `{{ addslashes($notification->link) }}`
-   )">
+                                           `{{ addslashes($notification->title) }}`,
+                                           `{{ addslashes($notification->message) }}`,
+                                           `{{ $notification->id }}`,
+                                           `{{ addslashes($notification->link) }}`
+                                       )">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 me-3">
                                             <i class="bx bx-message-square"></i> <!-- Message icon -->
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h6 class="text-truncate">{{ Str::limit($notification->title, 30, '...') }}</h6>
+
+                                            <h6 class="text-truncate">{{ Str::limit($notification->title, 30, '...') }}
+                                                @if($notification->file_id)
+                                                    @if($notification->file->gmi < 7)
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                                    @elseif($notification->file->gmi >= 7 && $notification->file->gmi <= 8)
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                                    @else
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                                    @endif
+                                                @endif
+                                            </h6>
                                             <p class="text-muted mb-0">{{ Str::limit($notification->message, 30, '...') }}</p>
                                         </div>
                                     </div>

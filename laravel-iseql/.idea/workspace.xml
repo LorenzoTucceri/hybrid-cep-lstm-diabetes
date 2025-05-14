@@ -25,7 +25,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="PhpDebugGeneral" listening_started="true" />
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.3.14">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/opt/homebrew/Cellar/php/8.3.3/bin/php">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
       <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
@@ -223,8 +223,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PS-251.23774.466" />
-        <option value="bundled-php-predefined-a98d8de5180a-aaeaa8632555-com.jetbrains.php.sharedIndexes-PS-251.23774.466" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PS-251.23774.436" />
+        <option value="bundled-php-predefined-a98d8de5180a-aaeaa8632555-com.jetbrains.php.sharedIndexes-PS-251.23774.436" />
       </set>
     </attachedChunks>
   </component>
@@ -355,20 +355,7 @@
       <workItem from="1746279279806" duration="776000" />
       <workItem from="1746525439300" duration="246000" />
       <workItem from="1746525696972" duration="10000" />
-      <workItem from="1746536473181" duration="298000" />
-      <workItem from="1746536778322" duration="7159000" />
-      <workItem from="1746605216428" duration="12129000" />
-      <workItem from="1746629750270" duration="5427000" />
-      <workItem from="1746689886911" duration="2806000" />
-      <workItem from="1746778816940" duration="4301000" />
-      <workItem from="1746806497783" duration="9260000" />
-      <workItem from="1746882141060" duration="6050000" />
-      <workItem from="1746950442917" duration="10338000" />
-      <workItem from="1747030806616" duration="10573000" />
-      <workItem from="1747056769239" duration="1813000" />
-      <workItem from="1747119600563" duration="3374000" />
-      <workItem from="1747133106983" duration="1299000" />
-      <workItem from="1747134569507" duration="1951000" />
+
     </task>
     <servers />
   </component>
@@ -381,8 +368,6 @@
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
   </component>
-  <component name="XSLT-Support.FileAssociations.UIState">
-    <expand />
-    <select />
+
   </component>
 </project>
