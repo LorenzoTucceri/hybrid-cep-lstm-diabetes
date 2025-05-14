@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\File;
+use App\Models\Notification;
 use App\Models\Patient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -87,11 +88,22 @@ class CsvController extends Controller
                         // Update the File record with the start_time and end_time
                         $startDate = str_replace("-","/",$startDate);
                         $endDate = str_replace("-","/",$endDate);
+                        $gmi = $data['gmi'];
 
+
+                        if($request->role=="Patient"){
+                         $notifiation =   Notification::create([
+                                'user_id' => $request->doctor,
+                                'title' => "New Analisys file from patient $patient->name $patient->surname",
+                                'message' => "A new analisys report is available for the file: $csvFileName, with GMI $gmi%.\nTime period: $startDate - $endDate.",
+                             'file_id' => $fileRecord->id,
+                            ]);
+                        }
 
                         $fileRecord->update([
                             'start_time' => $startDate,
                             'end_time' => $endDate,
+                            'gmi' => $gmi,
                         ]);
                     } else {
                         // Handle the error if Flask API request fails

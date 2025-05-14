@@ -15,6 +15,19 @@ app = Flask(__name__)
 CORS(app)
 
 
+def calculate_gmi(gluc_data):
+    count = 0
+    tot = 0
+    for level in gluc_data:
+        if(level=="Basso"):
+            tot+=50
+        else:
+            tot += int(level)
+        count += 1
+    avg = tot/count
+    gmi = 3.31 + 0.02392 * avg
+    return gmi,avg
+
 def format_duration(duration):
     """Format duration as days, HH:mm:ss, and remove leading '0 days ' if not needed."""
     days, remainder = divmod(duration.total_seconds(), 86400)
@@ -86,6 +99,9 @@ def process_csv():
     glucose_data = glucose_data[columns_specific].iloc[18:]
     glucose_data_copia = glucose_data[columns_specific].iloc[18:]
 
+
+
+
     start_date = request.form.get('start_date')
     end_date = request.form.get('end_date')
 
@@ -107,6 +123,8 @@ def process_csv():
             glucose_data = glucose_data[glucose_data[date_column] >= start_date]
         elif end_date:
             glucose_data = glucose_data[glucose_data[date_column] <= end_date]
+
+    gmi,avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
 
     analyzer = IntervalActionDetector(glucose_data)
     results = analyzer.offline_interval_action_detection()
@@ -191,6 +209,8 @@ def process_csv():
     # Format results
     result = {
 
+        'avg':avg,
+        'gmi': gmi,
 
         'time_swing': [
             {
@@ -290,7 +310,8 @@ def process_date():
     columns_specific = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                         'Valore del glucosio (mg/dL)']
     glucose_data = glucose_data[columns_specific].iloc[18:]
-
+    gmi,avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
+    gmi = round(gmi, 2)
     # Extracting the date column
     date_column = 'Data e ora (AAAA-MM-GGThh:mm:ss)'
 
@@ -303,7 +324,8 @@ def process_date():
 
     return jsonify({
         'first_date': first_date.strftime('%Y-%m-%d %H:%M:%S'),
-        'last_date': last_date.strftime('%Y-%m-%d %H:%M:%S')
+        'last_date': last_date.strftime('%Y-%m-%d %H:%M:%S'),
+        'gmi': gmi
     })
 
 

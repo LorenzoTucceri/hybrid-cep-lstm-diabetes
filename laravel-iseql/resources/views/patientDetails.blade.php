@@ -106,50 +106,79 @@
                                 <div class="text-center mb-2">
                                     <h5 class="text-muted" style="font-size: 0.75rem;">Select section</h5>
                                 </div>
-                                <form id="download.pdf" method="post"
-                                      action="{{ route('download.pdf', ['patientId' => $patient->id, 'csvId' => $csv->id] + (request('start_date') ? ['start_date' => request('start_date')] : []) + (request('end_date') ? ['end_date' => request('end_date')] : [])) }}"
-                                      novalidate>
+                                <form id="downloadPdfForm" method="post"
+                                      action="{{ route('download.pdf', ['patientId' => $patient->id, 'csvId' => $csv->id] + (request('start_date') ? ['start_date' => request('start_date')] : []) + (request('end_date') ? ['end_date' => request('end_date')] : [])) }}">
                                     @csrf
+                                    <canvas id="exportGlycemicSwingsChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
                                     <input type="hidden" name="glycemicSwingsChart" id="glycemicSwingsChartImage">
-                                    <input type="hidden" name="tooLongGlucoseAnomaliesChart" id="tooLongGlucoseAnomaliesChartImage">
-                                    <input type="hidden" name="tooFrequentGlucoseAnomaliesChart" id="tooFrequentGlucoseAnomaliesChartImage">
+
+                                    <canvas id="exportTooLongChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
+                                    <input type="hidden" name="tooLongChart" id="tooLongChartImage">
+
+                                    <canvas id="exportTooFrequentChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
+                                    <input type="hidden" name="tooFrequentChart" id="tooFrequentChartImage">
+
+                                    <canvas id="exportTooFrequentTimeSwingsDurationChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
                                     <input type="hidden" name="tooFrequentTimeSwingsDurationChart" id="tooFrequentTimeSwingsDurationChartImage">
+
+                                    <canvas id="exportTooFrequentTimeSwingsFrequencyChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
                                     <input type="hidden" name="tooFrequentTimeSwingsFrequencyChart" id="tooFrequentTimeSwingsFrequencyChartImage">
-                                    <input type="hidden" name="timeSwingTooLongGlucoseAnomaliesChart" id="timeSwingTooLongGlucoseAnomaliesChartImage">
+
+                                    <canvas id="exportTimeSwingTooLongGlucoseAnomaliesChart" width="1200" height="600"
+                                            style="display: none;"></canvas>
+                                    <input type="hidden" name="timeSwingTooLongChart" id="timeSwingTooLongChartImage">
+
 
                                     <div class="row">
                                         <div class="col-12">
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="detail" id="column16" checked>
+                                                <input type="checkbox" class="form-check-input" name="detail"
+                                                       id="column16" checked>
                                                 <label class="form-check-label" for="column16">Detail</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="summary" id="column17" checked>
+                                                <input type="checkbox" class="form-check-input" name="summary"
+                                                       id="column17" checked>
                                                 <label class="form-check-label" for="column17">Summary</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="time_swing" id="column18" checked>
+                                                <input type="checkbox" class="form-check-input" name="time_swing"
+                                                       id="column18" checked>
                                                 <label class="form-check-label" for="column18">Time Swing</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="too_long" id="column19" checked>
-                                                <label class="form-check-label" for="column19">Too Long Glucose Anomalies</label>
+                                                <input type="checkbox" class="form-check-input" name="too_long"
+                                                       id="column19" checked>
+                                                <label class="form-check-label" for="column19">Too Long Glucose
+                                                    Anomalies</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="too_frequent" id="column20" checked>
-                                                <label class="form-check-label" for="column20">Too Frequent Glucose Anomalies</label>
+                                                <input type="checkbox" class="form-check-input" name="too_frequent"
+                                                       id="column20" checked>
+                                                <label class="form-check-label" for="column20">Too Frequent Glucose
+                                                    Anomalies</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="too_frequent_time_swing" id="column21" checked>
-                                                <label class="form-check-label" for="column21">Too Frequent Time Swings</label>
+                                                <input type="checkbox" class="form-check-input"
+                                                       name="too_frequent_time_swing" id="column21" checked>
+                                                <label class="form-check-label" for="column21">Too Frequent Time
+                                                    Swings</label>
                                             </div>
                                             <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="time_swing_too_long" id="column22" checked>
-                                                <label class="form-check-label" for="column22">Time Swing With Too Long Glucose Anomalies</label>
+                                                <input type="checkbox" class="form-check-input"
+                                                       name="time_swing_too_long" id="column22" checked>
+                                                <label class="form-check-label" for="column22">Time Swing With Too Long
+                                                    Glucose Anomalies</label>
                                             </div>
                                         </div>
                                         <div class="col-12 text-center mt-3">
-                                            <button type="submit" class="btn btn-success">Salva</button>
+                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">Salva
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -257,8 +286,30 @@
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body">
-                                        <h5 class="card-title">Totals</h5>
+                                        <h5 class="card-title">Glycemic Trends</h5>
                                         <ul class="list-unstyled">
+                                            <li class="mb-2"><strong>Average Glucose
+                                                    :</strong> {{ round($data['avg'],2) ?? 'N/A' }}</li>
+                                            <li class="mb-2"><strong>GMI
+                                                    :</strong> {{ round($data['gmi'],2)."%"?? 'N/A' }}
+                                                @if($data['gmi'] < 7)
+                                                    <span
+                                                        style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                                @elseif($data['gmi'] >= 7 && $data['gmi'] <= 8)
+                                                    <span
+                                                        style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                                @else
+                                                    <span
+                                                        style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                                @endif
+                                            </li>
+
+                                            <hr>
+                                            <h5 class="card-title">Totals</h5>
+
+                                            <li class="mb-2"><strong>Extremely
+                                                    High:</strong> {{ $data['totals_and_durations']['totals']['extremely_high'] ?? 'N/A' }}
+                                            </li>
                                             <li class="mb-2"><strong>Extremely
                                                     High:</strong> {{ $data['totals_and_durations']['totals']['extremely_high'] ?? 'N/A' }}
                                             </li>
@@ -379,11 +430,47 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title">Time Swing</h5>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="card-title mb-0">Time Swing</h5>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#timeSwingInfoModal"
+                                       title="What is Time Swing?">
+                                        <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                    </a>
+                                </div>
                                 <button class="btn btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#glycemicSwingsModal">
                                     View Chart
                                 </button>
+                            </div>
+                            <div class="modal fade" id="timeSwingInfoModal" tabindex="-1"
+                                 aria-labelledby="timeSwingInfoModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="timeSwingInfoModalLabel">What is Time
+                                                Swing?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Time Swing</strong> refers to the interval between two
+                                                significant glycemic events, especially when glucose levels rapidly
+                                                change between different categories (e.g., from Low to High).</p>
+
+                                            <p>This helps identify sharp fluctuations in blood glucose that may require
+                                                attention or adjustment in treatment.</p>
+
+                                            <p><strong>Example:</strong> A user experiences a hypoglycemic event (Low)
+                                                at 10:00 AM and then reaches a hyperglycemic level (High) by 12:00 PM.
+                                                Since this transition occurred within the defined threshold of two
+                                                hours, it is flagged as a Time Swing.</p>
+
+                                            <p>Monitoring Time Swings is useful for detecting glycemic instability,
+                                                assessing therapy effectiveness, and optimizing insulin and meal
+                                                strategies.</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <br>
                             @if(isset($data['time_swing']) && count($data['time_swing']) > 0)
@@ -447,12 +534,65 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Too Long Glucose Anomalies</h5>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="card-title mb-0">Too Long Glucose Anomalies</h5>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooLongGlucoseInfoModal"
+                                   title="What is Too Long Glucose Anomalies?">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                </a>
+                            </div>
                             <button class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#tooLongGlucoseAnomaliesModal">
                                 View Chart
                             </button>
                         </div>
+                        <div class="modal fade" id="tooLongGlucoseInfoModal" tabindex="-1"
+                             aria-labelledby="tooLongGlucoseInfoModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="tooLongGlucoseInfoModalLabel">What is Too Long
+                                            Glucose Anomalies?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Too Long Glucose Anomalies</strong> refers to the time spent in
+                                            abnormal glucose ranges, which could indicate deteriorating health
+                                            conditions. These ranges are defined by specific time thresholds:</p>
+                                        <ul>
+                                            <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes in a
+                                                hyperglycemic state.
+                                            </li>
+                                            <li><strong>Low Glucose:</strong> Minimum of 30 minutes in a hypoglycemic
+                                                state.
+                                            </li>
+                                            <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes in a
+                                                critically high glucose range.
+                                            </li>
+                                            <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes in a
+                                                critically low glucose range.
+                                            </li>
+
+                                        </ul>
+
+                                        <p>This helps identify prolonged glucose anomalies that may require adjustments
+                                            in treatment, lifestyle, or monitoring.</p>
+
+                                        <p><strong>Example :</strong> A user experiences a hypoglycemic event (Low) from
+                                            9:00 AM to 9:30 AM, then remains in a hyperglycemic state (High) from 11:00
+                                            AM to 12:30 PM. Since this high period lasted over 1 hour and 30 minutes, it
+                                            qualifies as a Too Long Glucose Anomaly.</p>
+
+                                        <p>Monitoring these anomalies is crucial for detecting prolonged glucose
+                                            instability, preventing complications, and optimizing treatment strategies,
+                                            such as adjusting insulin dosages or meal plans.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
                         <br>
                         @if(isset($data['too_long_glucose_anomalies']) && count($data['too_long_glucose_anomalies']) > 0)
                             <div class="table-responsive">
@@ -522,11 +662,68 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Too Frequent Glucose Anomalies</h5>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="card-title mb-0">Too Frequent Glucose Anomalies</h5>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooFrequentGlucoseInfoModal"
+                                   title="What is Too Frequent Glucose Anomalies?">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                </a>
+                            </div>
                             <button class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#tooFrequentGlucoseAnomaliesModal">
                                 View Chart
                             </button>
+                        </div>
+                        <div class="modal fade" id="tooFrequentGlucoseInfoModal" tabindex="-1"
+                             aria-labelledby="tooFrequentGlucoseInfoModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
+                                            Frequent Glucose Anomalies?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Too Frequent Glucose Anomalies</strong> refers to the occurrence of
+                                            abnormal glucose events happening too frequently within a specific period.
+                                            These events are categorized by certain thresholds of frequency and
+                                            duration:</p>
+
+                                        <ul>
+                                            <li><strong>High Glucose:</strong> Minimum of 3 instances during the
+                                                observation period.
+                                            </li>
+                                            <li><strong>Low Glucose:</strong> Minimum of 3 instances during the
+                                                observation period.
+                                            </li>
+                                            <li><strong>Extremely High Glucose:</strong> Occurs at least 1 time during
+                                                the observation period.
+                                            </li>
+                                            <li><strong>Extremely Low Glucose:</strong> Occurs at least 1 time during
+                                                the observation period.
+                                            </li>
+                                        </ul>
+
+                                        <p>Frequent occurrences of glucose anomalies may indicate an issue with blood
+                                            sugar control or the need for adjustments in insulin therapy, meal planning,
+                                            or lifestyle modifications.</p>
+
+                                        <p><strong>Example 1:</strong> A user experiences more than 3 instances of High
+                                            glucose (>180 mg/dL) during the observation period. This would be flagged as
+                                            a frequent anomaly, indicating that their glucose levels are not
+                                            well-controlled.</p>
+
+                                        <p><strong>Example 2:</strong> If a user has more than 3 events of Low glucose
+                                            (<70 mg/dL) during the observation period, this would also be flagged as a
+                                            frequent anomaly and may prompt further investigation into the cause of
+                                            frequent hypoglycemia.</p>
+
+                                        <p>Monitoring the frequency of these anomalies is important to evaluate the
+                                            effectiveness of the treatment plan and prevent health complications.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <br>
                         @if(isset($data['too_frequent_glucose_anomalies']) && count($data['too_frequent_glucose_anomalies']) > 0)
@@ -598,18 +795,63 @@
 
                 <!-- Swings Followed By Anomalous Frequency Card -->
                 <div class="card mb-4">
-                    <div class="card-body"><div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title">Too Frequent Time Swings</h5>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="card-title mb-0">Too Frequent Time Swings</h5>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsInfoModal"
+                                   title="What is Too Frequent Time Swings?">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                </a>
+                            </div>
                             <div>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsDurationModal">
+                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#tooFrequentTimeSwingsDurationModal">
                                     View Duration Chart
                                 </button>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsFrequencyModal">
+                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#tooFrequentTimeSwingsFrequencyModal">
                                     View Frequency Chart
                                 </button>
                             </div>
                         </div>
+                        <div class="modal fade" id="tooFrequentTimeSwingsInfoModal" tabindex="-1"
+                             aria-labelledby="tooFrequentTimeSwingsInfoModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
+                                            Frequent Time Swings?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Too Frequent Time Swings</strong> refers to the frequency of rapid
+                                            glucose level changes within a specific time frame, which may indicate
+                                            potential issues with glucose stability or treatment effectiveness.</p>
 
+                                        <p>To identify these swings, we evaluate the frequency of significant glucose
+                                            transitions (e.g., from Low to High or vice versa) within the observation
+                                            period. A minimum of two Time Swings within a day can indicate a need for
+                                            closer monitoring or treatment adjustments.</p>
+
+                                        <ul>
+                                            <li><strong>High to Low Glucose Swings:</strong> A shift from a
+                                                hyperglycemic state to a hypoglycemic state within a short period (e.g.,
+                                                2 hours).
+                                            </li>
+                                            <li><strong>Low to High Glucose Swings:</strong> A shift from a hypoglycemic
+                                                state to a hyperglycemic state within a short period (e.g., 2 hours).
+                                            </li>
+                                        </ul>
+
+                                        <p>Evaluating the frequency of Time Swings is important to assess the overall
+                                            stability of glucose levels, ensuring that appropriate interventions are
+                                            made to optimize glucose control.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <br>
                         @if(isset($data['too_frequent_time_swings']) && count($data['too_frequent_time_swings']) > 0)
                             <div class="table-responsive">
@@ -657,8 +899,10 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <!-- Tabella con i dettagli dei time swings -->
-                                                                <table id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
-                                                                       class="table table-bordered dt-responsive nowrap w-100">                                                                    <thead>
+                                                                <table
+                                                                    id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
+                                                                    class="table table-bordered dt-responsive nowrap w-100">
+                                                                    <thead>
                                                                     <tr>
                                                                         <th>Day</th>
                                                                         <th>First event</th>
@@ -698,12 +942,14 @@
                         @endif
                     </div>
                 </div>
-                <div class="modal fade" id="tooFrequentTimeSwingsDurationModal" tabindex="-1" aria-labelledby="tooFrequentTimeSwingsDurationModal" aria-hidden="true">
+                <div class="modal fade" id="tooFrequentTimeSwingsDurationModal" tabindex="-1"
+                     aria-labelledby="tooFrequentTimeSwingsDurationModal" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Time Swing Duration Chart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <canvas id="tooFrequentTimeSwingsDurationChart" width="400" height="200"></canvas>
@@ -716,12 +962,14 @@
                 </div>
 
                 <!-- Modal per Frequenza -->
-                <div class="modal fade" id="tooFrequentTimeSwingsFrequencyModal" tabindex="-1" aria-labelledby="tooFrequentTimeSwingsFrequencyModal" aria-hidden="true">
+                <div class="modal fade" id="tooFrequentTimeSwingsFrequencyModal" tabindex="-1"
+                     aria-labelledby="tooFrequentTimeSwingsFrequencyModal" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">Time Swing Frequency Chart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <canvas id="tooFrequentTimeSwingsFrequencyChart" width="400" height="200"></canvas>
@@ -739,11 +987,70 @@
                         <h5 class="card-title"></h5>
                         <div class="d-flex justify-content-between align-items-center">
 
-                            <h5 class="card-title">Time Swing With Too Long Glucose Anomalies</h5>
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="card-title mb-0">Time Swing With Too Long Glucose Anomalies</h5>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#timeSwingTooLongGlucoseInfoModal"
+                                   title="What is Time Swing With Too Long Glucose Anomalies?">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                </a>
+                            </div>
                             <button class="btn btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#timeSwingTooLongGlucoseAnomaliesModal">
                                 View Chart
                             </button>
+                        </div>
+                        <div class="modal fade" id="timeSwingTooLongGlucoseInfoModal" tabindex="-1"
+                             aria-labelledby="timeSwingTooLongGlucoseInfoModal" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="timeSwingTooLongGlucoseInfoModal">What is Time Swing
+                                            With Too Long Glucose Anomalies?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Time Swing With Too Long Glucose Anomalies</strong> refers to
+                                            analyzing swings where one of the intervals before or after the swing has a
+                                            prolonged period of abnormal glucose levels. This indicates extended
+                                            instability in glucose regulation, which may require further attention or
+                                            intervention.</p>
+
+                                        <p>To detect such swings, we evaluate if one of the periods before or after a
+                                            time swing (e.g., from Low to High or High to Low) falls within the
+                                            following defined "Too Long" glucose anomalies:</p>
+
+                                        <ul>
+                                            <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes in a
+                                                hyperglycemic state.
+                                            </li>
+                                            <li><strong>Low Glucose:</strong> Minimum of 30 minutes in a hypoglycemic
+                                                state.
+                                            </li>
+                                            <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes in a
+                                                critically high glucose range.
+                                            </li>
+                                            <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes in a
+                                                critically low glucose range.
+                                            </li>
+                                        </ul>
+
+                                        <p>These swings indicate that not only is there a rapid change in glucose
+                                            levels, but that one of the periods before or after the swing is prolonged,
+                                            signifying longer-than-usual periods of instability.</p>
+
+
+                                        <p><strong>Example:</strong> If a user experiences a Low glucose event from 8:00
+                                            AM to 8:30 AM, followed by a High glucose event from 10:00 AM to 11:30 AM,
+                                            this would qualify as a Time Swing with Too Long Glucose Anomalies if the
+                                            transition occurred within 2 hours, and either the Low or High period
+                                            exceeded the minimum time threshold.</p>
+
+                                        <p>Monitoring these swings helps in identifying significant glucose instability
+                                            and may prompt necessary adjustments to treatment plans.</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <br>
                         @if(isset($data['time_swing_with_too_long_glucose_anomalies']) && count($data['time_swing_with_too_long_glucose_anomalies']) > 0)
@@ -899,6 +1206,70 @@
                     }
                 }
             });
+
+            let ctx2 = document.getElementById('exportGlycemicSwingsChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Duration of Time Swings (HH:mm)',
+                        data: durationsInMinutes, // Passiamo i valori in minuti
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false, // disabilita il resize automatico
+                    maintainAspectRatio: false, // già presente, ok
+                    width: 1200,
+                    height: 600,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Duration (HH:mm)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    let hours = Math.floor(value / 60);
+                                    let minutes = value % 60;
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Mostra in HH:mm con due cifre
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                autoSkip: true,
+                                maxRotation: 45,
+                                minRotation: 45,
+                            },
+                            grid: {
+                                display: false,
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    let index = tooltipItem.dataIndex;
+                                    let durationInMinutes = durationsInMinutes[index];
+                                    let hours = Math.floor(durationInMinutes / 60);
+                                    let minutes = durationInMinutes % 60;
+                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}\nTime Swing: ${swingData[index].time_swing_type}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -922,10 +1293,10 @@
 
             let eventTypes = ["high", "low", "extremely_high", "extremely_low"];
             let colors = {
-                "high": { bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)" },
-                "low": { bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)" },
-                "extremely_high": { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
-                "extremely_low": { bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)" }
+                "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
+                "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
+                "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
+                "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
             };
 
             let datasets = eventTypes.map(event => ({
@@ -950,6 +1321,65 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    let hours = Math.floor(value / 60);
+                                    let minutes = value % 60;
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Formattazione HH:mm
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 30
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    let index = tooltipItem.dataIndex;
+                                    let durationInMinutes = datasets[tooltipItem.datasetIndex].data[index];
+                                    let hours = Math.floor(durationInMinutes / 60);
+                                    let minutes = durationInMinutes % 60;
+                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            let ctx2 = document.getElementById('exportTooLongChart').getContext('2d');
+
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    width: 1200,
+                    height: 600,
                     scales: {
                         y: {
                             beginAtZero: true,
@@ -1088,6 +1518,83 @@
                     }
                 }
             });
+
+            let ctx2 = document.getElementById('exportTooFrequentChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [
+                        {
+                            label: 'High Count',
+                            data: highCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Low Count',
+                            data: lowCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Extremely High Count',
+                            data: extremelyHighCounts,
+                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Extremely Low Count',
+                            data: extremelyLowCounts,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: false,
+                    width: 1200,
+                    height: 600,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Event Counts'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 30
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    return `${tooltipItem.dataset.label}: ${tooltipItem.raw} events`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+
         });
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -1175,7 +1682,53 @@
                         tooltip: {
                             callbacks: {
                                 // Personalizzare la visualizzazione del tooltip
-                                label: function(tooltipItem) {
+                                label: function (tooltipItem) {
+                                    let minutes = tooltipItem.raw; // Recupera i dati numerici
+                                    return `Duration: ${formatTimeLabel(minutes)}`; // Mostra in formato HH:mm
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            let ctxDuration2 = document.getElementById('exportTooFrequentTimeSwingsDurationChart').getContext('2d');
+
+            new Chart(ctxDuration2, {
+                type: 'bar',
+                data: {
+                    labels: uniqueDays, // Mostra solo date uniche
+                    datasets: durationDatasets
+                },
+                options: {
+                    responsive: false,
+                    width: 1200,
+                    height: 600,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Duration (HH:mm)'
+                            },
+                            ticks: {
+                                stepSize: 30, // Aggiusta stepSize per adattarsi alla visualizzazione
+                                callback: (value) => formatTimeLabel(value) // Usa la funzione per formattare
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Dates'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                // Personalizzare la visualizzazione del tooltip
+                                label: function (tooltipItem) {
                                     let minutes = tooltipItem.raw; // Recupera i dati numerici
                                     return `Duration: ${formatTimeLabel(minutes)}`; // Mostra in formato HH:mm
                                 }
@@ -1219,6 +1772,42 @@
                     }
                 }
             });
+
+            let ctxFrequency2 = document.getElementById('exportTooFrequentTimeSwingsFrequencyChart').getContext('2d');
+            new Chart(ctxFrequency2, {
+                type: 'bar',
+                data: {
+                    labels: uniqueDays, // Mostra solo date uniche
+                    datasets: [{
+                        label: 'Frequency of Time Swings',
+                        data: frequencyData,
+                        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    width: 1200,
+                    height: 600,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Swings'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        }
+                    }
+                }
+            });
         });
         document.addEventListener("DOMContentLoaded", function () {
             let timeSwingData = [
@@ -1241,10 +1830,10 @@
 
             // Colori per ogni evento anomalo
             let colors = {
-                "high": { bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)" },
-                "low": { bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)" },
-                "extremely_high": { bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)" },
-                "extremely_low": { bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)" }
+                "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
+                "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
+                "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
+                "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
             };
 
             // Funzione di formattazione HH:mm
@@ -1331,6 +1920,87 @@
                     }
                 }
             });
+
+            let ctx2 = document.getElementById('exportTimeSwingTooLongGlucoseAnomaliesChart').getContext('2d');
+
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Duration Time Swing (HH:mm)',
+                        data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))), // Converte HH:mm in formato numerico
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Colore di background per il dataset Duration Time Swing
+                        borderColor: 'rgba(75, 192, 192, 1)',      // Colore di bordo per il dataset Duration Time Swing
+                        borderWidth: 1
+                    }, {
+                        label: 'Anomalous Duration (HH:mm)',
+                        data: anomalousDurations.map(d => parseFloat(d.replace(':', '.'))),
+                        // Usa il colore di sfondo e di bordo definito in colors per ciascun tipo di evento anomalo
+                        backgroundColor: eventTypes.map(event => colors[event] ? colors[event].bg : 'rgba(255, 99, 132, 0.2)'),
+                        borderColor: eventTypes.map(event => colors[event] ? colors[event].border : 'rgba(255, 99, 132, 1)'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    width: 1200,
+                    height: 600,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
+                            },
+                            ticks: {
+                                stepSize: 0.5, // Intervallo di 30 minuti (0.5 ore)
+                                callback: function (value) {
+                                    // Calcola ore e minuti
+                                    let hours = Math.floor(value); // Ore
+                                    let minutes = Math.round((value - hours) * 60); // Minuti
+
+                                    // Ritorna la durata nel formato HH:mm
+                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 30
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    let index = tooltipItem.dataIndex;
+                                    let timeSwing = timeSwingData[index];
+
+                                    // Estrai il tipo di evento anomalo
+                                    let anomalousType = timeSwing.event_type.charAt(0).toUpperCase() + timeSwing.event_type.slice(1); // Prima lettera maiuscola
+
+                                    return [
+                                        'Time Swing: ' + timeSwing.time_swing_type,
+                                        'Duration Time Swing: ' + formatTime(timeSwing.duration_time_swing), // Usa la funzione di formattazione per durata
+                                        'Anomalous Duration: ' + anomalousType + " " + formatTime(timeSwing.anomalous_duration)  // Usa la funzione di formattazione per anomalous_duration
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         });
 
     </script>
@@ -1348,17 +2018,17 @@
             $.fn.dataTable.moment("ddd, DD MMM YYYY");
 
             // Inizializza DataTables su tutte le tabelle con ordinamento sulla prima colonna (indice 0)
-            $('.datatable-glycemic-swings').DataTable({ order: [[0, "desc"]] });
-            $('#datatable-anomalous-duration').DataTable({ order: [[0, "desc"]] });
-            $('#datatable-anomalous-frequency').DataTable({ order: [[0, "desc"]] });
-            $('#datatable-too-long-duration').DataTable({ order: [[0, "desc"]] });
+            $('.datatable-glycemic-swings').DataTable({order: [[0, "desc"]]});
+            $('#datatable-anomalous-duration').DataTable({order: [[0, "desc"]]});
+            $('#datatable-anomalous-frequency').DataTable({order: [[0, "desc"]]});
+            $('#datatable-too-long-duration').DataTable({order: [[0, "desc"]]});
             $('#datatable-swings-followed-by-frequency').DataTable({
                 order: [[0, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
-                    { orderable: false, targets: -1 } // Disabilita ordinamento sull'ultima colonna
+                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                 ]
             });
-            $('#datatable-swings-followed-by-duration').DataTable({ order: [[0, "desc"]] });
+            $('#datatable-swings-followed-by-duration').DataTable({order: [[0, "desc"]]});
 
             //PER DETAILS TOO FREQUENT TIME SWINGS
             $('button[data-toggle="modal"]').on('click', function () {
@@ -1374,8 +2044,6 @@
                 }
             });
         });
-
-
 
 
         $(function () {
@@ -1451,51 +2119,78 @@
             }
         });
 
-        document.getElementById('bs-download-pdf-modal').addEventListener('click', function() {
+        document.getElementById('bs-download-pdf-modal').addEventListener('click', function () {
             var menu = this.nextElementSibling;
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         });
 
-        document.addEventListener("DOMContentLoaded", function() {
-            // Funzione per catturare un canvas come immagine
-            async function captureChart(canvasId, hiddenInputId) {
-                const canvas = document.getElementById(canvasId);
-                if (!canvas) {
-                    console.error(`Canvas ${canvasId} non trovato`);
-                    return;
-                }
+        function getCanvasWithWhiteBackground(canvas) {
+            const copy = document.createElement('canvas');
+            copy.width = canvas.width;
+            copy.height = canvas.height;
 
-                try {
-                    const canvasImage = await html2canvas(canvas, {
-                        scale: 2, // Migliora la qualità
-                        logging: true, // Abilita logging per debug
-                        useCORS: true,
-                        allowTaint: true
-                    });
+            const ctx = copy.getContext('2d');
 
-                    document.getElementById(hiddenInputId).value = canvasImage.toDataURL('image/png');
-                    console.log(`Canvas ${canvasId} catturato con successo`);
-                } catch (error) {
-                    console.error(`Errore nella cattura di ${canvasId}:`, error);
-                }
-            }
+            // Sfondo bianco
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, copy.width, copy.height);
 
-            // Intercetta l'invio del form
-            document.getElementById('download.pdf').addEventListener('submit', async function(e) {
-                e.preventDefault();
+            // Disegna il canvas originale sopra
+            ctx.drawImage(canvas, 0, 0);
 
-                // Cattura tutti i grafici
-                await Promise.all([
-                    captureChart('glycemicSwingsChart', 'glycemicSwingsChartImage'),
-                    captureChart('tooLongGlucoseAnomaliesChart', 'tooLongGlucoseAnomaliesChartImage'),
-                    captureChart('tooFrequentGlucoseAnomaliesChart', 'tooFrequentGlucoseAnomaliesChartImage'),
-                    captureChart('tooFrequentTimeSwingsDurationChart', 'tooFrequentTimeSwingsDurationChartImage'),
-                    captureChart('tooFrequentTimeSwingsFrequencyChart', 'tooFrequentTimeSwingsFrequencyChartImage'),
-                    captureChart('timeSwingTooLongGlucoseAnomaliesChart', 'timeSwingTooLongGlucoseAnomaliesChartImage')
-                ]);
+            return copy;
+        }
 
-                // Invia il form dopo che tutte le immagini sono state catturate
-                this.submit();
+        document.addEventListener("DOMContentLoaded", function () {
+            const downloadButton = document.getElementById('downloadPdfButton');
+            const form = document.getElementById('downloadPdfForm');
+
+            const canvasIds = [
+                'exportGlycemicSwingsChart',
+                'exportTooLongChart',
+                'exportTooFrequentChart',
+                'exportTooFrequentTimeSwingsDurationChart',
+                'exportTooFrequentTimeSwingsFrequencyChart',
+                'exportTimeSwingTooLongGlucoseAnomaliesChart'
+            ];
+
+            const hiddenInputs = [
+                'glycemicSwingsChartImage',
+                'tooLongChartImage',
+                'tooFrequentChartImage',
+                'tooFrequentTimeSwingsDurationChartImage',
+                'tooFrequentTimeSwingsFrequencyChartImage',
+                'timeSwingTooLongChartImage'
+            ];
+
+            downloadButton.addEventListener('click', function () {
+                canvasIds.forEach((canvasId, index) => {
+                    const canvas = document.getElementById(canvasId);
+                    const hiddenInput = document.getElementById(hiddenInputs[index]);
+
+                    if (!canvas) {
+                        alert("Errore: grafico " + canvasId + " non trovato.");
+                        return;
+                    }
+
+                    try {
+                        // Usa il canvas con sfondo bianco
+                        const canvasWithBg = getCanvasWithWhiteBackground(canvas);
+                        const imageData = canvasWithBg.toDataURL('image/png');
+
+                        if (!imageData.startsWith('data:image/png;base64,')) {
+                            alert("Errore nella conversione del grafico.");
+                            return;
+                        }
+
+                        hiddenInput.value = imageData;
+                    } catch (e) {
+                        console.error("Errore durante l'export del grafico " + canvasId + ":", e);
+                        alert("Errore tecnico nella generazione dell'immagine.");
+                    }
+                });
+
+                form.submit();
             });
         });
 

@@ -39,6 +39,11 @@
                     <form action="{{ route('uploadCsv') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="patient_id" value="{{$patient->id}}">
+                        <input type="hidden" name="role" value="{{auth()->user()->role->name}}">
+                        @if(auth()->user()->role->name=="Patient")
+                            <input type="hidden" name="doctor" value="{{auth()->user()->patient->doctor_id}}">
+                        @endif
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -68,6 +73,7 @@
                             <th>File</th>
                             <th>Start time</th>
                             <th>End time</th>
+                            <th>GMI</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -77,6 +83,16 @@
                                 <td>{{ $file->csv_file_path }}</td>
                                 <td>{{ $file->start_time }}</td>
                                 <td>{{ $file->end_time }}</td>
+                                <td>
+                                    {{ $file->gmi }}%
+                                    @if($file->gmi < 7)
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                    @elseif($file->gmi >= 7 && $file->gmi <= 8)
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                    @else
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                    @endif
+                                </td>
                                 <td>
                                     <ul class="list-unstyled hstack gap-1 mb-0">
                                         <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
@@ -253,7 +269,7 @@
 
         $(document).ready(function () {
             $('.yajra-datatable').DataTable({
-                order: [[0, "desc"]], // Ordina per la prima colonna (data)
+                order: [[3, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
                     {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                 ]
