@@ -191,7 +191,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;web-ide.project.structure&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.webide.settings.project.settings.php.zend.framework.tool&quot;,
     &quot;ts.external.directory.path&quot;: &quot;/Applications/PhpStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
@@ -204,6 +204,11 @@
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/resources/views/layouts" />
     </key>
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="a make:controller API/UserController" />
+    </option>
   </component>
   <component name="RunManager">
     <configuration name="serve" type="PhpLocalRunConfigurationType" factoryName="PHP Console" path="$PROJECT_DIR$/artisan" scriptParameters="serve">
@@ -350,14 +355,7 @@
       <workItem from="1746279279806" duration="776000" />
       <workItem from="1746525439300" duration="246000" />
       <workItem from="1746525696972" duration="10000" />
-      <workItem from="1746541319157" duration="129000" />
-      <workItem from="1746636767668" duration="1513000" />
-      <workItem from="1746647777305" duration="6000" />
-      <workItem from="1747047316578" duration="5297000" />
-      <workItem from="1747062975790" duration="1903000" />
-      <workItem from="1747080397563" duration="2082000" />
-      <workItem from="1747131048243" duration="8000" />
-      <workItem from="1747210763722" duration="6961000" />
+
     </task>
     <servers />
   </component>
@@ -370,20 +368,6 @@
       <path value="$PROJECT_DIR$/.." />
     </ignored-roots>
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/resources/views/patientDetails.blade.php</url>
-          <line>817</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/resources/views/patientDetails.blade.php</url>
-          <line>429</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+
   </component>
 </project>

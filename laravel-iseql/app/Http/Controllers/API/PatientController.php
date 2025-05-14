@@ -11,7 +11,7 @@ use App\Models\Patient;
  */
 class PatientController extends Controller {
     public function patientCount() {
-        // Ottenimento del numero di pazienti.
+        // Calcolo del numero di pazienti.
         $count = Patient::count();
 
         return response()->json(

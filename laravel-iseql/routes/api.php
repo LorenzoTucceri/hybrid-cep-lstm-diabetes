@@ -33,8 +33,15 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get("/csv/count", [CsvController::class, "csvCount"]);
     Route::get("/feedbacks/count", [FeedbackController::class, "feedbackCount"]);
 
+    // Operatori.
+    Route::post("/users", [UserController::class, "createUser"]);
+    Route::get("/users", [UserController::class, "users"]);
+    Route::put("/users/{id}", [UserController::class, "updateUser"]);
+    Route::delete("/users/{id}", [UserController::class, "deleteUser"]);
+
     // Notifiche.
+    Route::get("/notifications", [NotificationController::class, "notifications"]);
+    Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
-    Route::get("/notifications", [NotificationController::class, "notifications"]);
 });
