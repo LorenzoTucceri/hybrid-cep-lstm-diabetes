@@ -44,4 +44,8 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
+
+    // Profilo.
+    Route::put("/users/{id}/profile", [UserController::class, "updateProfile"]);
+    Route::put("/users/{id}/profile/password", [UserController::class, "updatePassword"]);
 });
