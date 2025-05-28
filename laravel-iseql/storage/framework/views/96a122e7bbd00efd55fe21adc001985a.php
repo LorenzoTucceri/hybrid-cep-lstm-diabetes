@@ -46,6 +46,11 @@ unset($__errorArgs, $__bag); ?>
                     <form action="<?php echo e(route('uploadCsv')); ?>" method="POST" enctype="multipart/form-data">
                         <?php echo csrf_field(); ?>
                         <input type="hidden" name="patient_id" value="<?php echo e($patient->id); ?>">
+                        <input type="hidden" name="role" value="<?php echo e(auth()->user()->role->name); ?>">
+                        <?php if(auth()->user()->role->name=="Patient"): ?>
+                            <input type="hidden" name="doctor" value="<?php echo e(auth()->user()->patient->doctor_id); ?>">
+                        <?php endif; ?>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -89,6 +94,7 @@ unset($__errorArgs, $__bag); ?>
                             <th>File</th>
                             <th>Start time</th>
                             <th>End time</th>
+                            <th>GMI</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -98,6 +104,16 @@ unset($__errorArgs, $__bag); ?>
                                 <td><?php echo e($file->csv_file_path); ?></td>
                                 <td><?php echo e($file->start_time); ?></td>
                                 <td><?php echo e($file->end_time); ?></td>
+                                <td>
+                                    <?php echo e($file->gmi); ?>%
+                                    <?php if($file->gmi < 7): ?>
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                    <?php elseif($file->gmi >= 7 && $file->gmi <= 8): ?>
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                    <?php else: ?>
+                                        <span style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                    <?php endif; ?>
+                                </td>
                                 <td>
                                     <ul class="list-unstyled hstack gap-1 mb-0">
                                         <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
@@ -277,7 +293,7 @@ unset($__errorArgs, $__bag); ?>
 
         $(document).ready(function () {
             $('.yajra-datatable').DataTable({
-                order: [[0, "desc"]], // Ordina per la prima colonna (data)
+                order: [[3, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
                     {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                 ]

@@ -82,6 +82,20 @@ class UserController extends Controller {
             ]);
     }
 
+    public function usersByRole(int $id) {
+        // Recupero degli utenti in base al ruolo.
+        $users = User::where("role_id", $id)->get();
+        foreach ($users as $user) {
+            $user->role;
+        }
+
+        return response()->json(
+            [
+                "success" => true,
+                "users" => $users
+            ]);
+    }
+
     public function updateUser(Request $request, int $id) {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [

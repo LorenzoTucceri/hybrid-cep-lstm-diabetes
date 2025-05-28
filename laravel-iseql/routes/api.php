@@ -36,8 +36,13 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Operatori.
     Route::post("/users", [UserController::class, "createUser"]);
     Route::get("/users", [UserController::class, "users"]);
+    Route::get("/users/role/{id}", [UserController::class, "usersByRole"]);
     Route::put("/users/{id}", [UserController::class, "updateUser"]);
     Route::delete("/users/{id}", [UserController::class, "deleteUser"]);
+
+    // Pazienti.
+    Route::post("/patients", [PatientController::class, "createPatient"]);
+    Route::get("/patients", [PatientController::class, "patients"]);
 
     // Notifiche.
     Route::get("/notifications", [NotificationController::class, "notifications"]);
