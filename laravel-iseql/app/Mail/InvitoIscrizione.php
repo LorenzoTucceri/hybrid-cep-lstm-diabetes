@@ -49,6 +49,6 @@ class InvitoIscrizione extends Mailable
         ])->render();  // render() restituisce il contenuto HTML della vista
 
         return $this->html($htmlContent)
-            ->subject('Invito ad iscriverti a nome_sito');
+            ->subject('Invito ad iscriverti a ISEQL-Glucose Analyzer');
     }
 }

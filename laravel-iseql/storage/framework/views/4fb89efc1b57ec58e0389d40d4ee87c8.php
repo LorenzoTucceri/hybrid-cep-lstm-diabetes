@@ -412,7 +412,7 @@
     </div>
 
     <!-- Time Swing With Too Long Glucose Anomalies Table -->
-    <div class="section-content" id="time_swing_too_long" <?php if(!$time_swing_too_long): ?> style="display: none" <?php endif; ?>>>
+    <div class="section-content" id="time_swing_too_long" <?php if(!$time_swing_too_long): ?> style="display: none" <?php endif; ?>>
         <h3>Time Swing With Too Long Glucose Anomalies</h3>
         <?php if(isset($data['time_swing_with_too_long_glucose_anomalies']) && count($data['time_swing_with_too_long_glucose_anomalies']) > 0): ?>
             <div class="table-responsive">

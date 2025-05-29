@@ -73,7 +73,7 @@
         }
 
         .bg-heavenly {
-            background-color: rgba(75, 192, 192, 0.2); /* Colore Heavenely (un blu verde chiaro) */
+            background-color: rgb(220, 110, 110, 0.5);
         }
 
         .bg-heavenly-dark {
@@ -94,7 +94,7 @@
                              style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
                             <button class="btn btn-primary dropdown-toggle"
                                     type="button"
-                                    id="bs-download-pdf-modal"
+                                    id="bs-download-pdf-modal-button"
                                     data-bs-toggle="dropdown"
                                     aria-expanded="false">
                                 <i class="bx bx-cog font-size-18"></i>
@@ -177,7 +177,7 @@
                                             </div>
                                         </div>
                                         <div class="col-12 text-center mt-3">
-                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">Salva
+                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">Download
                                             </button>
                                         </div>
                                     </div>
@@ -877,31 +877,26 @@
                                             <td>{{ $swing['Number of Time Swings'] ?? 'N/A' }}</td>
                                             <td>
                                                 <!-- Bottone per aprire il modale -->
-                                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
-                                                        data-target="#modal-{{ $loop->index }}">
+                                                <button type="button"
+                                                        class="btn btn-info btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modal-{{ $loop->index }}">
                                                     View Details
                                                 </button>
 
                                                 <!-- Modale per visualizzare i dettagli -->
-                                                <div class="modal fade-" id="modal-{{ $loop->index }}" tabindex="-1"
-                                                     role="dialog" aria-labelledby="modalLabel-{{ $loop->index }}"
-                                                     aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal fade" id="modal-{{ $loop->index }}" tabindex="-1"
+                                                     aria-labelledby="modalLabel-{{ $loop->index }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="modalLabel-{{ $loop->index }}">Time Swings
-                                                                    Details</h5>
-                                                                <button type="button" class="close" data-dismiss="modal"
-                                                                        aria-label="Close">
-                                                                    <span aria-hidden="true">&times;</span>
-                                                                </button>
+                                                                <h5 class="modal-title" id="modalLabel-{{ $loop->index }}">Time Swings Details</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <!-- Tabella con i dettagli dei time swings -->
-                                                                <table
-                                                                    id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
-                                                                    class="table table-bordered dt-responsive nowrap w-100">
+                                                                <table id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
+                                                                       class="table table-bordered dt-responsive nowrap w-100">
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Day</th>
@@ -923,10 +918,7 @@
                                                                 </table>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button"
-                                                                        class="btn btn-secondary"
-                                                                        data-dismiss="modal">Close
-                                                                </button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1153,8 +1145,8 @@
                     datasets: [{
                         label: 'Duration of Time Swings (HH:mm)',
                         data: durationsInMinutes, // Passiamo i valori in minuti
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                        borderColor: 'rgba(220, 110, 110, 1)',
                         borderWidth: 1
                     }]
                 },
@@ -1215,8 +1207,8 @@
                     datasets: [{
                         label: 'Duration of Time Swings (HH:mm)',
                         data: durationsInMinutes, // Passiamo i valori in minuti
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                        borderColor: 'rgba(220, 110, 110, 1)',
                         borderWidth: 1
                     }]
                 },
@@ -1633,8 +1625,8 @@
                         }
                         return null; // Se non esiste la durata
                     }),
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                    borderColor: 'rgba(220, 110, 110, 1)',
                     borderWidth: 1
                 });
             }
@@ -1851,8 +1843,8 @@
                     datasets: [{
                         label: 'Duration Time Swing (HH:mm)',
                         data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))), // Converte HH:mm in formato numerico
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Colore di background per il dataset Duration Time Swing
-                        borderColor: 'rgba(75, 192, 192, 1)',      // Colore di bordo per il dataset Duration Time Swing
+                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                        borderColor: 'rgba(220, 110, 110, 1)', // Colore di bordo per il dataset Duration Time Swing
                         borderWidth: 1
                     }, {
                         label: 'Anomalous Duration (HH:mm)',
@@ -1930,8 +1922,8 @@
                     datasets: [{
                         label: 'Duration Time Swing (HH:mm)',
                         data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))), // Converte HH:mm in formato numerico
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Colore di background per il dataset Duration Time Swing
-                        borderColor: 'rgba(75, 192, 192, 1)',      // Colore di bordo per il dataset Duration Time Swing
+                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                        borderColor: 'rgba(220, 110, 110, 1)',     // Colore di bordo per il dataset Duration Time Swing
                         borderWidth: 1
                     }, {
                         label: 'Anomalous Duration (HH:mm)',
@@ -2119,10 +2111,7 @@
             }
         });
 
-        document.getElementById('bs-download-pdf-modal').addEventListener('click', function () {
-            var menu = this.nextElementSibling;
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        });
+
 
         function getCanvasWithWhiteBackground(canvas) {
             const copy = document.createElement('canvas');
@@ -2190,9 +2179,31 @@
                     }
                 });
 
+                const dropdownToggle = document.getElementById('bs-download-pdf-modal');
+                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
+                if (dropdownInstance) {
+                    dropdownInstance.hide();
+                }
+
                 form.submit();
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadButton = document.getElementById('downloadPdfButton');
+            const dropdownToggle = document.getElementById('bs-download-pdf-modal');
+
+            downloadButton.addEventListener('click', function () {
+                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
+                if (dropdownInstance) {
+                    dropdownInstance.hide(); // chiude il dropdown
+                }
+
+                // Facoltativo: invia il form
+                // document.getElementById('downloadPdfForm').submit();
+            });
+        });
+
 
 
     </script>
@@ -2206,6 +2217,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
 @endsection
 
