@@ -1,12 +1,15 @@
+<?php use Illuminate\Support\Facades\Auth; ?>
+
+
 <?php $__env->startSection('title'); ?>
     Patient Management
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('css'); ?>
     <!--datatable css-->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
     <!-- DataTables Buttons CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
 
 <?php $__env->stopSection(); ?>
 
@@ -169,7 +172,8 @@ unset($__errorArgs, $__bag); ?>
                                                         <i class="mdi mdi-email-send font-size-15"></i>
                                                     </a>
                                                 <?php endif; ?>
-                                            </li>                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                            </li>
+                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                                 <a data-bs-toggle="modal" class="btn btn-sm btn-soft-warning"
                                                    data-bs-target="#editPatientModal" data-id="<?php echo e($patient->id); ?>"
                                                    data-name="<?php echo e($patient->name); ?>"
@@ -326,26 +330,30 @@ unset($__errorArgs, $__bag); ?>
                         </div>
 
                         <!-- Doctor -->
-                        <div class="row mb-4">
-                            <label for="doctor" class="col-form-label col-lg-3">Doctor<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                                <select class="form-select <?php $__errorArgs = ['doctor'];
+                        <?php
+                            $user = Auth::user();
+                        ?>
+                        <?php if($user->role_id == 1): ?>
+
+                            <div class="row mb-4">
+                                <label for="doctor" class="col-form-label col-lg-3">Doctor<span
+                                        class="text-danger">*</span></label>
+                                <div class="col-lg-9">
+                                    <select class="form-select <?php $__errorArgs = ['doctor'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>"
-                                        name="doctor" id="doctor">
+unset($__errorArgs, $__bag); ?>" name="doctor"
+                                            id="doctor">
                                     <?php
                                         $doctors = \App\Models\User::where("role_id", "3")->get();
                                     ?>
 
                                     <?php if($doctors->isEmpty()): ?>
-                                        <option value="" disabled selected> No doctors available
-                                        </option>
+                                        <option value="" disabled selected>No doctors available</option>
                                     <?php else: ?>
                                         <option value="">Select a doctor</option>
                                         <?php $__currentLoopData = $doctors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doctor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -354,23 +362,29 @@ unset($__errorArgs, $__bag); ?>"
                                                 <?php echo e($doctor->name); ?>
 
                                             </option>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php endif; ?>
-                                </select>
-                                <?php $__errorArgs = ['doctor'];
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+                                            <?php endif; ?>
+                                            </select>
+                                            <?php $__errorArgs = ['doctor'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                                    <strong><?php echo e($message); ?></strong>
-                                                </span>
-                                <?php unset($message);
+                                            <span class="invalid-feedback" role="alert">
+                    <strong><?php echo e($message); ?></strong>
+                </span>
+                                            <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                </div>
                             </div>
-                        </div>
+
+                        <?php else: ?>
+
+                            <input type="hidden" name="doctor" value="<?php echo e($user->id); ?>">
+                        <?php endif; ?>
 
                         <!-- Date of Birth -->
                         <div class="row mb-4">
@@ -529,7 +543,7 @@ unset($__errorArgs, $__bag); ?>
                     <form id="editPatientForm" method="POST" action="<?php echo e(route('updatePatient')); ?>">
                         <?php echo csrf_field(); ?>
 
-                        <input type="hidden" id="patient_id" name="id">
+                        <input type="hidden" id="patient_id" name="patient_id">
 
                         <!-- Nome -->
                         <div class="row mb-4">
@@ -616,12 +630,12 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
-
-                        <div class="row mb-4">
-                            <label for="edit-doctor" class="col-form-label col-lg-3">Doctor<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                                <select class="form-select <?php $__errorArgs = ['doctor'];
+                        <?php if($user->role_id == 1): ?>
+                            <div class="row mb-4">
+                                <label for="doctor" class="col-form-label col-lg-3">Doctor<span
+                                        class="text-danger">*</span></label>
+                                <div class="col-lg-9">
+                                    <select class="form-select <?php $__errorArgs = ['doctor'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -629,25 +643,42 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" name="doctor"
-                                        id="edit-doctor" required>
-                                    <?php $__currentLoopData = $doctors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doctor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($doctor->id); ?>"><?php echo e($doctor->name); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                                <?php $__errorArgs = ['doctor'];
+                                            id="doctor">
+                                        <?php
+                                            $doctors = \App\Models\User::where("role_id", "3")->get();
+                                        ?>
+
+                                        <?php if($doctors->isEmpty()): ?>
+                                            <option value="" disabled selected>No doctors available</option>
+                                        <?php else: ?>
+                                            <option value="">Select a doctor</option>
+                                            <?php $__currentLoopData = $doctors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $doctor): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($doctor->id); ?>"
+                                                        <?php if(old('doctor') == $doctor->id): ?> selected <?php endif; ?>>
+                                                    <?php echo e($doctor->name); ?>
+
+                                                </option>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    </select>
+                                    <?php $__errorArgs = ['doctor'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                <strong><?php echo e($message); ?></strong>
-                            </span>
-                                <?php unset($message);
+                                    <span class="invalid-feedback" role="alert">
+                    <strong><?php echo e($message); ?></strong>
+                </span>
+                                    <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                </div>
                             </div>
-                        </div>
+                        <?php else: ?>
+                            <input type="hidden" name="doctor" value="<?php echo e($user->id); ?>">
+
+                        <?php endif; ?>
 
 
                         <!-- Data di Nascita -->
@@ -839,13 +870,12 @@ unset($__errorArgs, $__bag); ?>
         });
 
 
-
         $(document).ready(function () {
             $('[data-bs-toggle="tooltip"]').tooltip();
             $('.yajra-datatable').DataTable({
                 order: [[0, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
-                    { orderable: false, targets: -1 } // Disabilita ordinamento sull'ultima colonna
+                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                 ]
             });
         });

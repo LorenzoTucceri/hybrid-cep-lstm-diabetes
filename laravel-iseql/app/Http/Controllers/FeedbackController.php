@@ -105,12 +105,14 @@ class FeedbackController extends Controller
                     'message' => "A new feedback report is available for the file: $csv->csv_file_path.\nTime period: $csv->start_time - $csv->end_time.",
                 ]);
             } else {
-                $patient_user= User::where('patient_id', $patient->id)->first();
-                Notification::create([
-                    'user_id' => $patient_user->id,
-                    'title' => "New Feedback from Dr. $doctor->name $doctor->surname",
-                    'message' => "A new feedback report is available for the file: $csv->csv_file_path.\nTime period: $csv->start_time - $csv->end_time.",
-                ]);
+                $patient_user = User::where('patient_id', $patient->id)->first();
+
+                if ($patient_user != null)
+                    Notification::create([
+                        'user_id' => $patient_user->id,
+                        'title' => "New Feedback from Dr. $doctor->name $doctor->surname",
+                        'message' => "A new feedback report is available for the file: $csv->csv_file_path.\nTime period: $csv->start_time - $csv->end_time.",
+                    ]);
             }
 
             DB::commit();
@@ -121,6 +123,7 @@ class FeedbackController extends Controller
             return back()->withErrors(['error' => "Error, feedback save failed! " . $e->getMessage()]);
         }
     }
+
     public function getFeedback($csvId, $doctorId)
     {
         $feedback = Feedback::where('file_id', $csvId)

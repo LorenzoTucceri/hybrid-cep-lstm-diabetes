@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Facades\Auth; @endphp
 @extends('layouts.master')
 
 @section('title')
@@ -6,9 +7,9 @@
 
 @section('css')
     <!--datatable css-->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css"/>
     <!-- DataTables Buttons CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css"/>
 
 @endsection
 
@@ -162,7 +163,8 @@
                                                         <i class="mdi mdi-email-send font-size-15"></i>
                                                     </a>
                                                 @endif
-                                            </li>                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                                            </li>
+                                            <li data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                                                 <a data-bs-toggle="modal" class="btn btn-sm btn-soft-warning"
                                                    data-bs-target="#editPatientModal" data-id="{{ $patient->id }}"
                                                    data-name="{{ $patient->name }}"
@@ -269,19 +271,23 @@
                         </div>
 
                         <!-- Doctor -->
-                        <div class="row mb-4">
-                            <label for="doctor" class="col-form-label col-lg-3">Doctor<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                                <select class="form-select @error('doctor') is-invalid @enderror"
-                                        name="doctor" id="doctor">
+                        @php
+                            $user = Auth::user();
+                        @endphp
+                        @if($user->role_id == 1)
+
+                            <div class="row mb-4">
+                                <label for="doctor" class="col-form-label col-lg-3">Doctor<span
+                                        class="text-danger">*</span></label>
+                                <div class="col-lg-9">
+                                    <select class="form-select @error('doctor') is-invalid @enderror" name="doctor"
+                                            id="doctor">
                                     @php
                                         $doctors = \App\Models\User::where("role_id", "3")->get();
                                     @endphp
 
                                     @if($doctors->isEmpty())
-                                        <option value="" disabled selected> No doctors available
-                                        </option>
+                                        <option value="" disabled selected>No doctors available</option>
                                     @else
                                         <option value="">Select a doctor</option>
                                         @foreach($doctors as $doctor)
@@ -289,16 +295,22 @@
                                                     @if(old('doctor') == $doctor->id) selected @endif>
                                                 {{ $doctor->name }}
                                             </option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                                @error('doctor')
-                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                @enderror
+                                            @endforeach
+
+                                            @endif
+                                            </select>
+                                            @error('doctor')
+                                            <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                                            @enderror
+                                </div>
                             </div>
-                        </div>
+
+                        @else
+
+                            <input type="hidden" name="doctor" value="{{ $user->id }}">
+                        @endif
 
                         <!-- Date of Birth -->
                         <div class="row mb-4">
@@ -401,7 +413,7 @@
                     <form id="editPatientForm" method="POST" action="{{ route('updatePatient') }}">
                         @csrf
 
-                        <input type="hidden" id="patient_id" name="id">
+                        <input type="hidden" id="patient_id" name="patient_id">
 
                         <!-- Nome -->
                         <div class="row mb-4">
@@ -446,24 +458,40 @@
                                 @enderror
                             </div>
                         </div>
+                        @if($user->role_id == 1)
+                            <div class="row mb-4">
+                                <label for="doctor" class="col-form-label col-lg-3">Doctor<span
+                                        class="text-danger">*</span></label>
+                                <div class="col-lg-9">
+                                    <select class="form-select @error('doctor') is-invalid @enderror" name="doctor"
+                                            id="doctor">
+                                        @php
+                                            $doctors = \App\Models\User::where("role_id", "3")->get();
+                                        @endphp
 
-                        <div class="row mb-4">
-                            <label for="edit-doctor" class="col-form-label col-lg-3">Doctor<span
-                                    class="text-danger">*</span></label>
-                            <div class="col-lg-9">
-                                <select class="form-select @error('doctor') is-invalid @enderror" name="doctor"
-                                        id="edit-doctor" required>
-                                    @foreach($doctors as $doctor)
-                                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('doctor')
-                                <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                                @enderror
+                                        @if($doctors->isEmpty())
+                                            <option value="" disabled selected>No doctors available</option>
+                                        @else
+                                            <option value="">Select a doctor</option>
+                                            @foreach($doctors as $doctor)
+                                                <option value="{{ $doctor->id }}"
+                                                        @if(old('doctor') == $doctor->id) selected @endif>
+                                                    {{ $doctor->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    @error('doctor')
+                                    <span class="invalid-feedback" role="alert">
+                    <strong>{{ $message }}</strong>
+                </span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <input type="hidden" name="doctor" value="{{ $user->id }}">
+
+                        @endif
 
 
                         <!-- Data di Nascita -->
@@ -599,13 +627,12 @@
         });
 
 
-
         $(document).ready(function () {
             $('[data-bs-toggle="tooltip"]').tooltip();
             $('.yajra-datatable').DataTable({
                 order: [[0, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
-                    { orderable: false, targets: -1 } // Disabilita ordinamento sull'ultima colonna
+                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                 ]
             });
         });

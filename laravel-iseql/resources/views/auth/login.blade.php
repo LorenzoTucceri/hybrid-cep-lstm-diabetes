@@ -61,9 +61,6 @@
                                                class="form-control @error('email') is-invalid @enderror"
 
                                                id="username"
-
-                                               value="{{ old('email', 'admin@libero.it') }}" id="username"
-
                                                placeholder="Enter email" autocomplete="email" autofocus>
                                         @error('email')
                                         <span class="invalid-feedback" role="alert">
@@ -80,9 +77,6 @@
                                                    class="form-control @error('password') is-invalid @enderror"
 
                                                    id="userpassword" placeholder="Enter password"
-
-                                                   id="userpassword" value="123456" placeholder="Enter password"
-
                                                    aria-label="Password" aria-describedby="password-addon">
                                             <button class="btn btn-light" type="button" id="password-addon"><i
                                                     class="mdi mdi-eye-outline"></i></button>

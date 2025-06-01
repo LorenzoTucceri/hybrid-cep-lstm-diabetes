@@ -42,6 +42,9 @@
                         <input type="hidden" name="role" value="{{auth()->user()->role->name}}">
                         @if(auth()->user()->role->name=="Patient")
                             <input type="hidden" name="doctor" value="{{auth()->user()->patient->doctor_id}}">
+                        @else
+                            <input type="hidden" name="doctor" value="{{auth()->user()->id}}">
+
                         @endif
 
                         <div class="row">

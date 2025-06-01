@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PatientController extends Controller
 {
@@ -50,22 +51,27 @@ class PatientController extends Controller
 
     public function updatePatient(Request $request)
     {
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:patients,email,' . $request->client_id],  // Validazione email unica, ignorando il paziente corrente
-            'birth' => ['required', 'date'],  // Validazione per una data corretta
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('patients', 'email')->ignore($request->patient_id)
+            ],
+            'birth' => ['required', 'date'],
             'gender' => ['required', 'in:Male,Female'],
-            'telephone_number' => ['nullable', 'string', 'max:255'],  // Opzionale
-            'address' => ['required', 'string', 'max:255'],  // Obbligatorio
-            'doctor' => ['required', 'exists:users,id'],  // Validazione per il doctor
+            'telephone_number' => ['nullable', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'doctor' => ['required', 'exists:users,id'],
         ]);
-
-        DB::beginTransaction();
 
         try {
             // Recupera il paziente tramite l'ID (client_id) dalla richiesta
-            $patient = Patient::findOrFail($request->client_id);
+            $patient = Patient::findOrFail($request->patient_id);
 
             // Aggiorna il paziente con i dati dalla richiesta
             $patient->update([
@@ -110,7 +116,7 @@ class PatientController extends Controller
         DB::beginTransaction();
 
         try {
-            // Creazione del paziente
+
             $patient = Patient::create([
                 'name' => $request->get('name'),
                 'surname' => $request->get('surname'),

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\File;
 use App\Models\Notification;
 use App\Models\Patient;
+use App\Models\User;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
@@ -56,6 +57,8 @@ class CsvController extends Controller
         try {
             if ($request->hasFile('csv')) {
                 $patient = Patient::find($request->input('patient_id'));
+                $doctor = $request->doctor;
+                $doctor = User::find($doctor);
 
                 foreach ($request->file('csv') as $csvFile) {
                     // Generate a unique file name to avoid conflicts
@@ -99,6 +102,7 @@ class CsvController extends Controller
                              'file_id' => $fileRecord->id,
                             ]);
                         }
+
 
                         $fileRecord->update([
                             'start_time' => $startDate,
