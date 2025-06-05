@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="IntelligentKnowledge" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="IntelligentKnowledge" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (backend-iseql)" project-jdk-type="Python SDK" />
 </project>

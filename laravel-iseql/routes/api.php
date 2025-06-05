@@ -43,6 +43,14 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Pazienti.
     Route::post("/patients", [PatientController::class, "createPatient"]);
     Route::get("/patients", [PatientController::class, "patients"]);
+    Route::get("/patients/{id}", [PatientController::class, "patient"]);
+    Route::put("/patients/{id}", [PatientController::class, "updatePatient"]);
+    Route::delete("/patients/{id}", [PatientController::class, "deletePatient"]);
+
+    // File CSV.
+    Route::get("/csv", [CsvController::class, "csvs"]);
+    Route::get("/csv/{id}", [CsvController::class, "csv"]);
+    Route::delete("/csv/{id}", [CsvController::class, "deleteCsv"]);
 
     // Notifiche.
     Route::get("/notifications", [NotificationController::class, "notifications"]);

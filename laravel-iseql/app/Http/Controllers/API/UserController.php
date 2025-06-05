@@ -83,17 +83,29 @@ class UserController extends Controller {
     }
 
     public function usersByRole(int $id) {
-        // Recupero degli utenti in base al ruolo.
-        $users = User::where("role_id", $id)->get();
-        foreach ($users as $user) {
-            $user->role;
-        }
+        // Ricerca del ruolo per ID.
+        $role = Role::find($id);
 
-        return response()->json(
-            [
-                "success" => true,
-                "users" => $users
-            ]);
+        if ($role) {
+            // Recupero degli utenti in base al ruolo.
+            $users = User::where("role_id", $role->id)->get();
+            foreach ($users as $user) {
+                $user->role;
+            }
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "users" => $users
+                ]);
+        }
+        else {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Role doesn't exist."
+                ]);
+        }
     }
 
     public function updateUser(Request $request, int $id) {
