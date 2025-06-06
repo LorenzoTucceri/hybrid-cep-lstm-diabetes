@@ -178,6 +178,33 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">CSV Files</p>
+                                            <h4 class="mb-0">
+                                                {{
+                                                    \App\Models\File::whereIn('patient_id',
+                                                        \App\Models\Patient::where('doctor_id', Auth::user()->id)->pluck('id')
+                                                    )->count()
+                                                }}
+                                            </h4>                                        </div>
+
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
+                                    <span class="avatar-title rounded-circle bg-primary">
+                                            <i class="bx bx-copy-alt font-size-24"></i>
+                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     @else
                         <div class="col-md-6">
                             <div class="card mini-stats-wid">
@@ -203,31 +230,32 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
 
-                    @endif
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">CSV Files</p>
+                                            <h4 class="mb-0">{{\App\Models\File::where("patient_id", Auth::user()->patient->id)->count()}}</h4>
+                                        </div>
 
-
-                    <div class="col-md-6">
-
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted fw-medium">CSV Files</p>
-                                        <h4 class="mb-0">{{\App\Models\File::count()}}</h4>
-                                    </div>
-
-                                    <div class="flex-shrink-0 align-self-center">
-                                        <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
                                     <span class="avatar-title rounded-circle bg-primary">
                                             <i class="bx bx-copy-alt font-size-24"></i>
                                     </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+
+                    @endif
+
+
                 </div>
             @endif
             <!-- end row -->
