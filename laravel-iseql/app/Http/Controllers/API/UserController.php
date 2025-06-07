@@ -30,7 +30,7 @@ class UserController extends Controller {
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "surname" => "required",
-            "email" => "required|email|unique:users",
+            "email" => "required|email|unique:users,email",
             "password" => "required|confirmed|min:6",
             "password_confirmation" => "required",
             "role" => "required|in:Admin,Doctor"
@@ -82,12 +82,38 @@ class UserController extends Controller {
             ]);
     }
 
+    public function usersByRole(int $id) {
+        // Ricerca del ruolo per ID.
+        $role = Role::find($id);
+
+        if ($role) {
+            // Recupero degli utenti in base al ruolo.
+            $users = User::where("role_id", $role->id)->get();
+            foreach ($users as $user) {
+                $user->role;
+            }
+
+            return response()->json(
+                [
+                    "success" => true,
+                    "users" => $users
+                ]);
+        }
+        else {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => "Role doesn't exist."
+                ]);
+        }
+    }
+
     public function updateUser(Request $request, int $id) {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [
             "name" => "required",
             "surname" => "required",
-            "email" => "required|email|unique:users",
+            "email" => "required|email|unique:users,email," . $id,
             "password" => "required|confirmed|min:6",
             "password_confirmation" => "required",
             "role" => "required|in:Admin,Doctor"
@@ -152,5 +178,61 @@ class UserController extends Controller {
                     "message" => "User doesn't exist."
                 ]);
         }
+    }
+
+    public function updateProfile(Request $request) {
+        // Validazione dei dati.
+        $validator = Validator::make($request->all(), [
+            "name" => "required",
+            "surname" => "required",
+            "email" => "required|email|unique:users,email," . $request->user()->id,
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $validator->errors()->first()
+                ]);
+        }
+
+        // Aggiornamento del profilo.
+        $request->user()->update([
+            "name" => $request->name,
+            "surname" => $request->surname,
+            "email" => $request->email
+        ]);
+
+        return response()->json(
+            [
+                "success" => true,
+                "message" => "Profile updated successfully."
+            ]);
+    }
+
+    public function updatePassword(Request $request) {
+        // Validazione dei dati.
+        $validator = Validator::make($request->all(), [
+            "password_current" => "required|current_password",
+            "password" => "required|confirmed|min:6",
+            "password_confirmation" => "required"
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    "success" => false,
+                    "message" => $validator->errors()->first()
+                ]);
+        }
+
+        // Aggiornamento della password.
+        $request->user()->update([
+            "password" => Hash::make($request->password)
+        ]);
+
+        return response()->json(
+            [
+                "success" => true,
+                "message" => "Password updated successfully."
+            ]);
     }
 }

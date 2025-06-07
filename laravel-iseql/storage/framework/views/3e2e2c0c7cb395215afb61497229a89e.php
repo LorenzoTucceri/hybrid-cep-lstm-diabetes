@@ -124,17 +124,29 @@
                             <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <a href="#" class="dropdown-item notify-item"
                                    onclick="handleNotificationClick(
-       `<?php echo e(addslashes($notification->title)); ?>`,
-       `<?php echo e(addslashes($notification->message)); ?>`,
-       `<?php echo e($notification->id); ?>`,
-       `<?php echo e(addslashes($notification->link)); ?>`
-   )">
+                                           `<?php echo e(addslashes($notification->title)); ?>`,
+                                           `<?php echo e(addslashes($notification->message)); ?>`,
+                                           `<?php echo e($notification->id); ?>`,
+                                           `<?php echo e(addslashes($notification->link)); ?>`
+                                       )">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 me-3">
                                             <i class="bx bx-message-square"></i> <!-- Message icon -->
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h6 class="text-truncate"><?php echo e(Str::limit($notification->title, 30, '...')); ?></h6>
+
+                                            <h6 class="text-truncate"><?php echo e(Str::limit($notification->title, 30, '...')); ?>
+
+                                                <?php if($notification->file_id): ?>
+                                                    <?php if($notification->file->gmi < 7): ?>
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                                    <?php elseif($notification->file->gmi >= 7 && $notification->file->gmi <= 8): ?>
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                                    <?php else: ?>
+                                                        <span style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </h6>
                                             <p class="text-muted mb-0"><?php echo e(Str::limit($notification->message, 30, '...')); ?></p>
                                         </div>
                                     </div>
