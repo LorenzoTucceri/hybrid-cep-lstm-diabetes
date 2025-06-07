@@ -114,7 +114,9 @@ int main(int /*argc*/, const char* argv[])
     else if (command == "test-eventi")
     {
         // Leggi gli eventi dal file "eventi.txt"
-        std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        //std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        std::vector<Event> events = readEventsFromFile("../../backend-iseql/eventi.txt");
+
         if (events.empty()) {
             std::cerr << "Errore: nessun evento letto dal file." << std::endl;
             return 1; // Uscita con errore se non ci sono eventi
