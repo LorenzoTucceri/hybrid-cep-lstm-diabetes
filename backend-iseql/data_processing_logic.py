@@ -189,22 +189,14 @@ def process_csv():
         iseq.add_interval(interval_iseql)
 
     # Process results
-    # time_swings = iseq.find_time_swing()
+    time_swings = iseq.find_time_swing()
     anomalous_frequency = iseq.find_too_frequent_glucose_anomalies()
     time_swings_too_frequent = iseq.find_too_frequent_time_swings()
     anomalous_duration = iseq.find_too_long_glucose_anomalies()
     time_swing_duration = iseq.find_time_swing_with_too_long_glucose_anomalies()
 
 
-    ''' 'time_swing': [
-            {
-                'day': format_day(time_swing[0].start_time.date()),
-                'first_event': time_swing[0].event,
-                'second_event': time_swing[1].event,
-                'duration_time_swing': format_duration(time_swing[1].start_time - time_swing[0].end_time)
-            }
-            for time_swing in time_swings
-        ],  '''
+    ''' '''
 
     # Format results
     result = {
@@ -214,12 +206,12 @@ def process_csv():
 
         'time_swing': [
             {
-                'day': format_day(pair[0].start_time.date()),
-                'first_event': pair[0].event,
-                'second_event': pair[1].event,
-                'duration_time_swing': format_duration(pair[1].start_time - pair[0].end_time)
+                'day': format_day(time_swing[0].start_time.date()),
+                'first_event': time_swing[0].event,
+                'second_event': time_swing[1].event,
+                'duration_time_swing': format_duration(time_swing[1].start_time - time_swing[0].end_time)
             }
-            for pair in parsed_time_swings
+            for time_swing in time_swings
         ],
 
         'too_frequent_glucose_anomalies': [
