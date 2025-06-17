@@ -125,6 +125,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="flex-grow-1">
                                         <p class="text-muted fw-medium">Patients</p>
                                         <h4 class="mb-0"><?php echo e(\App\Models\Patient::count()); ?></h4>
+
                                     </div>
 
                                     <div class="flex-shrink-0 align-self-center">
@@ -169,7 +170,7 @@ unset($__errorArgs, $__bag); ?>
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
                                             <p class="text-muted fw-medium">Patients</p>
-                                            <h4 class="mb-0"><?php echo e(\App\Models\Patient::count()); ?></h4>
+                                            <h4 class="mb-0"><?php echo e(\App\Models\Patient::where('doctor_id', Auth::user()->id)->count()); ?></h4>
                                         </div>
 
 
@@ -184,6 +185,32 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">CSV Files</p>
+                                            <h4 class="mb-0">
+                                                <?php echo e(\App\Models\File::whereIn('patient_id',
+                                                        \App\Models\Patient::where('doctor_id', Auth::user()->id)->pluck('id')
+                                                    )->count()); ?>
+
+                                            </h4>                                        </div>
+
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
+                                    <span class="avatar-title rounded-circle bg-primary">
+                                            <i class="bx bx-copy-alt font-size-24"></i>
+                                    </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     <?php else: ?>
                         <div class="col-md-6">
                             <div class="card mini-stats-wid">
@@ -210,31 +237,32 @@ unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
 
-                    <?php endif; ?>
+                            <div class="card mini-stats-wid">
+                                <div class="card-body">
+                                    <div class="d-flex">
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted fw-medium">CSV Files</p>
+                                            <h4 class="mb-0"><?php echo e(\App\Models\File::where("patient_id", Auth::user()->patient->id)->count()); ?></h4>
+                                        </div>
 
-
-                    <div class="col-md-6">
-
-                        <div class="card mini-stats-wid">
-                            <div class="card-body">
-                                <div class="d-flex">
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted fw-medium">CSV Files</p>
-                                        <h4 class="mb-0"><?php echo e(\App\Models\File::count()); ?></h4>
-                                    </div>
-
-                                    <div class="flex-shrink-0 align-self-center">
-                                        <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
+                                        <div class="flex-shrink-0 align-self-center">
+                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
                                     <span class="avatar-title rounded-circle bg-primary">
                                             <i class="bx bx-copy-alt font-size-24"></i>
                                     </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+
+                    <?php endif; ?>
+
+
                 </div>
             <?php endif; ?>
             <!-- end row -->
@@ -322,24 +350,30 @@ unset($__errorArgs, $__bag); ?>
                             </table>
 
                         </div>
-                        <div class="modal fade" id="csvDelete" tabindex="-1" aria-labelledby="jobDeleteLabel" aria-hidden="true">
+                        <div class="modal fade" id="csvDelete" tabindex="-1" aria-labelledby="jobDeleteLabel"
+                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-sm">
                                 <div class="modal-content">
                                     <div class="modal-body px-4 py-5 text-center">
-                                        <button type="button" class="btn-close position-absolute end-0 top-0 m-3" data-bs-dismiss="modal"
+                                        <button type="button" class="btn-close position-absolute end-0 top-0 m-3"
+                                                data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         <div class="avatar-sm mb-4 mx-auto">
-                                            <div class="avatar-title bg-warning text-warning bg-opacity-10 font-size-20 rounded-3">
+                                            <div
+                                                class="avatar-title bg-warning text-warning bg-opacity-10 font-size-20 rounded-3">
                                                 <i class="mdi mdi-trash-can-outline"></i>
                                             </div>
                                         </div>
-                                        <p class="text-muted font-size-16 mb-4">Are you sure you want to delete the csv file?</p>
+                                        <p class="text-muted font-size-16 mb-4">Are you sure you want to delete the csv
+                                            file?</p>
                                         <form action="<?php echo e(route('deleteCsv')); ?>" method="POST">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="csv_id" id="boxDelete">
                                             <div class="hstack gap-2 justify-content-center mb-0">
                                                 <button type="submit" class="btn btn-danger">Delete</button>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                    Close
+                                                </button>
                                             </div>
                                         </form>
                                     </div>
@@ -451,10 +485,10 @@ unset($__errorArgs, $__bag); ?>
 
             $('.yajra-datatable').DataTable({
                 order: [[0, "desc"]], // Ordina per la prima colonna (data)
-                    columnDefs: [
-                { orderable: false, targets: -1 } // Disabilita ordinamento sull'ultima colonna
+                columnDefs: [
+                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
 
-            ],
+                ],
                 pageLength: 5, // Numero di righe per pagina
                 lengthMenu: [5],
             });
@@ -464,7 +498,7 @@ unset($__errorArgs, $__bag); ?>
                 {
                     order: [[0, "desc"]], // Ordina per la prima colonna (data)
                     columnDefs: [
-                        { orderable: false, targets: -1 } // Disabilita ordinamento sull'ultima colonna
+                        {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
                     ]
                     ,
                     pageLength: 5, // Numero di righe per pagina
@@ -484,7 +518,6 @@ unset($__errorArgs, $__bag); ?>
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
-
 
 <?php $__env->stopSection(); ?>
 

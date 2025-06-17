@@ -42,12 +42,14 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
     // Pazienti.
     Route::post("/patients", [PatientController::class, "createPatient"]);
+    Route::post("/patients/{id}/invite", [PatientController::class, "invitePatient"]);
     Route::get("/patients", [PatientController::class, "patients"]);
     Route::get("/patients/{id}", [PatientController::class, "patient"]);
     Route::put("/patients/{id}", [PatientController::class, "updatePatient"]);
     Route::delete("/patients/{id}", [PatientController::class, "deletePatient"]);
 
     // File CSV.
+    Route::post("/csv", [CsvController::class, "createCsv"]);
     Route::get("/csv", [CsvController::class, "csvs"]);
     Route::get("/csv/{id}", [CsvController::class, "csv"]);
     Route::delete("/csv/{id}", [CsvController::class, "deleteCsv"]);
@@ -55,8 +57,8 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Notifiche.
     Route::get("/notifications", [NotificationController::class, "notifications"]);
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
-    Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
+    Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
 
     // Profilo.
     Route::put("/users/{id}/profile", [UserController::class, "updateProfile"]);
