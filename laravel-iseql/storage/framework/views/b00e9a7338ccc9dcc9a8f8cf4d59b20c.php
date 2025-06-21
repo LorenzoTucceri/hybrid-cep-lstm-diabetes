@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6">
-                <script>document.write(new Date().getFullYear())</script> © A Complex Event Processing Framework for Patients with Diabetes.
+                <script>document.write(new Date().getFullYear())</script> © An Interactive Framework to support Doctors and Patients in Monitoring Diabetes.
             </div>
             <div class="col-sm-6">
                 <div class="text-sm-end d-none d-sm-block">

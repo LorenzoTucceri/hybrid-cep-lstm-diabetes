@@ -55,6 +55,17 @@ class NotificationController extends Controller {
         }
     }
 
+    public function deleteNotifications(Request $request) {
+        // Rimozione delle notifiche.
+        Notification::where('user_id', $request->user()->id)->delete();
+
+        return response()->json(
+            [
+                "success" => true,
+                "message" => "Notifications deleted successfully."
+            ]);
+    }
+
     public function deleteNotification(int $id) {
         // Ricerca della notifica per ID.
         $notification = Notification::find($id);
@@ -76,16 +87,5 @@ class NotificationController extends Controller {
                     "message" => "Notification doesn't exist."
                 ]);
         }
-    }
-
-    public function deleteNotifications(Request $request) {
-        // Rimozione delle notifiche.
-        Notification::where('user_id', $request->user()->id)->delete();
-
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Notifications deleted successfully."
-            ]);
     }
 }

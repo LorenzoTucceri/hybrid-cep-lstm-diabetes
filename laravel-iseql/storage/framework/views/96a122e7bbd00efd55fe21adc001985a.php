@@ -49,6 +49,9 @@ unset($__errorArgs, $__bag); ?>
                         <input type="hidden" name="role" value="<?php echo e(auth()->user()->role->name); ?>">
                         <?php if(auth()->user()->role->name=="Patient"): ?>
                             <input type="hidden" name="doctor" value="<?php echo e(auth()->user()->patient->doctor_id); ?>">
+                        <?php else: ?>
+                            <input type="hidden" name="doctor" value="<?php echo e(auth()->user()->id); ?>">
+
                         <?php endif; ?>
 
                         <div class="row">
