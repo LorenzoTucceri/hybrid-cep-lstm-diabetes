@@ -468,7 +468,7 @@
                             </div>
                             <div class="modal fade" id="timeSwingInfoModal" tabindex="-1"
                                  aria-labelledby="timeSwingInfoModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="timeSwingInfoModalLabel">What is Time
@@ -479,7 +479,8 @@
                                         <div class="modal-body">
                                             <p><strong>Time Swing</strong> refers to the interval between two
                                                 significant glycemic events, especially when glucose levels rapidly
-                                                change between different categories (e.g., from Low to High).</p>
+                                                change between different categories (e.g., from Low to High)
+                                                <strong>within a maximum time frame of two hours</strong>.</p>
 
                                             <p>This helps identify sharp fluctuations in blood glucose that may require
                                                 attention or adjustment in treatment.</p>
@@ -492,6 +493,13 @@
                                             <p>Monitoring Time Swings is useful for detecting glycemic instability,
                                                 assessing therapy effectiveness, and optimizing insulin and meal
                                                 strategies.</p>
+                                            <div class="text-center mt-4">
+                                                <img src="<?php echo e(URL::asset('/assets/images/pattern/p_ts.png')); ?>"
+                                                     alt="Time Swing Pattern"
+                                                     class="img-fluid rounded"
+                                                     style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Time Swing from High to Low in one hour</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -572,7 +580,7 @@
                         </div>
                         <div class="modal fade" id="tooLongGlucoseInfoModal" tabindex="-1"
                              aria-labelledby="tooLongGlucoseInfoModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="tooLongGlucoseInfoModalLabel">What is Too Long
@@ -611,7 +619,15 @@
                                         <p>Monitoring these anomalies is crucial for detecting prolonged glucose
                                             instability, preventing complications, and optimizing treatment strategies,
                                             such as adjusting insulin dosages or meal plans.</p>
+                                        <div class="text-center mt-4">
+                                            <img src="<?php echo e(URL::asset('/assets/images/pattern/p_tl.png')); ?>"
+                                                 alt="Too Long Glucose Anomalies Pattern"
+                                                 class="img-fluid rounded"
+                                                 style="width: 300px; height: auto;">
+                                            <small class="d-block mt-2 text-muted">Prolonged glucose anomalies with High glucose for four hours</small>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -700,7 +716,7 @@
                         </div>
                         <div class="modal fade" id="tooFrequentGlucoseInfoModal" tabindex="-1"
                              aria-labelledby="tooFrequentGlucoseInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
@@ -745,6 +761,14 @@
 
                                         <p>Monitoring the frequency of these anomalies is important to evaluate the
                                             effectiveness of the treatment plan and prevent health complications.</p>
+                                        <div class="text-center mt-4">
+                                            <img src="<?php echo e(URL::asset('/assets/images/pattern/p_tf.png')); ?>"
+                                                 alt="Too Frequent Glucose Anomalies Pattern"
+                                                 class="img-fluid rounded"
+                                                 style="width: 300px; height: auto;">
+                                            <small class="d-block mt-2 text-muted">Too Frequent Glucose Anomalies with Low glucose for one hour every
+                                                two hours</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -841,7 +865,7 @@
                         </div>
                         <div class="modal fade" id="tooFrequentTimeSwingsInfoModal" tabindex="-1"
                              aria-labelledby="tooFrequentTimeSwingsInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
@@ -851,7 +875,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <p><strong>Too Frequent Time Swings</strong> refers to the frequency of rapid
-                                            glucose level changes within a specific time frame, which may indicate
+                                            glucose level changes within a specific time frame (within two hours), which may indicate
                                             potential issues with glucose stability or treatment effectiveness.</p>
 
                                         <p>To identify these swings, we evaluate the frequency of significant glucose
@@ -872,6 +896,15 @@
                                         <p>Evaluating the frequency of Time Swings is important to assess the overall
                                             stability of glucose levels, ensuring that appropriate interventions are
                                             made to optimize glucose control.</p>
+                                        <div class="text-center mt-4">
+                                            <img src="<?php echo e(URL::asset('/assets/images/pattern/p_tstf.png')); ?>"
+                                                 alt="Too Frequent Time Swings Pattern"
+                                                 class="img-fluid rounded"
+                                                 style="width: 300px; height: auto;">
+                                            <small class="d-block mt-2 text-muted">Rapid Time Swings between High and Low glucose events within a few
+                                                hours
+                                            </small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1017,7 +1050,7 @@
                         </div>
                         <div class="modal fade" id="timeSwingTooLongGlucoseInfoModal" tabindex="-1"
                              aria-labelledby="timeSwingTooLongGlucoseInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="timeSwingTooLongGlucoseInfoModal">What is Time Swing
@@ -1033,8 +1066,8 @@
                                             intervention.</p>
 
                                         <p>To detect such swings, we evaluate if one of the periods before or after a
-                                            time swing (e.g., from Low to High or High to Low) falls within the
-                                            following defined "Too Long" glucose anomalies:</p>
+                                            time swing (e.g., from Low to High or High to Low) <strong>occurs within a maximum time window of two hours</strong> falls within the
+                                            following defined Too Long Glucose Anomalies:</p>
 
                                         <ul>
                                             <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes in a
@@ -1064,6 +1097,14 @@
 
                                         <p>Monitoring these swings helps in identifying significant glucose instability
                                             and may prompt necessary adjustments to treatment plans.</p>
+                                        <div class="text-center mt-4">
+                                            <img src="<?php echo e(URL::asset('/assets/images/pattern/p_tstl.png')); ?>"
+                                                 alt="Time Swing With Too Long Glucose Anomalies Pattern"
+                                                 class="img-fluid rounded"
+                                                 style="width: 300px; height: auto;">
+                                            <small class="d-block mt-2 text-muted">Time Swing from Low to High with a four-hour High glucose anomaly
+                                            </small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -9,7 +9,6 @@ use App\Models\Patient;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -97,8 +96,8 @@ class CsvController extends Controller {
 
                 Notification::create([
                     "user_id" => $patient->doctor_id,
-                    "title" => "New analysis file from patient $patient->name $patient->surname",
-                    "message" => "A new analysis report is available for the file: $file_name, with GMI $gmi%.\nTime period: $start_date - $end_date.",
+                    "title" => "New analysis file from patient {$patient->name} {$patient->surname}",
+                    "message" => "A new analysis report is available for the file: {$file_name}, with GMI {$gmi}%.\nTime period: {$start_date} - {$end_date}.",
                     "file_id" => $csv->id
                 ]);
             }

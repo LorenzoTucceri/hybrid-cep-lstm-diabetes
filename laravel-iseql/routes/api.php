@@ -54,6 +54,10 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get("/csv/{id}", [CsvController::class, "csv"]);
     Route::delete("/csv/{id}", [CsvController::class, "deleteCsv"]);
 
+    // Feedback.
+    Route::post("/feedbacks", [FeedbackController::class, "saveFeedback"]);
+    Route::get("/feedbacks/by-file/{id}", [FeedbackController::class, "feedback"]);
+
     // Notifiche.
     Route::get("/notifications", [NotificationController::class, "notifications"]);
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
