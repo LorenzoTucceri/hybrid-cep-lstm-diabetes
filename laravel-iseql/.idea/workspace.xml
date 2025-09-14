@@ -7,12 +7,9 @@
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/FeedbackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/FeedbackController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/b00e9a7338ccc9dcc9a8f8cf4d59b20c.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/b00e9a7338ccc9dcc9a8f8cf4d59b20c.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/bb5d13ba1d60fbbc0985ec1c94b6278e.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/bb5d13ba1d60fbbc0985ec1c94b6278e.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,6 +183,7 @@
     &quot;PHP Script.serve (Real Device).executor&quot;: &quot;Run&quot;,
     &quot;PHP Script.serve.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev-davide&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Applications/MAMP/htdocs/ISEQL/laravel-iseql&quot;,
@@ -194,7 +192,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -223,8 +221,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-09060db00ec0-JavaScript-PS-251.26927.60" />
-        <option value="bundled-php-predefined-a98d8de5180a-e5747d4f5a45-com.jetbrains.php.sharedIndexes-PS-251.26927.60" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-PS-252.25557.128" />
+        <option value="bundled-php-predefined-a98d8de5180a-ce40d0652d34-com.jetbrains.php.sharedIndexes-PS-252.25557.128" />
       </set>
     </attachedChunks>
   </component>
@@ -294,10 +292,55 @@
       <workItem from="1751097276065" duration="8395000" />
       <workItem from="1751176883088" duration="21016000" />
       <workItem from="1751264093021" duration="10811000" />
+      <workItem from="1751525271923" duration="5006000" />
+      <workItem from="1751609398980" duration="4944000" />
+      <workItem from="1751620134009" duration="1307000" />
+      <workItem from="1751697539149" duration="5675000" />
+      <workItem from="1752393304254" duration="8705000" />
+      <workItem from="1752562039043" duration="9292000" />
+      <workItem from="1752652146284" duration="4988000" />
+      <workItem from="1752743294727" duration="6190000" />
+      <workItem from="1752828510405" duration="3996000" />
+      <workItem from="1752909667493" duration="1832000" />
+      <workItem from="1753000240320" duration="8465000" />
+      <workItem from="1753083193014" duration="10344000" />
+      <workItem from="1753167206369" duration="1809000" />
+      <workItem from="1753338622147" duration="4976000" />
+      <workItem from="1753429743248" duration="1869000" />
+      <workItem from="1753604787236" duration="5494000" />
+      <workItem from="1753688855538" duration="5434000" />
+      <workItem from="1753798456170" duration="1048000" />
+      <workItem from="1753856975403" duration="5371000" />
+      <workItem from="1753940244372" duration="12331000" />
+      <workItem from="1754930194861" duration="1737000" />
+      <workItem from="1755353527723" duration="6665000" />
+      <workItem from="1755417708883" duration="10299000" />
+      <workItem from="1757063602134" duration="4932000" />
+      <workItem from="1757167703531" duration="4004000" />
+      <workItem from="1757236002757" duration="959000" />
+      <workItem from="1757331505126" duration="629000" />
+      <workItem from="1757427716419" duration="4242000" />
+      <workItem from="1757435928238" duration="8000" />
+      <workItem from="1757498934560" duration="5636000" />
+      <workItem from="1757578762404" duration="11680000" />
+      <workItem from="1757660240050" duration="16777000" />
+      <workItem from="1757769655655" duration="4072000" />
+      <workItem from="1757835070190" duration="3924000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
