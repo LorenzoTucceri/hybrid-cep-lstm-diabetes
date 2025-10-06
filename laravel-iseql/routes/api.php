@@ -65,6 +65,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
 
     // Profilo.
-    Route::put("/users/{id}/profile", [UserController::class, "updateProfile"]);
-    Route::put("/users/{id}/profile/password", [UserController::class, "updatePassword"]);
+    Route::put("/users/me/profile", [UserController::class, "updateProfile"]);
+    Route::put("/users/me/profile/password", [UserController::class, "updatePassword"]);
 });

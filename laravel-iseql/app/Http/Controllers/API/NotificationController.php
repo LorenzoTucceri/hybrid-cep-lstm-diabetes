@@ -14,6 +14,11 @@ class NotificationController extends Controller {
     public function notifications(Request $request) {
         // Recupero delle notifiche, ordinate in modo decrescente per data di creazione.
         $notifications = Notification::where("user_id", $request->user()->id)->orderBy("created_at", "desc")->get();
+        /*
+        foreach ($notifications as $notification) {
+            $notification->file;
+        }
+        */
 
         return response()->json(
             [

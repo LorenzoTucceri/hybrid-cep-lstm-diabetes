@@ -6,9 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -192,7 +192,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -221,8 +221,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-PS-252.25557.128" />
-        <option value="bundled-php-predefined-a98d8de5180a-ce40d0652d34-com.jetbrains.php.sharedIndexes-PS-252.25557.128" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PS-252.26830.95" />
+        <option value="bundled-php-predefined-a98d8de5180a-9b563d34894c-com.jetbrains.php.sharedIndexes-PS-252.26830.95" />
       </set>
     </attachedChunks>
   </component>
@@ -326,6 +326,26 @@
       <workItem from="1757660240050" duration="16777000" />
       <workItem from="1757769655655" duration="4072000" />
       <workItem from="1757835070190" duration="3924000" />
+      <workItem from="1758018646112" duration="457000" />
+      <workItem from="1758019110399" duration="1554000" />
+      <workItem from="1758023834690" duration="613000" />
+      <workItem from="1758094884923" duration="3571000" />
+      <workItem from="1758183301902" duration="4287000" />
+      <workItem from="1758263594958" duration="3259000" />
+      <workItem from="1758461188118" duration="7874000" />
+      <workItem from="1758535248687" duration="2558000" />
+      <workItem from="1758617282818" duration="3388000" />
+      <workItem from="1758709005680" duration="4707000" />
+      <workItem from="1758788642022" duration="11664000" />
+      <workItem from="1758866080555" duration="14274000" />
+      <workItem from="1758979577494" duration="647000" />
+      <workItem from="1759130074040" duration="662000" />
+      <workItem from="1759304388290" duration="13469000" />
+      <workItem from="1759384721492" duration="9315000" />
+      <workItem from="1759475856609" duration="6041000" />
+      <workItem from="1759560427757" duration="9217000" />
+      <workItem from="1759677503602" duration="2343000" />
+      <workItem from="1759734348084" duration="3025000" />
     </task>
     <servers />
   </component>
@@ -342,5 +362,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>
