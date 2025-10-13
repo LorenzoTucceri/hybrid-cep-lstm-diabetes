@@ -6,6 +6,7 @@ from flask_cors import CORS
 import pandas as pd
 import os
 import analysis
+import detection_pattern
 from interval_action_detector import IntervalActionDetector
 from iseql import ISEQL
 from interval import Interval
@@ -128,10 +129,14 @@ def process_csv():
 
     analyzer = IntervalActionDetector(glucose_data)
     results = analyzer.offline_interval_action_detection()
+    #pattern = detection_pattern.inizialize(results)
 
     # Per visualizzare csv
-    # intervals, events = analyzer.offline_interval_action_detection()
-    # create_interval_labeling_csv()
+    intervals, events = analyzer.offline_interval_action_detection()
+    create_interval_labeling_csv(intervals)
+
+    #pattern = detection_pattern.inizialize()
+
 
     with open("eventi.txt", "w") as file:
         file.write("start_time,end_time,label\n")  # Header

@@ -5,18 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/PatientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/PatientController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/41450fe0eb9cfe9d931659bc7a069185.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/41450fe0eb9cfe9d931659bc7a069185.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/6ec0a7d777516be8f733d3828c3a8a33.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/6ec0a7d777516be8f733d3828c3a8a33.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/96a122e7bbd00efd55fe21adc001985a.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/96a122e7bbd00efd55fe21adc001985a.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/b00e9a7338ccc9dcc9a8f8cf4d59b20c.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/b00e9a7338ccc9dcc9a8f8cf4d59b20c.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/bb5d13ba1d60fbbc0985ec1c94b6278e.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/bb5d13ba1d60fbbc0985ec1c94b6278e.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/e6f954b7399d91eaee78fabda43f44d7.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/e6f954b7399d91eaee78fabda43f44d7.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.3.14">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/opt/homebrew/Cellar/php/8.3.3/bin/php">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
       <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
@@ -191,7 +186,7 @@
     &quot;PHP Script.serve.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev-davide&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Applications/MAMP/htdocs/ISEQL/laravel-iseql&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -227,8 +222,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-PS-251.26094.133" />
-        <option value="bundled-php-predefined-a98d8de5180a-c5828cf854d9-com.jetbrains.php.sharedIndexes-PS-251.26094.133" />
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PS-251.23774.436" />
+        <option value="bundled-php-predefined-a98d8de5180a-aaeaa8632555-com.jetbrains.php.sharedIndexes-PS-251.23774.436" />
       </set>
     </attachedChunks>
   </component>
@@ -290,6 +285,12 @@
       <workItem from="1750142708650" duration="3474000" />
       <workItem from="1750150171307" duration="36000" />
       <workItem from="1750150298478" duration="206000" />
+      <workItem from="1750682931774" duration="337000" />
+      <workItem from="1750708904376" duration="121000" />
+      <workItem from="1757945020847" duration="2623000" />
+      <workItem from="1758019083052" duration="4000" />
+      <workItem from="1758051957038" duration="522000" />
+      <workItem from="1758096480700" duration="35000" />
     </task>
     <servers />
   </component>
