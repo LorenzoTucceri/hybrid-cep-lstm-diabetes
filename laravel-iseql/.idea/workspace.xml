@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +24,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="PHP 8.3.14">
+  <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/opt/homebrew/Cellar/php/8.3.3/bin/php">
     <include_path>
       <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
       <path value="$PROJECT_DIR$/vendor/fakerphp/faker" />
@@ -182,7 +181,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev-davide&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Applications/MAMP/htdocs/ISEQL/laravel-iseql&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -218,8 +217,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PS-252.26830.95" />
-        <option value="bundled-php-predefined-a98d8de5180a-9b563d34894c-com.jetbrains.php.sharedIndexes-PS-252.26830.95" />
+
       </set>
     </attachedChunks>
   </component>
@@ -281,76 +279,7 @@
       <workItem from="1750142708650" duration="3474000" />
       <workItem from="1750150171307" duration="36000" />
       <workItem from="1750150298478" duration="206000" />
-      <workItem from="1750531556506" duration="640000" />
-      <workItem from="1750663654566" duration="6115000" />
-      <workItem from="1751006942461" duration="17058000" />
-      <workItem from="1751090031474" duration="3624000" />
-      <workItem from="1751093673051" duration="2860000" />
-      <workItem from="1751097276065" duration="8395000" />
-      <workItem from="1751176883088" duration="21016000" />
-      <workItem from="1751264093021" duration="10811000" />
-      <workItem from="1751525271923" duration="5006000" />
-      <workItem from="1751609398980" duration="4944000" />
-      <workItem from="1751620134009" duration="1307000" />
-      <workItem from="1751697539149" duration="5675000" />
-      <workItem from="1752393304254" duration="8705000" />
-      <workItem from="1752562039043" duration="9292000" />
-      <workItem from="1752652146284" duration="4988000" />
-      <workItem from="1752743294727" duration="6190000" />
-      <workItem from="1752828510405" duration="3996000" />
-      <workItem from="1752909667493" duration="1832000" />
-      <workItem from="1753000240320" duration="8465000" />
-      <workItem from="1753083193014" duration="10344000" />
-      <workItem from="1753167206369" duration="1809000" />
-      <workItem from="1753338622147" duration="4976000" />
-      <workItem from="1753429743248" duration="1869000" />
-      <workItem from="1753604787236" duration="5494000" />
-      <workItem from="1753688855538" duration="5434000" />
-      <workItem from="1753798456170" duration="1048000" />
-      <workItem from="1753856975403" duration="5371000" />
-      <workItem from="1753940244372" duration="12331000" />
-      <workItem from="1754930194861" duration="1737000" />
-      <workItem from="1755353527723" duration="6665000" />
-      <workItem from="1755417708883" duration="10299000" />
-      <workItem from="1757063602134" duration="4932000" />
-      <workItem from="1757167703531" duration="4004000" />
-      <workItem from="1757236002757" duration="959000" />
-      <workItem from="1757331505126" duration="629000" />
-      <workItem from="1757427716419" duration="4242000" />
-      <workItem from="1757435928238" duration="8000" />
-      <workItem from="1757498934560" duration="5636000" />
-      <workItem from="1757578762404" duration="11680000" />
-      <workItem from="1757660240050" duration="16777000" />
-      <workItem from="1757769655655" duration="4072000" />
-      <workItem from="1757835070190" duration="3924000" />
-      <workItem from="1758018646112" duration="457000" />
-      <workItem from="1758019110399" duration="1554000" />
-      <workItem from="1758023834690" duration="613000" />
-      <workItem from="1758094884923" duration="3571000" />
-      <workItem from="1758183301902" duration="4287000" />
-      <workItem from="1758263594958" duration="3259000" />
-      <workItem from="1758461188118" duration="7874000" />
-      <workItem from="1758535248687" duration="2558000" />
-      <workItem from="1758617282818" duration="3388000" />
-      <workItem from="1758709005680" duration="4707000" />
-      <workItem from="1758788642022" duration="11664000" />
-      <workItem from="1758866080555" duration="14274000" />
-      <workItem from="1758979577494" duration="647000" />
-      <workItem from="1759130074040" duration="662000" />
-      <workItem from="1759304388290" duration="13469000" />
-      <workItem from="1759384721492" duration="9315000" />
-      <workItem from="1759475856609" duration="6041000" />
-      <workItem from="1759560427757" duration="9217000" />
-      <workItem from="1759677503602" duration="2343000" />
-      <workItem from="1759734348084" duration="3025000" />
-      <workItem from="1759757236754" duration="4053000" />
-      <workItem from="1759827829465" duration="639000" />
-      <workItem from="1759909480140" duration="9323000" />
-      <workItem from="1759990798175" duration="1532000" />
-      <workItem from="1759992340277" duration="5066000" />
-      <workItem from="1760198182002" duration="1541000" />
-      <workItem from="1760257900306" duration="9822000" />
-      <workItem from="1760346081072" duration="4129000" />
+
     </task>
     <servers />
   </component>
