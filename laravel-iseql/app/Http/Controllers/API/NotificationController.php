@@ -13,7 +13,12 @@ use Illuminate\Http\Request;
 class NotificationController extends Controller {
     public function notifications(Request $request) {
         // Recupero delle notifiche, ordinate in modo decrescente per data di creazione.
-        $notifications = Notification::where('user_id', $request->user()->id)->orderBy("created_at", "desc")->get();
+        $notifications = Notification::where("user_id", $request->user()->id)->orderBy("created_at", "desc")->get();
+        /*
+        foreach ($notifications as $notification) {
+            $notification->file;
+        }
+        */
 
         return response()->json(
             [
@@ -30,7 +35,7 @@ class NotificationController extends Controller {
         if ($notification) {
             if ($notification->status === "unread") {
                 // Aggiornamento dello stato della notifica.
-                $notification->update(['status' => 'read']);
+                $notification->update(["status" => "read"]);
 
                 return response()->json(
                     [
@@ -57,7 +62,7 @@ class NotificationController extends Controller {
 
     public function deleteNotifications(Request $request) {
         // Rimozione delle notifiche.
-        Notification::where('user_id', $request->user()->id)->delete();
+        Notification::where("user_id", $request->user()->id)->delete();
 
         return response()->json(
             [

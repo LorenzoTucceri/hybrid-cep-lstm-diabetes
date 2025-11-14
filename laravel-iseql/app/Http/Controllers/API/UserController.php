@@ -82,30 +82,25 @@ class UserController extends Controller {
             ]);
     }
 
-    public function usersByRole(int $id) {
-        // Ricerca del ruolo per ID.
-        $role = Role::find($id);
-
-        if ($role) {
-            // Recupero degli utenti in base al ruolo.
-            $users = User::where("role_id", $role->id)->get();
-            foreach ($users as $user) {
-                $user->role;
-            }
-
-            return response()->json(
-                [
-                    "success" => true,
-                    "users" => $users
-                ]);
+    public function doctors(Request $request) {
+        // Recupero dei dottori in base al ruolo.
+        if ($request->user()->role->name === "Admin") {
+            // Il ruolo è quello dell'amministratore.
+            $users = User::where("role_id", "3")->get();
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Role doesn't exist."
-                ]);
+            // Il ruolo è quello del dottore.
+            $users = [$request->user()];
         }
+        foreach ($users as $user) {
+            $user->role;
+        }
+
+        return response()->json(
+            [
+                "success" => true,
+                "users" => $users
+            ]);
     }
 
     public function updateUser(Request $request, int $id) {

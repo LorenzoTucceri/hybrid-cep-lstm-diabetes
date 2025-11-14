@@ -5,6 +5,11 @@
       <LaravelPintConfiguration tool_path="$PROJECT_DIR$/vendor/bin/pint" />
     </laravel_pint_settings>
   </component>
+  <component name="MessDetector">
+    <phpmd_settings>
+      <phpmd_by_interpreter asDefaultInterpreter="true" interpreter_id="6c8f420c-633a-486e-98fc-c09de4b48cda" timeout="30000" />
+    </phpmd_settings>
+  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -17,7 +22,7 @@
   </component>
   <component name="PhpCodeSniffer">
     <phpcs_settings>
-      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="a5db308b-434c-4590-af70-ae43ea4a7b70" timeout="30000" />
+      <phpcs_by_interpreter asDefaultInterpreter="true" interpreter_id="6c8f420c-633a-486e-98fc-c09de4b48cda" timeout="30000" />
     </phpcs_settings>
   </component>
   <component name="PhpIncludePathManager">

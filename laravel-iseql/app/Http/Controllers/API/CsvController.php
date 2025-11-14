@@ -9,7 +9,7 @@ use App\Models\Patient;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -97,8 +97,8 @@ class CsvController extends Controller {
 
                 Notification::create([
                     "user_id" => $patient->doctor_id,
-                    "title" => "New analysis file from patient $patient->name $patient->surname",
-                    "message" => "A new analysis report is available for the file: $file_name, with GMI $gmi%.\nTime period: $start_date - $end_date.",
+                    "title" => "New analysis file from patient {$patient->name} {$patient->surname}",
+                    "message" => "A new analysis report is available for the file: {$file_name}, with GMI {$gmi}%.\nTime period: {$start_date} - {$end_date}.",
                     "file_id" => $csv->id
                 ]);
             }
@@ -131,8 +131,31 @@ class CsvController extends Controller {
                 ]);
         }
 
-        // Recupero dei file CSV per ID del paziente.
-        $csvs = File::where("patient_id", $request->patient)->orderBy("id")->get();
+        /*
+         * Recupero dei file CSV in base alla query, fornita di seguito.
+         *
+         * SELECT files.id, files.patient_id, files.csv_file_path, files.start_time, files.end_time, files.gmi,
+         * IF(files.gmi < 7, 'Low', IF(files.gmi >= 7 AND files.gmi <= 8, 'Medium', 'High')) AS priority,
+         * IF(feedback.id IS NOT NULL, TRUE, FALSE) AS reviewed
+         * FROM files LEFT OUTER JOIN feedback ON (files.id = feedback.file_id)
+         * WHERE files.patient_id = <id>
+         * ORDER BY priority DESC, reviewed;
+         */
+        $csvs = File::select(
+            "files.id",
+            "files.patient_id",
+            "files.csv_file_path",
+            "files.start_time",
+            "files.end_time",
+            "files.gmi",
+            DB::raw("IF(files.gmi < 7, 'Low', IF(files.gmi >= 7 AND files.gmi <= 8, 'Medium', 'High')) AS priority"),
+            DB::raw("IF(feedback.id IS NOT NULL, TRUE, FALSE) AS reviewed")
+        )
+            ->leftJoin("feedback", "files.id", "=", "feedback.file_id")
+            ->where("files.patient_id", $request->patient)
+            ->orderBy("priority", "desc")
+            ->orderBy("reviewed")
+            ->get();
 
         return response()->json(
             [

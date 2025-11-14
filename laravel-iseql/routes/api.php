@@ -36,7 +36,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Operatori.
     Route::post("/users", [UserController::class, "createUser"]);
     Route::get("/users", [UserController::class, "users"]);
-    Route::get("/users/role/{id}", [UserController::class, "usersByRole"]);
+    Route::get("/users/doctors", [UserController::class, "doctors"]);
     Route::put("/users/{id}", [UserController::class, "updateUser"]);
     Route::delete("/users/{id}", [UserController::class, "deleteUser"]);
 
@@ -54,6 +54,10 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get("/csv/{id}", [CsvController::class, "csv"]);
     Route::delete("/csv/{id}", [CsvController::class, "deleteCsv"]);
 
+    // Feedback.
+    Route::post("/feedbacks", [FeedbackController::class, "saveFeedback"]);
+    Route::get("/feedbacks/by-file/{id}", [FeedbackController::class, "feedback"]);
+
     // Notifiche.
     Route::get("/notifications", [NotificationController::class, "notifications"]);
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
@@ -61,6 +65,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
 
     // Profilo.
-    Route::put("/users/{id}/profile", [UserController::class, "updateProfile"]);
-    Route::put("/users/{id}/profile/password", [UserController::class, "updatePassword"]);
+    Route::put("/users/me/profile", [UserController::class, "updateProfile"]);
+    Route::put("/users/me/profile/password", [UserController::class, "updatePassword"]);
 });

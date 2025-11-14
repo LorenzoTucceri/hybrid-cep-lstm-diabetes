@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,6 +179,7 @@
     &quot;PHP Script.serve (Real Device).executor&quot;: &quot;Run&quot;,
     &quot;PHP Script.serve.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Applications/MAMP/htdocs/ISEQL/laravel-iseql&quot;,
@@ -222,8 +217,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PS-251.23774.436" />
-        <option value="bundled-php-predefined-a98d8de5180a-aaeaa8632555-com.jetbrains.php.sharedIndexes-PS-251.23774.436" />
+
       </set>
     </attachedChunks>
   </component>
@@ -285,16 +279,26 @@
       <workItem from="1750142708650" duration="3474000" />
       <workItem from="1750150171307" duration="36000" />
       <workItem from="1750150298478" duration="206000" />
-      <workItem from="1750682931774" duration="337000" />
-      <workItem from="1750708904376" duration="121000" />
-      <workItem from="1757945020847" duration="2623000" />
-      <workItem from="1758019083052" duration="4000" />
-      <workItem from="1758051957038" duration="522000" />
-      <workItem from="1758096480700" duration="35000" />
+
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

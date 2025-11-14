@@ -17,7 +17,8 @@ class LoginController extends Controller {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [
             "email" => "required|email",
-            "password" => "required"
+            "password" => "required",
+            "device_name" => "required"
         ]);
         if ($validator->fails()) {
             return response()->json(
@@ -41,7 +42,7 @@ class LoginController extends Controller {
 
         // Autenticazione riuscita.
         $user->role; $user->patient;
-        $token = $user->createToken("mobile_token")->plainTextToken;
+        $token = $user->createToken($request->device_name)->plainTextToken;
         return response()->json(
             [
                 "success" => true,
@@ -52,8 +53,8 @@ class LoginController extends Controller {
     }
 
     public function logout(Request $request) {
-        // Revoca di tutti i token.
-        $request->user()->tokens()->delete();
+        // Revoca del token di accesso corrente.
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(
             [
