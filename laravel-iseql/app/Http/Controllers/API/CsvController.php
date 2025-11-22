@@ -18,17 +18,6 @@ use Illuminate\Support\Facades\Validator;
  * @author Lorenzo Tucceri Cimini
  */
 class CsvController extends Controller {
-    public function csvCount() {
-        // Calcolo del numero di file CSV.
-        $count = File::count();
-
-        return response()->json(
-            [
-                "success" => true,
-                "csv_count" => $count
-            ]);
-    }
-
     public function createCsv(Request $request) {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [
@@ -36,11 +25,10 @@ class CsvController extends Controller {
             "csv" => "required|file|mimes:csv,txt"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         // Recupero del file CSV 'vero e proprio'.
@@ -80,8 +68,8 @@ class CsvController extends Controller {
             $data = json_decode($response->getBody()->getContents(), true);
 
             // Recupero delle date e del GMI.
-            $start_date = str_replace("-","/", Carbon::parse($data["first_date"])->format("Y-m-d"));
-            $end_date = str_replace("-","/", Carbon::parse($data["last_date"])->format("Y-m-d"));
+            $start_date = str_replace("-", "/", Carbon::parse($data["first_date"])->format("Y-m-d"));
+            $end_date = str_replace("-", "/", Carbon::parse($data["last_date"])->format("Y-m-d"));
             $gmi = $data["gmi"];
 
             // Aggiornamento del file CSV.
@@ -103,18 +91,16 @@ class CsvController extends Controller {
                 ]);
             }
 
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "CSV file uploaded and processed successfully."
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "CSV file uploaded and processed successfully."
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Failed to process the CSV file."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Failed to process the CSV file."
+            ]);
         }
     }
 
@@ -124,11 +110,10 @@ class CsvController extends Controller {
             "patient" => "required|exists:patients,id"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         /*
@@ -157,11 +142,10 @@ class CsvController extends Controller {
             ->orderBy("reviewed")
             ->get();
 
-        return response()->json(
-            [
-                "success" => true,
-                "csvs" => $csvs
-            ]);
+        return response()->json([
+            "success" => true,
+            "csvs" => $csvs
+        ]);
     }
 
     public function csv(int $id) {
@@ -184,27 +168,24 @@ class CsvController extends Controller {
                     ]
                 ]);
 
-                return response()->json(
-                    [
-                        "success" => true,
-                        "message" => "CSV file found successfully.",
-                        "csv" => json_decode($response->getBody(), true)
-                    ]);
+                return response()->json([
+                    "success" => true,
+                    "message" => "CSV file found successfully.",
+                    "csv" => json_decode($response->getBody(), true)
+                ]);
             }
             else {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "CSV file not found."
-                    ]);
+                return response()->json([
+                    "success" => false,
+                    "message" => "CSV file not found."
+                ]);
             }
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "CSV file doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "CSV file doesn't exist."
+            ]);
         }
     }
 
@@ -217,18 +198,16 @@ class CsvController extends Controller {
             Storage::delete("patients_csv/" . $csv->patient_id . "/" . $csv->csv_file_path);
             $csv->delete();
 
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "CSV file deleted successfully."
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "CSV file deleted successfully."
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "CSV file doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "CSV file doesn't exist."
+            ]);
         }
     }
 }

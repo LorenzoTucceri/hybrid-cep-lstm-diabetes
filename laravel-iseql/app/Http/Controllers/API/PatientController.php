@@ -19,17 +19,6 @@ use Illuminate\Support\Str;
  * @author Lorenzo Tucceri Cimini
  */
 class PatientController extends Controller {
-    public function patientCount() {
-        // Calcolo del numero di pazienti.
-        $count = Patient::count();
-
-        return response()->json(
-            [
-                "success" => true,
-                "patient_count" => $count
-            ]);
-    }
-
     public function createPatient(Request $request) {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [
@@ -43,11 +32,10 @@ class PatientController extends Controller {
             "doctor" => "required|exists:users,id"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         // Aggiunta del paziente.
@@ -62,11 +50,10 @@ class PatientController extends Controller {
             "doctor_id" => $request->doctor
         ]);
 
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Patient created successfully."
-            ]);
+        return response()->json([
+            "success" => true,
+            "message" => "Patient created successfully."
+        ]);
     }
 
     public function invitePatient(Request $request, int $id) {
@@ -78,11 +65,10 @@ class PatientController extends Controller {
             $user = User::where("email", $patient->email)->first();
 
             if ($user) {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "There's already a registered user with this e-mail."
-                    ]);
+                return response()->json([
+                    "success" => false,
+                    "message" => "There's already a registered user with this e-mail."
+                ]);
             }
             else {
                 // Generazione di un token univoco per l'invito.
@@ -102,59 +88,33 @@ class PatientController extends Controller {
                 // Invio dell'e-mail con il link di registrazione.
                 Mail::to($patient->email)->send(new InvitoIscrizione($patient, $request->user(), $link));
 
-                return response()->json(
-                    [
-                        "success" => true,
-                        "message" => "E-mail sent successfully."
-                    ]);
+                return response()->json([
+                    "success" => true,
+                    "message" => "E-mail sent successfully."
+                ]);
             }
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Patient doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Patient doesn't exist."
+            ]);
         }
     }
 
     public function patients(Request $request) {
         // Recupero dei pazienti in base al ruolo.
-        if ($request->user()->role->name === "Doctor") {
-            // Il ruolo è quello del dottore.
+        if ($request->user()->role->name === "Doctor") { // Se dottore.
             $patients = Patient::where("doctor_id", $request->user()->id)->get();
         }
-        else {
-            // Il ruolo è quello dell'amministratore.
+        else { // Se amministratore.
             $patients = Patient::all();
         }
 
-        return response()->json(
-            [
-                "success" => true,
-                "patients" => $patients
-            ]);
-    }
-
-    public function patient(int $id) {
-        // Ricerca del paziente per ID.
-        $patient = Patient::find($id);
-
-        if ($patient) {
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "Patient found successfully.",
-                    "patient" => $patient
-                ]);
-        }
-        else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Patient doesn't exist."
-                ]);
-        }
+        return response()->json([
+            "success" => true,
+            "patients" => $patients
+        ]);
     }
 
     public function updatePatient(Request $request, int $id) {
@@ -170,11 +130,10 @@ class PatientController extends Controller {
             "doctor" => "required|exists:users,id"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         // Ricerca del paziente per ID.
@@ -193,18 +152,16 @@ class PatientController extends Controller {
                 "doctor_id" => $request->doctor
             ]);
 
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "Patient updated successfully."
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "Patient updated successfully."
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Patient doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Patient doesn't exist."
+            ]);
         }
     }
 
@@ -228,18 +185,16 @@ class PatientController extends Controller {
             // Rimozione del paziente.
             $patient->delete();
 
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "Patient deleted successfully."
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "Patient deleted successfully."
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Patient doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Patient doesn't exist."
+            ]);
         }
     }
 }

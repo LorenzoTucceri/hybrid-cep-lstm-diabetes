@@ -20,12 +20,11 @@ class NotificationController extends Controller {
         }
         */
 
-        return response()->json(
-            [
-                "success" => true,
-                "notifications" => $notifications,
-                "user" => $request->user()
-            ]);
+        return response()->json([
+            "success" => true,
+            "notifications" => $notifications,
+            "user" => $request->user()
+        ]);
     }
 
     public function markNotificationAsRead(int $id) {
@@ -37,26 +36,23 @@ class NotificationController extends Controller {
                 // Aggiornamento dello stato della notifica.
                 $notification->update(["status" => "read"]);
 
-                return response()->json(
-                    [
-                        "success" => true,
-                        "message" => "Notification marked as read."
-                    ]);
+                return response()->json([
+                    "success" => true,
+                    "message" => "Notification marked as read."
+                ]);
             }
             else {
-                return response()->json(
-                    [
-                        "success" => false,
-                        "message" => "Notification already marked as read."
-                    ]);
+                return response()->json([
+                    "success" => false,
+                    "message" => "Notification already marked as read."
+                ]);
             }
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Notification doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Notification doesn't exist."
+            ]);
         }
     }
 
@@ -64,11 +60,10 @@ class NotificationController extends Controller {
         // Rimozione delle notifiche.
         Notification::where("user_id", $request->user()->id)->delete();
 
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Notifications deleted successfully."
-            ]);
+        return response()->json([
+            "success" => true,
+            "message" => "Notifications deleted successfully."
+        ]);
     }
 
     public function deleteNotification(int $id) {
@@ -79,18 +74,16 @@ class NotificationController extends Controller {
             // Rimozione della notifica.
             $notification->delete();
 
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "Notification deleted successfully."
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "Notification deleted successfully."
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Notification doesn't exist."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Notification doesn't exist."
+            ]);
         }
     }
 }

@@ -27,11 +27,10 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Logout.
     Route::post("/logout", [LoginController::class, "logout"]);
 
-    // Contatori (Dashboard).
-    Route::get("/users/count", [UserController::class, "userCount"]);
-    Route::get("/patients/count", [PatientController::class, "patientCount"]);
-    Route::get("/csv/count", [CsvController::class, "csvCount"]);
-    Route::get("/feedbacks/count", [FeedbackController::class, "feedbackCount"]);
+    // Dashboard e profilo.
+    Route::get("/users/me/stats", [UserController::class, "stats"]);
+    Route::put("/users/me/profile", [UserController::class, "updateProfile"]);
+    Route::put("/users/me/profile/password", [UserController::class, "updatePassword"]);
 
     // Operatori.
     Route::post("/users", [UserController::class, "createUser"]);
@@ -44,7 +43,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::post("/patients", [PatientController::class, "createPatient"]);
     Route::post("/patients/{id}/invite", [PatientController::class, "invitePatient"]);
     Route::get("/patients", [PatientController::class, "patients"]);
-    Route::get("/patients/{id}", [PatientController::class, "patient"]);
     Route::put("/patients/{id}", [PatientController::class, "updatePatient"]);
     Route::delete("/patients/{id}", [PatientController::class, "deletePatient"]);
 
@@ -63,8 +61,4 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
-
-    // Profilo.
-    Route::put("/users/me/profile", [UserController::class, "updateProfile"]);
-    Route::put("/users/me/profile/password", [UserController::class, "updatePassword"]);
 });

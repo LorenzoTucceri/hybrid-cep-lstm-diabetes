@@ -21,11 +21,10 @@ class LoginController extends Controller {
             "device_name" => "required"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         // Ricerca dell'utente per e-mail.
@@ -33,33 +32,30 @@ class LoginController extends Controller {
 
         // Autenticazione fallita.
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Invalid credentials."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Invalid credentials."
+            ]);
         }
 
         // Autenticazione riuscita.
         $user->role; $user->patient;
         $token = $user->createToken($request->device_name)->plainTextToken;
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Login successful.",
-                "token" => $token,
-                "user" => $user
-            ]);
+        return response()->json([
+            "success" => true,
+            "message" => "Login successful.",
+            "token" => $token,
+            "user" => $user
+        ]);
     }
 
     public function logout(Request $request) {
         // Revoca del token di accesso corrente.
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Logout successful."
-            ]);
+        return response()->json([
+            "success" => true,
+            "message" => "Logout successful."
+        ]);
     }
 }
