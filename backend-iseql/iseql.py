@@ -121,6 +121,20 @@ class ISEQL:
                 time_swings.append((interval1, interval2))
         return time_swings
 
+    #DA TESTARE
+    def find_extremely_time_swing(self, time_threshold=timedelta(minutes=30)):
+        extremely_time_swings = []
+        for i in range(len(self.intervals) - 2):
+            interval1 = self.intervals[i]
+            interval2 = self.intervals[i + 2]
+
+            if self.before(interval1, interval2,
+                           time_threshold) and interval1.event == interval2.event and self.check_anomalies_event(
+                    interval1) and self.check_anomalies_event(interval2) and (interval1.event=="extremely_high" or interval1.event=="extremely_low"):
+                extremely_time_swings.append((interval1, interval2))
+        return extremely_time_swings
+
+
     def find_too_frequent_glucose_anomalies(self, min_high=3, min_low=3, min_extremely_high=1, min_extremely_low=1):
         anomalous_frequency = []
 
@@ -236,18 +250,73 @@ class ISEQL:
 
         return anomalous_duration
 
-    def find_time_swing_with_too_long_glucose_anomalies(self):
+    def find_time_swing_with_too_long_glucose_anomalies(self, time_swings=None):
         time_swings_duration = []
-
-        time_swings = self.find_time_swing()
         anomalous_duration = self.find_too_long_glucose_anomalies()
+        if time_swings is None:
+            time_swings = self.find_time_swing()
+
         for ad in anomalous_duration:
             for ts in time_swings:
-                if ad == ts[0] or ad == ts[1]:
+
+                if (ad.start_time == ts[0].start_time and ad.end_time == ts[0].end_time) or \
+                        (ad.start_time == ts[1].start_time and ad.end_time == ts[1].end_time):
                     event = f"{ad.event.capitalize()} event"
                     time_swings_duration.append((ts[0], ts[1], f"{event}: {ad.duration}"))
 
+
         return time_swings_duration
+
+
+
+    #DA TESTARE
+    def find_too_frequent_extremely_time_swings(self,extremely_time_swing_threshold=timedelta(minutes=30), min_ts=2):
+        extremely_time_swings_too_frequent = []
+        daily_intervals = self.create_daily_intervals()  # Ensure this returns a dict with intervals for each day
+
+        for start_date, interval_info in daily_intervals.items():
+            start_time = interval_info['start_time']
+            end_time = interval_info['end_time']
+            reference_interval = Interval(start_time, end_time)
+
+            # Initialize list to store detected time swings
+            extremely_time_swings = []
+
+            intervals = interval_info['intervals']
+
+            for i in range(len(intervals) - 2):
+                interval1 = intervals[i]
+                interval2 = intervals[i + 2]
+
+                if self.during(interval1, reference_interval) and self.during(interval2, reference_interval):
+                    if self.before(interval1, interval2,
+                                   extremely_time_swing_threshold) and interval1.event == interval2.event and self.check_anomalies_event(
+                            interval1) and self.check_anomalies_event(interval2) and (interval1.event=="extremely_high" or interval1.event=="extremely_low"):
+                        extremely_time_swings.append((interval1, interval2))
+
+                        # cardinality constrains
+            if len(extremely_time_swings) >= min_ts:
+                extremely_time_swings_too_frequent.append(extremely_time_swings)
+
+        return extremely_time_swings_too_frequent
+
+    #DA TESTARE
+    def find_extremely_time_swing_with_too_long_glucose_anomalies(self, time_swings=None):
+        extremely_time_swings_duration = []
+        anomalous_duration = self.find_too_long_glucose_anomalies()
+        if time_swings is None:
+            time_swings = self.find_extremely_time_swing()
+
+        for ad in anomalous_duration:
+            for ts in time_swings:
+
+                if (ad.start_time == ts[0].start_time and ad.end_time == ts[0].end_time) or \
+                        (ad.start_time == ts[1].start_time and ad.end_time == ts[1].end_time):
+                    event = f"{ad.event.capitalize()} event"
+                    extremely_time_swings_duration.append((ts[0], ts[1], f"{event}: {ad.duration}"))
+
+
+        return extremely_time_swings_duration
 
 
 

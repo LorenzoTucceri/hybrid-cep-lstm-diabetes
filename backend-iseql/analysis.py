@@ -1,11 +1,17 @@
+import os
+
 import matplotlib
 
+from utils import *
 from interval import Interval
 from interval_action_detector import IntervalActionDetector
 from iseql import ISEQL
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
+import subprocess
+
+
 font = {'size': 14}
 matplotlib.rc('font', **font)
 
@@ -14,14 +20,12 @@ def calculate_avg_glucose(gluc_data):
     count = 0
     tot = 0
     for level in gluc_data:
-        if(level=="Basso"):
-            tot+=50
+        if (level == "Basso"):
+            tot += 50
         else:
             tot += int(level)
         count += 1
-    return tot/count
-
-
+    return tot / count
 
 
 def calculate_totals_and_durations(intervals):
@@ -34,11 +38,18 @@ def calculate_totals_and_durations(intervals):
     total_normal = sum(1 for interval in intervals if interval.event == 'normal')
 
     # Calculate total duration for each glucose category
-    total_duration_extremely_high = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'extremely_high')
-    total_duration_high = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'high')
-    total_duration_low = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'low')
-    total_duration_extremely_low = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'extremely_low')
-    total_duration_normal = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'normal')
+    total_duration_extremely_high = sum(
+        (interval.end_time - interval.start_time).total_seconds() for interval in intervals if
+        interval.event == 'extremely_high')
+    total_duration_high = sum(
+        (interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'high')
+    total_duration_low = sum(
+        (interval.end_time - interval.start_time).total_seconds() for interval in intervals if interval.event == 'low')
+    total_duration_extremely_low = sum(
+        (interval.end_time - interval.start_time).total_seconds() for interval in intervals if
+        interval.event == 'extremely_low')
+    total_duration_normal = sum((interval.end_time - interval.start_time).total_seconds() for interval in intervals if
+                                interval.event == 'normal')
 
     # Conversion from seconds to "HH:MM" format
     def convert_seconds_to_hhmm(seconds):
@@ -111,11 +122,11 @@ def calculate_percentages(results):
 
     # Calculate percentages
     percentage_extremely_high = (
-                                            total_duration_extremely_high_minutes / total_duration) * 100 if total_duration > 0 else 0
+                                        total_duration_extremely_high_minutes / total_duration) * 100 if total_duration > 0 else 0
     percentage_high = (total_duration_high_minutes / total_duration) * 100 if total_duration > 0 else 0
     percentage_low = (total_duration_low_minutes / total_duration) * 100 if total_duration > 0 else 0
     percentage_extremely_low = (
-                                           total_duration_extremely_low_minutes / total_duration) * 100 if total_duration > 0 else 0
+                                       total_duration_extremely_low_minutes / total_duration) * 100 if total_duration > 0 else 0
     percentage_normal = (total_duration_normal_minutes / total_duration) * 100 if total_duration > 0 else 0
 
     # Print results
@@ -140,7 +151,6 @@ def find_too_frequent_glucose_anomalies_data(iseql):
         "Total Count": [],
     }
 
-
     # Populate the dictionary with data from anomalous frequency
     for day in result:
         start_time, end_time = day[0], day[1]
@@ -149,7 +159,6 @@ def find_too_frequent_glucose_anomalies_data(iseql):
         extremely_high_count = day[4]
         extremely_low_count = day[5]
         total_count = day[6]
-
 
         data["Day"].append(start_time)
         data["High Count"].append(high_count)
@@ -184,7 +193,6 @@ def calculate_time_swing_statistics(iseql):
     total_too_frequent_time_swings = iseql.find_too_frequent_time_swings()
     total_too_frequent_time_swings = len(total_too_frequent_time_swings)
 
-
     # Calcola le percentuali mancanti
     percentage_total_too_frequent_time_swings = (total_too_frequent_time_swings / total_time_swings) * 100
     # Troviamo le oscillazioni seguite da durata anomala
@@ -203,7 +211,6 @@ def calculate_time_swing_statistics(iseql):
     print(f"Percentage of Time Swings With Too Long Glucose Anomalies: {percentage_time_swing_too_long:.2f}%")
     print(f"Total Too Frequent Time Swing: {total_too_frequent_time_swings}")
     print(f"Percentage of Too Frequent Time Swing: {percentage_total_too_frequent_time_swings:.2f}%\n")
-
 
 
 def evaluate_efficiency_and_scalability(glucose_data, percentages=None):
@@ -240,7 +247,8 @@ def evaluate_efficiency_and_scalability(glucose_data, percentages=None):
         iseq = ISEQL()
         for interval_labeling in results[0]:
             duration = interval_labeling[2] - interval_labeling[1]
-            interval_iseql = Interval(interval_labeling[1], interval_labeling[2], interval_labeling[0], interval_labeling[3], duration)
+            interval_iseql = Interval(interval_labeling[1], interval_labeling[2], interval_labeling[0],
+                                      interval_labeling[3], duration)
             iseq.add_interval(interval_iseql)
 
         intervals = iseq.get_intervals()
@@ -303,6 +311,8 @@ def evaluate_efficiency_and_scalability(glucose_data, percentages=None):
             print(f"Method: {method}, Average growth rate: {average_growth_rate:.4f}")
         else:
             print(f"Method: {method}, No growth rate data available.")
+
+
 def analyze_glucose_data(intervals, iseql):
     from datetime import timedelta
 
@@ -341,7 +351,7 @@ def analyze_glucose_data(intervals, iseql):
     total_duration_all_seconds = sum(durations.values())
     total_duration_normal_seconds = durations['normal']
     percentage_normal = (
-                                    total_duration_normal_seconds / total_duration_all_seconds) * 100 if total_duration_all_seconds > 0 else 0
+                                total_duration_normal_seconds / total_duration_all_seconds) * 100 if total_duration_all_seconds > 0 else 0
 
     # Calculate percentages for each category
     durations_minutes = {category: convert_hhmm_to_minutes(durations_hhmm[category]) for category in durations_hhmm}
@@ -387,7 +397,7 @@ def analyze_glucose_data(intervals, iseql):
     total_too_frequent_time_swings = iseql.find_too_frequent_time_swings()
     total_too_frequent_time_swings = len(total_too_frequent_time_swings)
     percentage_too_frequent_time_swings = (
-                                                 total_too_frequent_time_swings / total_time_swings) * 100 if total_time_swings > 0 else 0
+                                                  total_too_frequent_time_swings / total_time_swings) * 100 if total_time_swings > 0 else 0
 
     # Returning all results as a dictionary
     return {
@@ -448,6 +458,8 @@ def draw_graphs(dataset_sizes, times_offline, times_find_time_swing, times_find_
     plt.tight_layout()
     plt.savefig('./data/plot/growth_rates.png')  # Salva il grafico come immagine
     plt.show()
+
+
 def main():
     # Loading data (modify the file path as necessary)
     print("Loading data...")
@@ -456,7 +468,8 @@ def main():
 
     # Selecting specific columns and filtering data
     print("Selecting specific columns and filtering data...")
-    specific_columns = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)', 'Valore del glucosio (mg/dL)']
+    specific_columns = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
+                        'Valore del glucosio (mg/dL)']
     glucose_data = glucose_data[specific_columns].iloc[18:]
     print("Columns selected and data filtered.\n")
 
@@ -523,11 +536,12 @@ def main():
                 times_find_too_frequent_time_swings, times_find_too_long_glucose_anomalies,
                 times_find_time_swing_with_too_long_glucose_anomalies, growth_rates)
 
+
 def prova():
     gl = pd.read_csv('./data/glucoseLevel.csv', delimiter=';')
 
     colonne_specifiche = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
-                              'Valore del glucosio (mg/dL)']
+                          'Valore del glucosio (mg/dL)']
 
     gl = gl[colonne_specifiche].iloc[18:]
     print(gl['Valore del glucosio (mg/dL)'])
@@ -579,6 +593,48 @@ def prova():
         dfgs.to_csv('time_swings_report.csv', index=False)
 
 
-if __name__ == "__main__":
-    prova()
+def efficiency_extremely_time_swing():
+    csv_path = './simulated_intervals/rosso_1_epoch.csv'
+    df = pd.read_csv(csv_path)
 
+    df = df[df["end_time"] >= df["start_time"]]
+
+    with open("eventi.txt", "w") as f:
+        for _, r in df.iterrows():
+            f.write(f"{int(r['start_time'])},{int(r['end_time'])},{r['label']}\n")
+
+
+    parsed_extremely_time_swings = []
+    def parse_part(part):
+        time_part, id_event, event_type = part.strip().split()
+        start_str, end_str = time_part[1:-1].split(',')
+        start_dt = unix_timestamp_to_datetime(int(start_str))
+        end_dt = unix_timestamp_to_datetime(int(end_str))
+        duration = end_dt - start_dt
+        return Interval(start_dt, end_dt, int(id_event), event_type, duration)
+
+    result_extremely_time_swing = subprocess.run(
+        ["../cpp-iseql/build/src/iseql", "extremely-time-swing", ""],
+        check=True,
+        capture_output=True,
+        text=True  # Decodifica l'output in stringa
+    )
+
+    lines = result_extremely_time_swing.stdout.strip().split("\n")
+    for line in lines:
+        print("Parsed line:", line)
+
+        # Estrai i dati con uno split
+        parts = line.strip().split(" -- ")
+        if len(parts) != 2:
+            continue  # Skippa se la riga non è formattata correttamente
+
+        interval1 = parse_part(parts[0])
+        interval2 = parse_part(parts[1])
+
+        parsed_extremely_time_swings.append((interval1, interval2))
+
+
+if __name__ == "__main__":
+    efficiency_extremely_time_swing()
+    #prova()

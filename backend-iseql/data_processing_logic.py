@@ -1,62 +1,21 @@
 import csv
-from datetime import datetime, timezone, timedelta
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
 import os
+
 import analysis
-import detection_pattern
 from interval_action_detector import IntervalActionDetector
 from iseql import ISEQL
 from interval import Interval
 import subprocess
+from utils import *
 
 app = Flask(__name__)
 CORS(app)
 
 
-def calculate_gmi(gluc_data):
-    count = 0
-    tot = 0
-    for level in gluc_data:
-        if(level=="Basso"):
-            tot+=50
-        else:
-            tot += int(level)
-        count += 1
-    avg = tot/count
-    gmi = 3.31 + 0.02392 * avg
-    return gmi,avg
-
-def format_duration(duration):
-    """Format duration as days, HH:mm:ss, and remove leading '0 days ' if not needed."""
-    days, remainder = divmod(duration.total_seconds(), 86400)
-    hours, remainder = divmod(remainder, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    if days > 0:
-        return f"{int(days)} days {int(hours):02}:{int(minutes):02}:{int(seconds):02}"
-    return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
-
-
-def format_datetime(dt):
-    """Format datetime to 'HH:mm:ss'."""
-    return dt.strftime('%H:%M:%S')
-
-
-def format_day(dt):
-    """Format datetime to 'Day, DD Month YYYY'."""
-    return dt.strftime('%a, %d %b %Y')
-
-
-def datetime_to_unix_timestamp(dt):
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    return int(dt.timestamp())
-
-
-def unix_timestamp_to_datetime(ts):
-    return datetime.fromtimestamp(ts, tz=timezone.utc)
 
 
 def create_interval_labeling_csv(intervals):
@@ -80,6 +39,7 @@ def create_interval_labeling_csv(intervals):
 @app.route('/process-csv', methods=['POST'])
 def process_csv():
     parsed_time_swings = []
+    parsed_extremely_time_swings = []
     file = request.files.get('csv_file')
 
     if file is None:
@@ -99,9 +59,6 @@ def process_csv():
                         'Valore del glucosio (mg/dL)']
     glucose_data = glucose_data[columns_specific].iloc[18:]
     glucose_data_copia = glucose_data[columns_specific].iloc[18:]
-
-
-
 
     start_date = request.form.get('start_date')
     end_date = request.form.get('end_date')
@@ -125,17 +82,14 @@ def process_csv():
         elif end_date:
             glucose_data = glucose_data[glucose_data[date_column] <= end_date]
 
-    gmi,avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
+    gmi, avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
 
     analyzer = IntervalActionDetector(glucose_data)
     results = analyzer.offline_interval_action_detection()
-    #pattern = detection_pattern.inizialize(results)
 
     # Per visualizzare csv
     intervals, events = analyzer.offline_interval_action_detection()
     create_interval_labeling_csv(intervals)
-
-    #pattern = detection_pattern.inizialize()
 
 
     with open("eventi.txt", "w") as file:
@@ -151,35 +105,56 @@ def process_csv():
             file.write(f"{start_str},{end_str},{label}\n")
 
     try:
-        result = subprocess.run(
-            ["../cpp-iseql/build/src/iseql", "test-eventi", ""],
+
+        def parse_part(part):
+            time_part, id_event, event_type = part.strip().split()
+            start_str, end_str = time_part[1:-1].split(',')
+            start_dt = unix_timestamp_to_datetime(int(start_str))
+            end_dt = unix_timestamp_to_datetime(int(end_str))
+            duration = end_dt - start_dt
+            return Interval(start_dt, end_dt, int(id_event), event_type, duration)
+
+        result_time_swing = subprocess.run(
+            ["../cpp-iseql/build/src/iseql", "time-swing", ""],
             check=True,
             capture_output=True,
             text=True  # Decodifica l'output in stringa
         )
 
-        lines = result.stdout.strip().split("\n")
+        lines = result_time_swing.stdout.strip().split("\n")
         for line in lines:
-            print("Parsed line:", line)
+            #print("Parsed line:", line)
 
             # Estrai i dati con uno split
             parts = line.strip().split(" -- ")
             if len(parts) != 2:
                 continue  # Skippa se la riga non è formattata correttamente
 
-            def parse_part(part):
-                time_part, id_event, event_type = part.strip().split()
-                start_str, end_str = time_part[1:-1].split(',')
-                start_dt = unix_timestamp_to_datetime(int(start_str))
-                end_dt = unix_timestamp_to_datetime(int(end_str))
-                duration = end_dt - start_dt
-                return Interval(start_dt, end_dt, int(id_event), event_type, duration)
-
             interval1 = parse_part(parts[0])
             interval2 = parse_part(parts[1])
 
-
             parsed_time_swings.append((interval1, interval2))
+
+            result_extremely_time_swing = subprocess.run(
+                ["../cpp-iseql/build/src/iseql", "extremely-time-swing", ""],
+                check=True,
+                capture_output=True,
+                text=True  # Decodifica l'output in stringa
+            )
+
+            lines = result_extremely_time_swing.stdout.strip().split("\n")
+            for line in lines:
+                #print("Parsed line:", line)
+
+                # Estrai i dati con uno split
+                parts = line.strip().split(" -- ")
+                if len(parts) != 2:
+                    continue  # Skippa se la riga non è formattata correttamente
+
+                interval1 = parse_part(parts[0])
+                interval2 = parse_part(parts[1])
+
+                parsed_extremely_time_swings.append((interval1, interval2))
 
 
 
@@ -194,22 +169,18 @@ def process_csv():
         iseq.add_interval(interval_iseql)
 
     # Process results
-    time_swings = iseq.find_time_swing()
-    anomalous_frequency = iseq.find_too_frequent_glucose_anomalies()
-    time_swings_too_frequent = iseq.find_too_frequent_time_swings()
-    anomalous_duration = iseq.find_too_long_glucose_anomalies()
+    #time_swings = iseq.find_time_swing()
     time_swing_duration = iseq.find_time_swing_with_too_long_glucose_anomalies()
+    time_swings_too_frequent = iseq.find_too_frequent_time_swings()
 
+    extremely_time_swing_duration = iseq.find_extremely_time_swing_with_too_long_glucose_anomalies()
+    extremely_time_swings_too_frequent = iseq.find_too_frequent_extremely_time_swings()
 
-    ''' '''
+    anomalous_frequency = iseq.find_too_frequent_glucose_anomalies()
+    anomalous_duration = iseq.find_too_long_glucose_anomalies()
 
-    # Format results
-    result = {
-
-        'avg':avg,
-        'gmi': gmi,
-
-        'time_swing': [
+    '''
+             'time_swing': [
             {
                 'day': format_day(time_swing[0].start_time.date()),
                 'first_event': time_swing[0].event,
@@ -217,6 +188,23 @@ def process_csv():
                 'duration_time_swing': format_duration(time_swing[1].start_time - time_swing[0].end_time)
             }
             for time_swing in time_swings
+        ],
+        
+        '''
+
+    result = {
+
+        'avg': avg,
+        'gmi': gmi,
+
+        'time_swing': [
+            {
+                'day': format_day(pair[0].start_time.date()),
+                'first_event': pair[0].event,
+                'second_event': pair[1].event,
+                'duration_time_swing': format_duration(pair[1].start_time - pair[0].end_time)
+            }
+            for pair in parsed_time_swings
         ],
 
         'too_frequent_glucose_anomalies': [
@@ -270,6 +258,43 @@ def process_csv():
             for interval1, interval2, description in time_swing_duration
         ],
 
+        'extremely_time_swing': [
+            {
+                'day': format_day(pair[0].start_time.date()),
+                'first_event': pair[0].event,
+                'second_event': pair[1].event,
+                'duration_time_swing': format_duration(pair[1].start_time - pair[0].end_time)
+            }
+            for pair in parsed_extremely_time_swings
+        ],
+
+        'too_frequent_extremely_time_swings': [
+            {
+                'Number of Time Swings': len(swing_set),
+                'Events': [
+                    {
+                        'Day': f"{format_day(interval1.start_time.date())}",
+                        'First event': interval1.event,
+                        'Second event': interval2.event,
+                        'Duration time swing': format_duration(interval2.start_time - interval1.end_time),
+                    }
+                    for interval1, interval2 in swing_set
+                ]
+            }
+            for swing_set in extremely_time_swings_too_frequent
+        ],
+
+        'extremely_time_swing_with_too_long_glucose_anomalies': [
+            {
+                'day': format_day(interval1.start_time.date()),
+                'first_event': interval1.event,
+                'second_event': interval2.event,
+                'duration_time_swing': format_duration(interval2.start_time - interval1.end_time),
+                'anomalous_durations': description
+            }
+            for interval1, interval2, description in extremely_time_swing_duration
+        ],
+
     }
 
     date_column = 'Data e ora (AAAA-MM-GGThh:mm:ss)'
@@ -307,7 +332,7 @@ def process_date():
     columns_specific = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                         'Valore del glucosio (mg/dL)']
     glucose_data = glucose_data[columns_specific].iloc[18:]
-    gmi,avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
+    gmi, avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])
     gmi = round(gmi, 2)
     # Extracting the date column
     date_column = 'Data e ora (AAAA-MM-GGThh:mm:ss)'

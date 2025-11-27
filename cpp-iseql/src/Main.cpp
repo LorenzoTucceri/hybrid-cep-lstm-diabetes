@@ -9,6 +9,8 @@
 #include "MainBefore.h"
 #include "MainLatency.h"
 #include "MainJoins.h"
+#include <chrono>
+
 
 // Struttura per rappresentare gli eventi
 struct Event
@@ -75,9 +77,11 @@ std::vector<Event> readEventsFromFile(const std::string& filename)
     return events;
 }
 
-struct pair_hash {
+struct pair_hash
+{
     template <typename T1, typename T2>
-    std::size_t operator ()(const std::pair<T1, T2>& p) const {
+    std::size_t operator ()(const std::pair<T1, T2>& p) const
+    {
         auto h1 = std::hash<T1>{}(p.first);
         auto h2 = std::hash<T2>{}(p.second);
         return h1 ^ h2; // XOR tra gli hash
@@ -111,14 +115,15 @@ int main(int /*argc*/, const char* argv[])
     {
         mainLatency(arguments);
     }
-    else if (command == "test-eventi")
+    else if (command == "time-swing")
     {
         // Leggi gli eventi dal file "eventi.txt"
         //
         std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
         //std::vector<Event> events = readEventsFromFile("../../backend-iseql/eventi.txt");
 
-        if (events.empty()) {
+        if (events.empty())
+        {
             std::cerr << "Errore: nessun evento letto dal file." << std::endl;
             return 1; // Uscita con errore se non ci sono eventi
         }
@@ -180,10 +185,82 @@ int main(int /*argc*/, const char* argv[])
             };
 
             // Verifica se la coppia esiste, considerando l'ordine
-            if (skip_pairs.count({r.event_type, s.event_type}) || skip_pairs.count({s.event_type, r.event_type})) return;
+            if (skip_pairs.count({r.event_type, s.event_type}) || skip_pairs.count({s.event_type, r.event_type}))
+                return;
 
             std::cout << r << " -- " << s << std::endl;
         });
+    }
+    else if (command == "extremely-time-swing")
+    {
+        // Leggi gli eventi dal file "eventi.txt"
+        //
+        std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        //std::vector<Event> events = readEventsFromFile("../../backend-iseql/eventi.txt");
+
+        if (events.empty())
+        {
+            std::cerr << "Errore: nessun evento letto dal file." << std::endl;
+            return 1; // Uscita con errore se non ci sono eventi
+        }
+        // Assicurati che ci siano almeno 2 eventi per fare un join
+        if (events.size() < 2)
+        {
+            std::cerr << "Non ci sono abbastanza eventi per fare un join." << std::endl;
+            return 1;
+        }
+
+        Relation R, S;
+
+        int id_counter = 0;
+        for (const auto& e : events)
+        {
+            if (e.start_time >= e.end_time)
+            {
+                //std::cerr << id_counter << " Evento ignorato: start_time >= end_time (" << e.start_time << " >= " << e.
+                //  end_time << ")\n";
+
+                continue;
+            }
+
+            if (e.event_type == "normal")
+                continue;
+
+            auto start = static_cast<Timestamp>(e.start_time);
+            auto end = static_cast<Timestamp>(e.end_time);
+
+            //std::cout << id_counter << " Tuple: start=" << start << ", end=" << end << ", type=" << e.event_type <<
+            //      std::endl;
+
+            R.push_back({start, end, id_counter, e.event_type});
+            S.push_back({start, end, id_counter, e.event_type});
+
+            id_counter++;
+        }
+
+        Index indexR;
+        indexR.buildFor(R);
+        Index indexS;
+        indexS.buildFor(S);
+
+        R.setIndex(indexR);
+        S.setIndex(indexS);
+        auto start_total = std::chrono::high_resolution_clock::now();
+
+        // SOGLIA DI 30 MINUTI (PER ORA)
+
+        beforeJoin(R, S, 1800, [](const Tuple& r, const Tuple& s)
+        {
+            if (r.id == s.id) return; // Evita confronto con sé stessa
+
+            if ((r.event_type == "extremely_high" && s.event_type == "extremely_high") || (r.event_type ==
+                "extremely_low" && s.event_type == "extremely_low"))
+                std::cout << r << " -- " << s << std::endl;
+        });
+        auto end_total = std::chrono::high_resolution_clock::now();
+        auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_total - start_total).count();
+
+        std::cout << "\nTempo esecuzione beforeJoin: " << duration_ms << " ms" << std::endl;
     }
     else
     {

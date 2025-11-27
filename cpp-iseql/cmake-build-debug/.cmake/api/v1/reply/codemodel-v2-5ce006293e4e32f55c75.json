@@ -55,7 +55,7 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "iseql::@145eef247bfb46b6828c",
-					"jsonFile" : "target-iseql-Debug-c897d456a89ac496df8d.json",
+					"jsonFile" : "target-iseql-Debug-26f71402291b83b880fa.json",
 					"name" : "iseql",
 					"projectIndex" : 0
 				}
@@ -71,6 +71,6 @@
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 7
+		"minor" : 8
 	}
 }
