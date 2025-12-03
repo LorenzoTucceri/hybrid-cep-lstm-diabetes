@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 
+import pandas as pd
+
+
 def calculate_gmi(gluc_data):
     count = 0
     tot = 0
@@ -42,3 +45,18 @@ def datetime_to_unix_timestamp(dt):
 
 def unix_timestamp_to_datetime(ts):
     return datetime.fromtimestamp(ts, tz=timezone.utc)
+
+
+def csv_to_sequence(csv_path):
+    df = pd.read_csv(csv_path)
+    df["duration_minutes"] = pd.to_timedelta(df["Duration"]).dt.total_seconds() / 60
+    return df[["Event", "duration_minutes"]].values.tolist()
+
+
+def discretize_duration_by_state(state, duration, THRESHOLDS_DURATION=None):
+    if not THRESHOLDS_DURATION or state not in THRESHOLDS_DURATION:
+        return ""
+    thr = THRESHOLDS_DURATION[state]
+    if isinstance(thr, (list, tuple)):
+        thr = thr[0]
+    return "L" if duration > thr else "N"

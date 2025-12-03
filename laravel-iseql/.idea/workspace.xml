@@ -5,7 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-
+      <change afterPath="$PROJECT_DIR$/../backend-iseql/saved_models/lstm_glucose_model.h5" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../backend-iseql/saved_models/max_seq_len.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_labeling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_labeling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_labeling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/time_swings_report.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cpp-iseql/src/Main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/src/Main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +233,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PS-251.23774.436" />
+        <option value="bundled-php-predefined-a98d8de5180a-aaeaa8632555-com.jetbrains.php.sharedIndexes-PS-251.23774.436" />
       </set>
     </attachedChunks>
   </component>
@@ -279,7 +296,10 @@
       <workItem from="1750142708650" duration="3474000" />
       <workItem from="1750150171307" duration="36000" />
       <workItem from="1750150298478" duration="206000" />
-
+      <workItem from="1764670014739" duration="1192000" />
+      <workItem from="1764683725722" duration="19000" />
+      <workItem from="1764684452433" duration="3000" />
+      <workItem from="1764763608604" duration="2069000" />
     </task>
     <servers />
   </component>

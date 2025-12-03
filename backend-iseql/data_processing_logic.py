@@ -2,16 +2,16 @@ import csv
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pandas as pd
 import os
 
 import analysis
+import detection_pattern
 from interval_action_detector import IntervalActionDetector
 from iseql import ISEQL
 from interval import Interval
 import subprocess
 from utils import *
-
+import tempfile
 app = Flask(__name__)
 CORS(app)
 
@@ -36,10 +36,13 @@ def create_interval_labeling_csv(intervals):
         os.remove("eventi.txt")
 
 
+
+
 @app.route('/process-csv', methods=['POST'])
 def process_csv():
     parsed_time_swings = []
     parsed_extremely_time_swings = []
+    parsed_top_k_pattern = []
     file = request.files.get('csv_file')
 
     if file is None:
@@ -87,9 +90,27 @@ def process_csv():
     analyzer = IntervalActionDetector(glucose_data)
     results = analyzer.offline_interval_action_detection()
 
+
+
+
     # Per visualizzare csv
     intervals, events = analyzer.offline_interval_action_detection()
     create_interval_labeling_csv(intervals)
+
+    # Detection pattern
+    top_k_pattern = detection_pattern.extract_patient_patterns(intervals)
+
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, newline='') as f:
+        f.write("pattern\n")  # header
+        for p in top_k_pattern['pattern']:  # seleziona solo la colonna pattern
+            if isinstance(p, (tuple, list)):
+                p_str = ",".join(str(x) for x in p)
+            else:
+                p_str = str(p)
+            f.write(f"{p_str}\n")
+        tmp_file_path = f.name
+
+    print(f"File CSV temporaneo creato: {tmp_file_path}")
 
 
     with open("eventi.txt", "w") as file:
@@ -104,62 +125,69 @@ def process_csv():
 
             file.write(f"{start_str},{end_str},{label}\n")
 
-    try:
+    def parse_part(part):
+        time_part, id_event, event_type = part.strip().split()
+        start_str, end_str = time_part[1:-1].split(',')
+        start_dt = unix_timestamp_to_datetime(int(start_str))
+        end_dt = unix_timestamp_to_datetime(int(end_str))
+        duration = end_dt - start_dt
+        return Interval(start_dt, end_dt, int(id_event), event_type, duration)
 
-        def parse_part(part):
-            time_part, id_event, event_type = part.strip().split()
-            start_str, end_str = time_part[1:-1].split(',')
-            start_dt = unix_timestamp_to_datetime(int(start_str))
-            end_dt = unix_timestamp_to_datetime(int(end_str))
-            duration = end_dt - start_dt
-            return Interval(start_dt, end_dt, int(id_event), event_type, duration)
-
-        result_time_swing = subprocess.run(
-            ["../cpp-iseql/build/src/iseql", "time-swing", ""],
-            check=True,
-            capture_output=True,
-            text=True  # Decodifica l'output in stringa
-        )
-
-        lines = result_time_swing.stdout.strip().split("\n")
-        for line in lines:
-            #print("Parsed line:", line)
-
-            # Estrai i dati con uno split
-            parts = line.strip().split(" -- ")
-            if len(parts) != 2:
-                continue  # Skippa se la riga non è formattata correttamente
-
-            interval1 = parse_part(parts[0])
-            interval2 = parse_part(parts[1])
-
-            parsed_time_swings.append((interval1, interval2))
-
-            result_extremely_time_swing = subprocess.run(
-                ["../cpp-iseql/build/src/iseql", "extremely-time-swing", ""],
+    def run_and_parse(command):
+        """Esegue un comando e restituisce una lista di tuple (interval1, interval2) o pattern/freq."""
+        if command == "detection_pattern":
+            # Passa il file temporaneo con i pattern
+            result = subprocess.run(
+                ["../cpp-iseql/build/src/iseql", "detection-pattern", tmp_file_path],
                 check=True,
                 capture_output=True,
-                text=True  # Decodifica l'output in stringa
+                text=True
             )
 
-            lines = result_extremely_time_swing.stdout.strip().split("\n")
+            # Parse output C++: ogni riga -> pattern,freq
+            parsed = []
+            lines = result.stdout.strip().split("\n")
             for line in lines:
-                #print("Parsed line:", line)
+                parts = line.strip().split(",")
+                if len(parts) < 2:
+                    continue
+                pattern = parts[:-1]
+                freq = int(parts[-1])
+                parsed.append((pattern, freq))
 
-                # Estrai i dati con uno split
+        else:
+            # vecchio comportamento per time-swing / extremely-time-swing
+            result = subprocess.run(
+                ["../cpp-iseql/build/src/iseql", command, ""],
+                check=True,
+                capture_output=True,
+                text=True
+            )
+
+            parsed = []
+            lines = result.stdout.strip().split("\n")
+            for line in lines:
                 parts = line.strip().split(" -- ")
                 if len(parts) != 2:
-                    continue  # Skippa se la riga non è formattata correttamente
+                    continue
 
                 interval1 = parse_part(parts[0])
                 interval2 = parse_part(parts[1])
+                parsed.append((interval1, interval2))
 
-                parsed_extremely_time_swings.append((interval1, interval2))
+        return parsed
 
 
+    try:
+        parsed_time_swings = run_and_parse("time-swing")
+        parsed_extremely_time_swings = run_and_parse("extremely-time-swing")
+        parsed_top_k_pattern = run_and_parse("detection_pattern")
 
     except subprocess.CalledProcessError as e:
         print(f"Errore durante l'esecuzione del programma C: {e}")
+
+
+
 
     iseq = ISEQL()
     for interval_labeling in results[0]:
@@ -167,6 +195,7 @@ def process_csv():
         interval_iseql = Interval(interval_labeling[1], interval_labeling[2], interval_labeling[0],
                                   interval_labeling[3], duration)
         iseq.add_interval(interval_iseql)
+
 
     # Process results
     #time_swings = iseq.find_time_swing()
@@ -294,6 +323,13 @@ def process_csv():
             }
             for interval1, interval2, description in extremely_time_swing_duration
         ],
+        'top_k_pattern' : [
+            {
+                'pattern': pattern,
+                'freq': freq,
+            }
+            for pattern, freq in parsed_top_k_pattern
+        ]
 
     }
 

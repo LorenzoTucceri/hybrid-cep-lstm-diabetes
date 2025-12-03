@@ -170,15 +170,12 @@ int main(int /*argc*/, const char* argv[])
         R.setIndex(indexR);
         S.setIndex(indexS);
 
-        // Eseguiamo il join come nel codice originale
         beforeJoin(R, S, 7200, [](const Tuple& r, const Tuple& s)
         {
-            if (r.id == s.id) return; // Evita confronto con sé stessa
+            if (r.id == s.id) return;
 
-            // Evita confronti tra eventi dello stesso tipo
             if (r.event_type == s.event_type) return;
 
-            // Coppie di tipi da escludere (non importa l'ordine)
             static const std::unordered_set<std::pair<std::string, std::string>, pair_hash> skip_pairs = {
                 {"extremely_high", "high"},
                 {"low", "extremely_low"}
@@ -262,6 +259,71 @@ int main(int /*argc*/, const char* argv[])
 
         std::cout << "\nTempo esecuzione beforeJoin: " << duration_ms << " ms" << std::endl;
     }
+    else if (command == "detection-pattern")
+    {
+
+        std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+
+        if (events.empty())
+        {
+            std::cerr << "Errore: nessun evento letto dal file." << std::endl;
+            return 1;
+        }
+        if (events.size() < 2)
+        {
+            std::cerr << "Non ci sono abbastanza eventi per fare un join." << std::endl;
+            return 1;
+        }
+
+        Relation R, S;
+
+        int id_counter = 0;
+        for (const auto& e : events)
+        {
+            if (e.start_time >= e.end_time)
+            {
+
+
+                continue;
+            }
+
+
+            auto start = static_cast<Timestamp>(e.start_time);
+            auto end = static_cast<Timestamp>(e.end_time);
+
+
+
+            R.push_back({start, end, id_counter, e.event_type});
+            S.push_back({start, end, id_counter, e.event_type});
+
+            id_counter++;
+        }
+
+        Index indexR;
+        indexR.buildFor(R);
+        Index indexS;
+        indexS.buildFor(S);
+
+        R.setIndex(indexR);
+        S.setIndex(indexS);
+        auto start_total = std::chrono::high_resolution_clock::now();
+
+        // SOGLIA DI 30 MINUTI (PER ORA)
+
+        beforeJoin(R, S, 0, [](const Tuple& r, const Tuple& s)
+        {
+            if (r.id == s.id) return; // Evita confronto con sé stessa
+
+            if ((r.event_type == "extremely_high" && s.event_type == "extremely_high") || (r.event_type ==
+                "extremely_low" && s.event_type == "extremely_low"))
+                std::cout << r << " -- " << s << std::endl;
+        });
+        auto end_total = std::chrono::high_resolution_clock::now();
+        auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end_total - start_total).count();
+
+        std::cout << "\nTempo esecuzione beforeJoin: " << duration_ms << " ms" << std::endl;
+    }
+
     else
     {
         mainJoins(command, arguments);
