@@ -1,4 +1,6 @@
+import ast
 import csv
+import re
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -12,10 +14,9 @@ from interval import Interval
 import subprocess
 from utils import *
 import tempfile
+
 app = Flask(__name__)
 CORS(app)
-
-
 
 
 def create_interval_labeling_csv(intervals):
@@ -34,8 +35,6 @@ def create_interval_labeling_csv(intervals):
 
     if os.path.exists("eventi.txt"):
         os.remove("eventi.txt")
-
-
 
 
 @app.route('/process-csv', methods=['POST'])
@@ -90,9 +89,6 @@ def process_csv():
     analyzer = IntervalActionDetector(glucose_data)
     results = analyzer.offline_interval_action_detection()
 
-
-
-
     # Per visualizzare csv
     intervals, events = analyzer.offline_interval_action_detection()
     create_interval_labeling_csv(intervals)
@@ -111,7 +107,6 @@ def process_csv():
         tmp_file_path = f.name
 
     print(f"File CSV temporaneo creato: {tmp_file_path}")
-
 
     with open("eventi.txt", "w") as file:
         file.write("start_time,end_time,label\n")  # Header
@@ -135,59 +130,122 @@ def process_csv():
 
     def run_and_parse(command):
         """Esegue un comando e restituisce una lista di tuple (interval1, interval2) o pattern/freq."""
+
         if command == "detection_pattern":
-            # Passa il file temporaneo con i pattern
             result = subprocess.run(
                 ["../cpp-iseql/build/src/iseql", "detection-pattern", tmp_file_path],
                 check=True,
                 capture_output=True,
                 text=True
             )
+            print(result)
 
-            # Parse output C++: ogni riga -> pattern,freq
-            parsed = []
             lines = result.stdout.strip().split("\n")
+
+            # Regex per catturare pattern, frequency e occorrenze
+            pattern_re = re.compile(
+                r"\{\s*pattern:\s*'(.+?)',\s*frequency:\s*(\d+),\s*occurrences:\s*\[(.*)\]\s*\}"
+            )
+            parsed = []
+
             for line in lines:
-                parts = line.strip().split(",")
-                if len(parts) < 2:
+                line = line.strip()
+                if not line:
                     continue
-                pattern = parts[:-1]
-                freq = int(parts[-1])
-                parsed.append((pattern, freq))
+
+                m = pattern_re.match(line)
+                if m:
+                    pattern_str = m.group(1)
+                    frequency = int(m.group(2))
+                    occurrences_str = m.group(3)
+
+                    # Converti il pattern in tupla
+                    pattern = tuple(p.strip() for p in pattern_str.split(','))
+
+                    # Converti occurrences in lista di liste di datetime
+                    occurrences = []
+                    if occurrences_str:
+                        # Aggiungi parentesi quadre esterne per ast.literal_eval
+                        try:
+                            raw = ast.literal_eval("[" + occurrences_str + "]")
+
+                            for match in raw:
+                                formatted_match = []
+
+                                for start_ts, end_ts in match:
+                                    start_dt = unix_timestamp_to_datetime(start_ts)
+                                    end_dt = unix_timestamp_to_datetime(end_ts)
+
+                                    formatted_match.append({
+                                        "start": start_dt.strftime("%Y-%m-%d %H:%M"),
+                                        "end": end_dt.strftime("%Y-%m-%d %H:%M")
+                                    })
+
+                                occurrences.append(formatted_match)
+
+                        except Exception as e:
+                            print("[WARNING] Errore parsing:", e)
+
+                    parsed.append({
+                        'pattern': pattern,
+                        'frequency': frequency,
+                        'occurrences': occurrences
+                    })
+
 
         else:
-            # vecchio comportamento per time-swing / extremely-time-swing
+
+
             result = subprocess.run(
+
                 ["../cpp-iseql/build/src/iseql", command, ""],
+
                 check=True,
+
                 capture_output=True,
+
                 text=True
+
             )
 
             parsed = []
+
             lines = result.stdout.strip().split("\n")
+
             for line in lines:
+
                 parts = line.strip().split(" -- ")
+
                 if len(parts) != 2:
                     continue
 
                 interval1 = parse_part(parts[0])
+
                 interval2 = parse_part(parts[1])
+
                 parsed.append((interval1, interval2))
 
         return parsed
-
 
     try:
         parsed_time_swings = run_and_parse("time-swing")
         parsed_extremely_time_swings = run_and_parse("extremely-time-swing")
         parsed_top_k_pattern = run_and_parse("detection_pattern")
 
+        for item in parsed_top_k_pattern:
+            pattern_tuple = item['pattern']
+            frequency = item['frequency']
+            occurrences = item['occurrences']  # lista di liste di tuple (datetime, datetime)
+
+            print(pattern_tuple, frequency)
+
+            # Se vuoi stampare tutte le occorrenze:
+            for occ in occurrences:
+                for start, end in occ:
+                    print("  Start:", start, "End:", end)
+
     except subprocess.CalledProcessError as e:
         print(f"Errore durante l'esecuzione del programma C: {e}")
-
-
-
 
     iseq = ISEQL()
     for interval_labeling in results[0]:
@@ -196,9 +254,8 @@ def process_csv():
                                   interval_labeling[3], duration)
         iseq.add_interval(interval_iseql)
 
-
     # Process results
-    #time_swings = iseq.find_time_swing()
+    # time_swings = iseq.find_time_swing()
     time_swing_duration = iseq.find_time_swing_with_too_long_glucose_anomalies()
     time_swings_too_frequent = iseq.find_too_frequent_time_swings()
 
@@ -314,6 +371,7 @@ def process_csv():
         ],
 
         'extremely_time_swing_with_too_long_glucose_anomalies': [
+
             {
                 'day': format_day(interval1.start_time.date()),
                 'first_event': interval1.event,
@@ -322,13 +380,16 @@ def process_csv():
                 'anomalous_durations': description
             }
             for interval1, interval2, description in extremely_time_swing_duration
+
         ],
-        'top_k_pattern' : [
+
+        'parsed_top_k_patterns': [
             {
-                'pattern': pattern,
-                'freq': freq,
+                'pattern': item['pattern'],
+                'frequency': item['frequency'],
+                'occurrences': item['occurrences']
             }
-            for pattern, freq in parsed_top_k_pattern
+            for item in parsed_top_k_pattern
         ]
 
     }

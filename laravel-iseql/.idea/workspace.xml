@@ -5,23 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/saved_models/lstm_glucose_model.h5" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/saved_models/max_seq_len.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_epoch.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_labeling.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_epoch.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_labeling.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_epoch.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_labeling.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/time_swings_report.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cpp-iseql/build/src/CMakeFiles/iseql.dir/Main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/build/src/CMakeFiles/iseql.dir/Main.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cpp-iseql/build/src/iseql" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/build/src/iseql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cpp-iseql/src/Main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/src/Main.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -299,7 +291,11 @@
       <workItem from="1764670014739" duration="1192000" />
       <workItem from="1764683725722" duration="19000" />
       <workItem from="1764684452433" duration="3000" />
-      <workItem from="1764763608604" duration="2069000" />
+      <workItem from="1764763608604" duration="2544000" />
+      <workItem from="1764859778366" duration="2527000" />
+      <workItem from="1764867540093" duration="583000" />
+      <workItem from="1764941217589" duration="4145000" />
+      <workItem from="1764945718175" duration="7139000" />
     </task>
     <servers />
   </component>

@@ -102,7 +102,7 @@ def extract_ngrams_with_time(sequence, n_list=[4, 5], use_duration=False, THRESH
 
     return ngrams
 
-def extract_patient_patterns(sequence, n_list=[4, 5], top_k=20,
+def extract_patient_patterns(sequence, n_list=[4, 5], top_k=10,
                              use_duration=False, THRESHOLDS_DURATION=None):
 
     raw = extract_ngrams_with_time(

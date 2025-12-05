@@ -121,11 +121,13 @@
 
                                     <canvas id="exportTooFrequentTimeSwingsDurationChart" width="1200" height="600"
                                             style="display: none;"></canvas>
-                                    <input type="hidden" name="tooFrequentTimeSwingsDurationChart" id="tooFrequentTimeSwingsDurationChartImage">
+                                    <input type="hidden" name="tooFrequentTimeSwingsDurationChart"
+                                           id="tooFrequentTimeSwingsDurationChartImage">
 
                                     <canvas id="exportTooFrequentTimeSwingsFrequencyChart" width="1200" height="600"
                                             style="display: none;"></canvas>
-                                    <input type="hidden" name="tooFrequentTimeSwingsFrequencyChart" id="tooFrequentTimeSwingsFrequencyChartImage">
+                                    <input type="hidden" name="tooFrequentTimeSwingsFrequencyChart"
+                                           id="tooFrequentTimeSwingsFrequencyChartImage">
 
                                     <canvas id="exportTimeSwingTooLongGlucoseAnomaliesChart" width="1200" height="600"
                                             style="display: none;"></canvas>
@@ -175,7 +177,8 @@
                                             </div>
                                         </div>
                                         <div class="col-12 text-center mt-3">
-                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">Download
+                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">
+                                                Download
                                             </button>
                                         </div>
                                     </div>
@@ -276,7 +279,7 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <!-- Analysis Summary-->
+            <!-- Analysis Detection Pattern-->
             <div class="container mt-4">
                 <div class="card">
                     <div class="card-body">
@@ -446,6 +449,168 @@
                 </div>
             </div>
 
+            <div class="container mt-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">Analysis Detected
+                            Pattern</h3>
+                        <div class="row">
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <h5 class="card-title mb-0">Patient Patterns</h5>
+                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detectionPatternInfoModal"
+                                               title="What are Detection Patterns?">
+                                                <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                            </a>
+                                        </div>
+
+
+                                    <!-- Info Modal -->
+                                    <div class="modal fade" id="detectionPatternInfoModal" tabindex="-1"
+                                         aria-labelledby="detectionPatternInfoModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="detectionPatternInfoModalLabel">What are
+                                                        Detection Patterns?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>
+                                                        <strong>Detection Patterns</strong> represent sequences of glucose
+                                                        events that occur
+                                                        consecutively in the uploaded CSV data. These sequences are
+                                                        automatically analyzed by
+                                                        algorithms that identify recurring patterns.
+                                                    </p>
+                                                    <p>
+                                                        The system extracts the <strong>top 10 most frequent patterns</strong>
+                                                        from the dataset,
+                                                        allowing users and clinicians to focus on the most common or potentially
+                                                        risky sequences of events.
+                                                    </p>
+                                                    <p>
+                                                        Patterns that have already been covered or detected in previous event
+                                                        analyses are excluded
+                                                        to ensure that only new, distinct sequences are highlighted.
+                                                    </p>
+                                                    <p>For each detected pattern, we track all occurrences with:</p>
+                                                    <ul>
+                                                        <li><strong>Start Time:</strong> when the first event in the pattern
+                                                            begins.
+                                                        </li>
+                                                        <li><strong>End Time:</strong> when the last event in the pattern ends.
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <?php if(isset($data['parsed_top_k_patterns']) && count($data['parsed_top_k_patterns']) > 0): ?>
+                                    <div class="table-responsive">
+                                        <table id="datatable-detection-patterns"
+                                               class="table table-bordered dt-responsive nowrap w-100">
+                                            <thead>
+                                            <tr>
+                                                <th>Pattern</th>
+                                                <th>Frequency</th>
+                                                <th>Occurrences</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <?php $__currentLoopData = $data['parsed_top_k_patterns']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pattern): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <tr>
+                                                    <td><?php echo e(implode(' - ', array_map('strtolower', $pattern['pattern']))); ?></td>
+                                                    <td><?php echo e($pattern['frequency'] ?? '0'); ?></td>
+                                                    <td>
+                                                        <?php if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0): ?>
+                                                            <button type="button" class="btn btn-info btn-sm"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#modal-<?php echo e($loop->index); ?>-pattern">
+                                                                View Details
+                                                            </button>
+
+                                                            <div class="modal fade" id="modal-<?php echo e($loop->index); ?>-pattern"
+                                                                 tabindex="-1"
+                                                                 aria-labelledby="modalLabel-<?php echo e($loop->index); ?>-pattern"
+                                                                 aria-hidden="true">
+                                                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title"
+                                                                                id="modalLabel-<?php echo e($loop->index); ?>-pattern">
+                                                                                Pattern
+                                                                                Details: <?php echo e(implode(' - ',array_map('strtolower', $pattern['pattern']))); ?>
+
+                                                                            </h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <table class="table table-bordered">
+                                                                                <thead>
+                                                                                <tr>
+                                                                                    <th>#</th>
+                                                                                    <th>Start Time</th>
+                                                                                    <th>End Time</th>
+                                                                                </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                <?php $__currentLoopData = $pattern['occurrences']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $occ): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                                    <?php if(is_array($occ) && count($occ) > 0): ?>
+                                                                                        <?php
+                                                                                            $firstEvent = $occ[0];                  // primo evento della occorrenza
+                                                                                            $lastEvent = $occ[count($occ) - 1];     // ultimo evento della occorrenza
+
+                                                                                            $start = isset($firstEvent['start']) ? $firstEvent['start'] : null;
+                                                                                            $end = isset($lastEvent['end']) ? $lastEvent['end'] : null;
+                                                                                        ?>
+                                                                                        <tr>
+                                                                                            <td><?php echo e($k + 1); ?></td>
+                                                                                            <td><?php echo e($start ? \Carbon\Carbon::parse($start)->format('D, d M Y H:i') : 'N/A'); ?></td>
+                                                                                            <td><?php echo e($end ? \Carbon\Carbon::parse($end)->format('D, d M Y H:i') : 'N/A'); ?></td>
+                                                                                        </tr>
+                                                                                    <?php endif; ?>
+                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?></tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">Close
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        <?php else: ?>
+                                                            <span class="text-muted">No occurrences</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php else: ?>
+                                    <p class="text-muted">Nessun pattern rilevato.</p>
+                                <?php endif; ?>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+
             <div class="card mt-4">
                 <div class="card-body">
                     <h4 class="card-title mb-3 text-center" style="font-size: 1.3rem;">Analysis Results</h4>
@@ -498,7 +663,8 @@
                                                      alt="Time Swing Pattern"
                                                      class="img-fluid rounded"
                                                      style="width: 300px; height: auto;">
-                                                <small class="d-block mt-2 text-muted">Time Swing from High to Low in one hour</small>
+                                                <small class="d-block mt-2 text-muted">Time Swing from High to Low in
+                                                    one hour</small>
                                             </div>
                                         </div>
                                     </div>
@@ -624,7 +790,8 @@
                                                  alt="Too Long Glucose Anomalies Pattern"
                                                  class="img-fluid rounded"
                                                  style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Prolonged glucose anomalies with High glucose for four hours</small>
+                                            <small class="d-block mt-2 text-muted">Prolonged glucose anomalies with High
+                                                glucose for four hours</small>
                                         </div>
                                     </div>
 
@@ -766,7 +933,8 @@
                                                  alt="Too Frequent Glucose Anomalies Pattern"
                                                  class="img-fluid rounded"
                                                  style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Too Frequent Glucose Anomalies with Low glucose for one hour every
+                                            <small class="d-block mt-2 text-muted">Too Frequent Glucose Anomalies with
+                                                Low glucose for one hour every
                                                 two hours</small>
                                         </div>
                                     </div>
@@ -875,7 +1043,8 @@
                                     </div>
                                     <div class="modal-body">
                                         <p><strong>Too Frequent Time Swings</strong> refers to the frequency of rapid
-                                            glucose level changes within a specific time frame (within two hours), which may indicate
+                                            glucose level changes within a specific time frame (within two hours), which
+                                            may indicate
                                             potential issues with glucose stability or treatment effectiveness.</p>
 
                                         <p>To identify these swings, we evaluate the frequency of significant glucose
@@ -901,7 +1070,8 @@
                                                  alt="Too Frequent Time Swings Pattern"
                                                  class="img-fluid rounded"
                                                  style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Rapid Time Swings between High and Low glucose events within a few
+                                            <small class="d-block mt-2 text-muted">Rapid Time Swings between High and
+                                                Low glucose events within a few
                                                 hours
                                             </small>
                                         </div>
@@ -947,13 +1117,18 @@
                                                     <div class="modal-dialog modal-lg">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="modalLabel-<?php echo e($loop->index); ?>">Time Swings Details</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                <h5 class="modal-title"
+                                                                    id="modalLabel-<?php echo e($loop->index); ?>">Time Swings
+                                                                    Details</h5>
+                                                                <button type="button" class="btn-close"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
                                                                 <!-- Tabella con i dettagli dei time swings -->
-                                                                <table id="datatable-too-frequent_time_swings_details-<?php echo e($loop->index); ?>"
-                                                                       class="table table-bordered dt-responsive nowrap w-100">
+                                                                <table
+                                                                    id="datatable-too-frequent_time_swings_details-<?php echo e($loop->index); ?>"
+                                                                    class="table table-bordered dt-responsive nowrap w-100">
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Day</th>
@@ -975,7 +1150,9 @@
                                                                 </table>
                                                             </div>
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Close
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1066,7 +1243,8 @@
                                             intervention.</p>
 
                                         <p>To detect such swings, we evaluate if one of the periods before or after a
-                                            time swing (e.g., from Low to High or High to Low) <strong>occurs within a maximum time window of two hours</strong> falls within the
+                                            time swing (e.g., from Low to High or High to Low) <strong>occurs within a
+                                                maximum time window of two hours</strong> falls within the
                                             following defined Too Long Glucose Anomalies:</p>
 
                                         <ul>
@@ -1102,7 +1280,8 @@
                                                  alt="Time Swing With Too Long Glucose Anomalies Pattern"
                                                  class="img-fluid rounded"
                                                  style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Time Swing from Low to High with a four-hour High glucose anomaly
+                                            <small class="d-block mt-2 text-muted">Time Swing from Low to High with a
+                                                four-hour High glucose anomaly
                                             </small>
                                         </div>
                                     </div>
@@ -1174,7 +1353,6 @@
                         </div>
                     </div>
                 </div>
-
 
             </div>
         </div>
@@ -2081,6 +2259,12 @@
             $('#datatable-anomalous-duration').DataTable({order: [[0, "desc"]]});
             $('#datatable-anomalous-frequency').DataTable({order: [[0, "desc"]]});
             $('#datatable-too-long-duration').DataTable({order: [[0, "desc"]]});
+            $('#datatable-detection-patterns').DataTable({
+                order: [[1, "desc"]], // Ordina per la prima colonna (data)
+                columnDefs: [
+                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
+                ]
+            });
             $('#datatable-swings-followed-by-frequency').DataTable({
                 order: [[0, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
@@ -2179,7 +2363,6 @@
         });
 
 
-
         function getCanvasWithWhiteBackground(canvas) {
             const copy = document.createElement('canvas');
             copy.width = canvas.width;
@@ -2270,7 +2453,6 @@
                 // document.getElementById('downloadPdfForm').submit();
             });
         });
-
 
 
     </script>
