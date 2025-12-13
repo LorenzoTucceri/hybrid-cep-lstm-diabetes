@@ -297,13 +297,13 @@
                                                     :</strong> {{ round($data['gmi'],2)."%"?? 'N/A' }}
                                                 @if($data['gmi'] < 7)
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
                                                 @elseif($data['gmi'] >= 7 && $data['gmi'] <= 8)
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
                                                 @else
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
                                                 @endif
                                             </li>
 
@@ -426,23 +426,68 @@
             </div>
 
             <div class="container mt-4">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">Analysis Detected
-                            Pattern</h3>
+                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">
+                            Analysis Detected Pattern
+                        </h3>
+
+                        @if(isset($data['patient_stats']))
+                            <div class="row mb-4">
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Total Pattern</h6>
+                                            <p class="card-text">{{ $data['patient_stats']['total_Pattern'] ?? 0 }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Most Frequent Pattern</h6>
+                                            <p class="card-text">{{ $data['patient_stats']['most_frequent_pattern'] ?? 'N/A' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Target Distribution</h6>
+                                            <p class="card-text">
+                                                Red: {{ $data['patient_stats']['target_distribution']['red'] ?? 0 }}<br>
+                                                Yellow: {{ $data['patient_stats']['target_distribution']['yellow'] ?? 0 }}
+                                                <br>
+                                                Green: {{ $data['patient_stats']['target_distribution']['green'] ?? 0 }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Average Pattern Duration</h6>
+                                            <p class="card-text">{{ $data['patient_stats']['avg_duration'] ?? 'N/A' }}
+                                                min</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row">
                             <div class="card mb-4">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="d-flex align-items-center gap-2">
-                                            <h5 class="card-title mb-0">Patient Patterns</h5>
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detectionPatternInfoModal"
-                                               title="What are Detection Patterns?">
+                                            <h5 class="card-title mb-0">Patient Pattern</h5>
+                                            <a href="#" data-bs-toggle="modal"
+                                               data-bs-target="#detectionPatternInfoModal"
+                                               title="What are Pattern Detection?">
                                                 <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
                                             </a>
                                         </div>
-
-
+                                    </div>
                                     <!-- Info Modal -->
                                     <div class="modal fade" id="detectionPatternInfoModal" tabindex="-1"
                                          aria-labelledby="detectionPatternInfoModalLabel" aria-hidden="true">
@@ -450,141 +495,218 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="detectionPatternInfoModalLabel">What are
-                                                        Detection Patterns?</h5>
+                                                        Pattern Detection?</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>
-                                                        <strong>Detection Patterns</strong> represent sequences of glucose
-                                                        events that occur
-                                                        consecutively in the uploaded CSV data. These sequences are
-                                                        automatically analyzed by
-                                                        algorithms that identify recurring patterns.
+                                                        <strong>Pattern Detection</strong> represent sequences of
+                                                        glucose events that occur consecutively
+                                                        in the uploaded CSV data. These sequences are automatically
+                                                        analyzed by algorithms that identify
+                                                        recurring Pattern.
                                                     </p>
                                                     <p>
-                                                        The system extracts the <strong>top 10 most frequent patterns</strong>
-                                                        from the dataset,
-                                                        allowing users and clinicians to focus on the most common or potentially
+                                                        The system extracts the <strong>top 10 most frequent
+                                                            Pattern</strong> from the dataset, allowing
+                                                        users and clinicians to focus on the most common or potentially
                                                         risky sequences of events.
                                                     </p>
                                                     <p>
-                                                        Patterns that have already been covered or detected in previous event
-                                                        analyses are excluded
-                                                        to ensure that only new, distinct sequences are highlighted.
+                                                        Pattern that have already been covered or detected in previous
+                                                        analyses are excluded to ensure
+                                                        that only new, distinct sequences are highlighted.
                                                     </p>
                                                     <p>For each detected pattern, we track all occurrences with:</p>
                                                     <ul>
-                                                        <li><strong>Start Time:</strong> when the first event in the pattern
-                                                            begins.
+                                                        <li><strong>Start Time:</strong> when the first event in the
+                                                            pattern begins.
                                                         </li>
-                                                        <li><strong>End Time:</strong> when the last event in the pattern ends.
+                                                        <li><strong>End Time:</strong> when the last event in the
+                                                            pattern ends.
+                                                        </li>
+                                                    </ul>
+                                                    <p>Additional information:</p>
+                                                    <ul>
+                                                        <li>
+                                                            <strong>Global Pattern Detection:</strong> Pattern
+                                                            extracted from a large dataset of multiple
+                                                            patients, representing typical sequences of glucose events
+                                                            observed at a population level.
+                                                        </li>
+                                                        <li>
+                                                            <strong>Dominant Target:</strong> the most frequent glucose
+                                                            range (e.g., Red, Yellow, Green)
+                                                            associated with this pattern according to the <strong>global
+                                                                Pattern Detection</strong>.
+                                                            It reflects whether the pattern is generally linked to
+                                                            favorable, normal, or adverse glucose outcomes.
+                                                        </li>
+                                                        <li>
+                                                            <strong>Max Lift:</strong> a measure of the strength of
+                                                            association between the pattern and
+                                                            its dominant target, calculated based on the <strong>global
+                                                                Pattern Detection</strong>.
+                                                            It represents the maximum ratio of observed frequency to
+                                                            expected frequency, highlighting Pattern
+                                                            that are strongly associated with specific glucose outcomes.
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                @if(isset($data['parsed_top_k_patterns']) && count($data['parsed_top_k_patterns']) > 0)
-                                    <div class="table-responsive">
-                                        <table id="datatable-detection-patterns"
-                                               class="table table-bordered dt-responsive nowrap w-100">
-                                            <thead>
-                                            <tr>
-                                                <th>Pattern</th>
-                                                <th>Frequency</th>
-                                                <th>Occurrences</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach ($data['parsed_top_k_patterns'] as $pattern)
+                                    @if(isset($data['parsed_top_k_Pattern']) && count($data['parsed_top_k_Pattern']) > 0)
+                                        <div class="table-responsive">
+                                            <table id="datatable-detection-Pattern"
+                                                   class="table table-bordered dt-responsive nowrap w-100">
+                                                <thead>
                                                 <tr>
-                                                    <td>{{ implode(' - ', array_map('strtolower', $pattern['pattern'])) }}</td>
-                                                    <td>{{ $pattern['frequency'] ?? '0' }}</td>
-                                                    <td>
-                                                        @if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0)
-                                                            <button type="button" class="btn btn-info btn-sm"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#modal-{{ $loop->index }}-pattern">
-                                                                View Details
-                                                            </button>
+                                                    <th class="text-center" style="width: 120px;">Pattern</th>
+                                                    <th class="text-center" style="width: 80px;">Frequency</th>
+                                                    <th class="text-center" style="width: 100px;">Avg<br>Duration</th>
+                                                    <th class="text-center" style="width: 120px;">Dominant<br>Target</th>
+                                                    <th class="text-center" style="width: 80px;">Max Lift</th>
+                                                    <th class="text-center">Occurrences</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach ($data['parsed_top_k_Pattern'] as $pattern)
+                                                    <tr>
+                                                        <td>{{ implode(' - ', array_map('strtolower', $pattern['pattern'])) }}</td>
+                                                        <td>{{ $pattern['frequency'] ?? '0' }}</td>
+                                                        @php
+                                                            $total_minutes = 0;
+                                                            $count = 0;
 
-                                                            <div class="modal fade" id="modal-{{ $loop->index }}-pattern"
-                                                                 tabindex="-1"
-                                                                 aria-labelledby="modalLabel-{{ $loop->index }}-pattern"
-                                                                 aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title"
-                                                                                id="modalLabel-{{ $loop->index }}-pattern">
-                                                                                Pattern
-                                                                                Details: {{ implode(' - ',array_map('strtolower', $pattern['pattern'])) }}
-                                                                            </h5>
-                                                                            <button type="button" class="btn-close"
-                                                                                    data-bs-dismiss="modal"
-                                                                                    aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <table class="table table-bordered">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <th>#</th>
-                                                                                    <th>Start Time</th>
-                                                                                    <th>End Time</th>
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                @foreach($pattern['occurrences'] as $k => $occ)
-                                                                                    @if(is_array($occ) && count($occ) > 0)
-                                                                                        @php
-                                                                                            $firstEvent = $occ[0];                  // primo evento della occorrenza
-                                                                                            $lastEvent = $occ[count($occ) - 1];     // ultimo evento della occorrenza
+                                                            foreach($pattern['occurrences'] as $occ) {
+                                                                if(isset($occ[0]['duration'])) {
+                                                                    // Converti "HH:MM:SS" in secondi
+                                                                    [$h, $m, $s] = explode(':', $occ[0]['duration']);
+                                                                    $seconds = ($h * 3600) + ($m * 60) + $s;
+                                                                    $total_minutes += $seconds / 60;
+                                                                    $count++;
+                                                                }
+                                                            }
 
-                                                                                            $start = isset($firstEvent['start']) ? $firstEvent['start'] : null;
-                                                                                            $end = isset($lastEvent['end']) ? $lastEvent['end'] : null;
-                                                                                        @endphp
-                                                                                        <tr>
-                                                                                            <td>{{ $k + 1 }}</td>
-                                                                                            <td>{{ $start ? \Carbon\Carbon::parse($start)->format('D, d M Y H:i') : 'N/A' }}</td>
-                                                                                            <td>{{ $end ? \Carbon\Carbon::parse($end)->format('D, d M Y H:i') : 'N/A' }}</td>
-                                                                                        </tr>
-                                                                                    @endif
-                                                                                @endforeach</tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                    data-bs-dismiss="modal">Close
-                                                                            </button>
+                                                            if($count > 0) {
+                                                                $avg_minutes = round($total_minutes / $count, 2);
+                                                            } else {
+                                                                $avg_minutes = 0;
+                                                            }
+                                                        @endphp
+
+                                                        <td>{{ $avg_minutes }} min</td>
+
+                                                        <td>{{ $pattern['target'] ??  'N/A'}}</td>
+
+
+                                                        <td>{{ isset($pattern['max_lift']) ? number_format($pattern['max_lift'], 2) : 'N/A' }}</td>
+                                                        <td>
+                                                            @if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0)
+                                                                <button type="button" class="btn btn-info btn-sm"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#modal-{{ $loop->index }}-pattern">
+                                                                    View Details
+                                                                </button>
+
+                                                                <!-- Modal dettagli occorrenze -->
+                                                                <div class="modal fade"
+                                                                     id="modal-{{ $loop->index }}-pattern" tabindex="-1"
+                                                                     aria-labelledby="modalLabel-{{ $loop->index }}-pattern"
+                                                                     aria-hidden="true">
+                                                                    <div
+                                                                            class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title"
+                                                                                    id="modalLabel-{{ $loop->index }}-pattern">
+                                                                                    Pattern
+                                                                                    Details: {{ implode(' - ', array_map('strtolower', $pattern['pattern'])) }}
+                                                                                </h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                        data-bs-dismiss="modal"
+                                                                                        aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <table class="table table-bordered">
+                                                                                    <thead>
+                                                                                    <tr>
+                                                                                        <th>#</th>
+                                                                                        <th>Day</th>
+                                                                                        <th>Start Time</th>
+                                                                                        <th>End Time</th>
+                                                                                        <th>Duration (h)</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    @foreach($pattern['occurrences'] as $k => $occ)
+                                                                                        @if(is_array($occ) && count($occ) > 0)
+                                                                                            @php
+                                                                                                $firstEvent = $occ[0];
+                                                                                                $lastEvent = $occ[count($occ)-1];
+                                                                                                $start = $firstEvent['start'] ?? 'N/A';
+                                                                                                $end = $lastEvent['end'] ?? 'N/A';
+                                                                                                $duration = $occ[0]['duration'] ?? 'N/A';
+
+                                                                                                // Format duration in HH:MM:SS if numeric
+                                                                                                if(is_numeric($duration)) {
+                                                                                                    $total_seconds = (int)$duration;
+                                                                                                    $hours = floor($total_seconds / 3600);
+                                                                                                    $minutes = floor(($total_seconds % 3600) / 60);
+                                                                                                    $seconds = $total_seconds % 60;
+                                                                                                    $duration = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+                                                                                                }
+
+                                                                                                // Calcolo il giorno formattato "Sun, 08 Sep 2024"
+                                                                                                if($start !== 'N/A') {
+                                                                                                    $day = date('D, d M Y', strtotime($start));
+                                                                                                } else {
+                                                                                                    $day = 'N/A';
+                                                                                                }
+                                                                                            @endphp
+                                                                                            <tr>
+                                                                                                <td>{{ $k + 1 }}</td>
+                                                                                                <td>{{ $day }}</td>
+                                                                                                <td>{{ $start }}</td>
+                                                                                                <td>{{ $end }}</td>
+                                                                                                <td>{{ $duration }}</td>
+                                                                                            </tr>
+                                                                                        @endif
+                                                                                    @endforeach
+                                                                                    </tbody>
+                                                                                </table>                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-bs-dismiss="modal">Close
+                                                                                </button>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        @else
-                                                            <span class="text-muted">No occurrences</span>
-                                                        @endif
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @else
-                                    <p class="text-muted">Nessun pattern rilevato.</p>
-                                @endif
+                                                            @else
+                                                                <span class="text-muted">No occurrences</span>
+                                                            @endif
+                                                        </td>
+
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <p class="text-muted">Nessun pattern rilevato.</p>
+                                    @endif
+                                </div>
                             </div>
-
-
                         </div>
+
                     </div>
-
-
                 </div>
             </div>
-
 
             <div class="card mt-4">
                 <div class="card-body">
@@ -1102,8 +1224,8 @@
                                                             <div class="modal-body">
                                                                 <!-- Tabella con i dettagli dei time swings -->
                                                                 <table
-                                                                    id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
-                                                                    class="table table-bordered dt-responsive nowrap w-100">
+                                                                        id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
+                                                                        class="table table-bordered dt-responsive nowrap w-100">
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Day</th>
@@ -2232,7 +2354,7 @@
             $('#datatable-anomalous-duration').DataTable({order: [[0, "desc"]]});
             $('#datatable-anomalous-frequency').DataTable({order: [[0, "desc"]]});
             $('#datatable-too-long-duration').DataTable({order: [[0, "desc"]]});
-            $('#datatable-detection-patterns').DataTable({
+            $('#datatable-detection-Pattern').DataTable({
                 order: [[1, "desc"]], // Ordina per la prima colonna (data)
                 columnDefs: [
                     {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna

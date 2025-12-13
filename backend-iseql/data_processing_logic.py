@@ -106,7 +106,7 @@ def process_csv():
             f.write(f"{p_str}\n")
         tmp_file_path = f.name
 
-    print(f"File CSV temporaneo creato: {tmp_file_path}")
+    # print(f"File CSV temporaneo creato: {tmp_file_path}")
 
     with open("eventi.txt", "w") as file:
         file.write("start_time,end_time,label\n")  # Header
@@ -138,14 +138,12 @@ def process_csv():
                 capture_output=True,
                 text=True
             )
-            print(result)
 
             lines = result.stdout.strip().split("\n")
-
-            # Regex per catturare pattern, frequency e occorrenze
             pattern_re = re.compile(
                 r"\{\s*pattern:\s*'(.+?)',\s*frequency:\s*(\d+),\s*occurrences:\s*\[(.*)\]\s*\}"
             )
+
             parsed = []
 
             for line in lines:
@@ -154,47 +152,106 @@ def process_csv():
                     continue
 
                 m = pattern_re.match(line)
-                if m:
-                    pattern_str = m.group(1)
-                    frequency = int(m.group(2))
-                    occurrences_str = m.group(3)
+                if not m:
+                    continue
 
-                    # Converti il pattern in tupla
-                    pattern = tuple(p.strip() for p in pattern_str.split(','))
+                pattern_str = m.group(1)
+                frequency = int(m.group(2))
+                occurrences_str = m.group(3)
 
-                    # Converti occurrences in lista di liste di datetime
-                    occurrences = []
-                    if occurrences_str:
-                        # Aggiungi parentesi quadre esterne per ast.literal_eval
-                        try:
-                            raw = ast.literal_eval("[" + occurrences_str + "]")
+                # Converti pattern in tupla
+                pattern = tuple(p.strip() for p in pattern_str.split(','))
 
-                            for match in raw:
-                                formatted_match = []
+                # Converti occurrences in lista di liste di datetime
+                occurrences = []
+                if occurrences_str:
+                    try:
+                        raw = ast.literal_eval("[" + occurrences_str + "]")
+                        for match in raw:
+                            formatted_match = []
+                            for start_ts, end_ts in match:
+                                start_dt = unix_timestamp_to_datetime(start_ts)
+                                end_dt = unix_timestamp_to_datetime(end_ts)
+                                duration = end_dt - start_dt
+                                total_seconds = int(duration.total_seconds())
+                                hours = total_seconds // 3600
+                                minutes = (total_seconds % 3600) // 60
+                                seconds = total_seconds % 60
+                                duration_str = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                                formatted_match.append({
+                                    "start": start_dt.strftime("%Y-%m-%d %H:%M"),
+                                    "end": end_dt.strftime("%Y-%m-%d %H:%M"),
+                                    "duration": duration_str
+                                })
+                            occurrences.append(formatted_match)
+                    except Exception as e:
+                        print("[WARNING] Errore parsing:", e)
 
-                                for start_ts, end_ts in match:
-                                    start_dt = unix_timestamp_to_datetime(start_ts)
-                                    end_dt = unix_timestamp_to_datetime(end_ts)
+                    print(occurrences)
 
-                                    formatted_match.append({
-                                        "start": start_dt.strftime("%Y-%m-%d %H:%M"),
-                                        "end": end_dt.strftime("%Y-%m-%d %H:%M")
-                                    })
+                parsed.append({
+                    'pattern': pattern,
+                    'frequency': frequency,
+                    'occurrences': occurrences
+                })
 
-                                occurrences.append(formatted_match)
+            df_patient_patterns = pd.DataFrame(parsed)
 
-                        except Exception as e:
-                            print("[WARNING] Errore parsing:", e)
+            df_enriched = detection_pattern.enrich_patient_patterns(df_patient_patterns)
 
-                    parsed.append({
-                        'pattern': pattern,
-                        'frequency': frequency,
-                        'occurrences': occurrences
-                    })
+            # Costruiamo la lista finale da restituire con tutte le info disponibili
+
+            parsed_final = []
+
+            for _, row in df_enriched.iterrows():
+                # Calcoliamo la durata media del pattern in minuti
+                durations = []
+                for occ_list in row['occurrences']:
+                    for occ in occ_list:
+                        h, m, s = map(int, occ['duration'].split(":"))
+                        total_minutes = h * 60 + m + s / 60
+                        durations.append(total_minutes)
+                avg_duration = round(sum(durations) / len(durations), 2) if durations else 0
+
+                parsed_final.append({
+                    'pattern': row['pattern'],
+                    'frequency': row.get('frequency', 0),
+                    'occurrences': row['occurrences'],
+                    'target': row.get('dominant_target', 'N/A'),
+                    'max_lift': row.get('max_lift', 0),
+                    'total_duration': avg_duration
+                })
+
+            # Calcoliamo le statistiche dal paziente
+            if parsed_final:
+                targets = [p['target'].lower() for p in parsed_final]  # red, yellow, green in inglese
+                most_freq_item = max(parsed_final, key=lambda x: x['frequency'])
+                patient_stats = {
+                    'total_patterns': len(parsed_final),
+                    'most_frequent_pattern': " - ".join(
+                        str(p) for p in most_freq_item['pattern']) + f" ({most_freq_item['frequency']})",
+                    'target_distribution': {
+                        'red': targets.count('red'),
+                        'yellow': targets.count('yellow'),
+                        'green': targets.count('green')
+                    },
+                    'avg_duration': round(
+                        sum(p['total_duration'] for p in parsed_final) / len(parsed_final),
+                        2
+                    )
+                }
+            else:
+                patient_stats = {
+                    'total_patterns': 0,
+                    'most_frequent_pattern': [],
+                    'target_distribution': {'red': 0, 'yellow': 0, 'green': 0},
+                    'avg_duration': 'N/A'
+                }
+
+            return parsed_final, patient_stats
 
 
         else:
-
 
             result = subprocess.run(
 
@@ -225,24 +282,15 @@ def process_csv():
 
                 parsed.append((interval1, interval2))
 
-        return parsed
+            return parsed
 
     try:
         parsed_time_swings = run_and_parse("time-swing")
         parsed_extremely_time_swings = run_and_parse("extremely-time-swing")
-        parsed_top_k_pattern = run_and_parse("detection_pattern")
+        parsed_top_k_pattern, patient_stats = run_and_parse("detection_pattern")
 
-        for item in parsed_top_k_pattern:
-            pattern_tuple = item['pattern']
-            frequency = item['frequency']
-            occurrences = item['occurrences']  # lista di liste di tuple (datetime, datetime)
 
-            print(pattern_tuple, frequency)
 
-            # Se vuoi stampare tutte le occorrenze:
-            for occ in occurrences:
-                for start, end in occ:
-                    print("  Start:", start, "End:", end)
 
     except subprocess.CalledProcessError as e:
         print(f"Errore durante l'esecuzione del programma C: {e}")
@@ -386,11 +434,15 @@ def process_csv():
         'parsed_top_k_patterns': [
             {
                 'pattern': item['pattern'],
-                'frequency': item['frequency'],
-                'occurrences': item['occurrences']
+                'frequency': item.get('frequency', 0),
+                'occurrences': item['occurrences'],
+                'target': item.get('target'),
+                'max_lift': item.get('max_lift'),
+
             }
             for item in parsed_top_k_pattern
-        ]
+        ],
+        'patient_stats': patient_stats
 
     }
 

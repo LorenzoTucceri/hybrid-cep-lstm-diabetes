@@ -6,7 +6,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/giallo_labeling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/rosso_labeling.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_epoch.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/simulated_intervals/verde_labeling.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../cpp-iseql/build/src/CMakeFiles/iseql.dir/Main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/build/src/CMakeFiles/iseql.dir/Main.cpp.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cpp-iseql/build/src/iseql" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/build/src/iseql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
@@ -296,6 +303,12 @@
       <workItem from="1764867540093" duration="583000" />
       <workItem from="1764941217589" duration="4145000" />
       <workItem from="1764945718175" duration="7139000" />
+      <workItem from="1765050229711" duration="42000" />
+      <workItem from="1765110939629" duration="474000" />
+      <workItem from="1765121047673" duration="12000" />
+      <workItem from="1765193620696" duration="3749000" />
+      <workItem from="1765203396447" duration="5653000" />
+      <workItem from="1765553077380" duration="62000" />
     </task>
     <servers />
   </component>

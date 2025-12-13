@@ -402,6 +402,8 @@ int main(int /*argc*/, const char* argv[])
 
         std::cout << "\n[DEBUG] Fine lettura e ricerca pattern" << std::endl;
     }
+
+
     else
     {
         mainJoins(command, arguments);

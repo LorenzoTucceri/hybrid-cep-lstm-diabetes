@@ -299,13 +299,13 @@
 
                                                 <?php if($data['gmi'] < 7): ?>
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
                                                 <?php elseif($data['gmi'] >= 7 && $data['gmi'] <= 8): ?>
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
                                                 <?php else: ?>
                                                     <span
-                                                        style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
+                                                            style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
                                                 <?php endif; ?>
                                             </li>
 
@@ -450,23 +450,71 @@
             </div>
 
             <div class="container mt-4">
-                <div class="card">
+                <div class="card mb-4">
                     <div class="card-body">
-                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">Analysis Detected
-                            Pattern</h3>
+                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">
+                            Analysis Detected Patterns
+                        </h3>
+
+                        <?php if(isset($data['patient_stats'])): ?>
+                            <div class="row mb-4">
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Total Patterns</h6>
+                                            <p class="card-text"><?php echo e($data['patient_stats']['total_patterns'] ?? 0); ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Most Frequent Pattern</h6>
+                                            <p class="card-text"><?php echo e($data['patient_stats']['most_frequent_pattern'] ?? 'N/A'); ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Target Distribution</h6>
+                                            <p class="card-text">
+                                                Red: <?php echo e($data['patient_stats']['target_distribution']['red'] ?? 0); ?><br>
+                                                Yellow: <?php echo e($data['patient_stats']['target_distribution']['yellow'] ?? 0); ?>
+
+                                                <br>
+                                                Green: <?php echo e($data['patient_stats']['target_distribution']['green'] ?? 0); ?>
+
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="card text-center bg-light">
+                                        <div class="card-body">
+                                            <h6 class="card-title">Average Pattern Duration</h6>
+                                            <p class="card-text"><?php echo e($data['patient_stats']['avg_duration'] ?? 'N/A'); ?>
+
+                                                min</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="row">
                             <div class="card mb-4">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div class="d-flex align-items-center gap-2">
                                             <h5 class="card-title mb-0">Patient Patterns</h5>
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#detectionPatternInfoModal"
+                                            <a href="#" data-bs-toggle="modal"
+                                               data-bs-target="#detectionPatternInfoModal"
                                                title="What are Detection Patterns?">
                                                 <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
                                             </a>
                                         </div>
-
-
+                                    </div>
                                     <!-- Info Modal -->
                                     <div class="modal fade" id="detectionPatternInfoModal" tabindex="-1"
                                          aria-labelledby="detectionPatternInfoModalLabel" aria-hidden="true">
@@ -480,136 +528,213 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>
-                                                        <strong>Detection Patterns</strong> represent sequences of glucose
-                                                        events that occur
-                                                        consecutively in the uploaded CSV data. These sequences are
-                                                        automatically analyzed by
-                                                        algorithms that identify recurring patterns.
+                                                        <strong>Detection Patterns</strong> represent sequences of
+                                                        glucose events that occur consecutively
+                                                        in the uploaded CSV data. These sequences are automatically
+                                                        analyzed by algorithms that identify
+                                                        recurring patterns.
                                                     </p>
                                                     <p>
-                                                        The system extracts the <strong>top 10 most frequent patterns</strong>
-                                                        from the dataset,
-                                                        allowing users and clinicians to focus on the most common or potentially
+                                                        The system extracts the <strong>top 10 most frequent
+                                                            patterns</strong> from the dataset, allowing
+                                                        users and clinicians to focus on the most common or potentially
                                                         risky sequences of events.
                                                     </p>
                                                     <p>
-                                                        Patterns that have already been covered or detected in previous event
-                                                        analyses are excluded
-                                                        to ensure that only new, distinct sequences are highlighted.
+                                                        Patterns that have already been covered or detected in previous
+                                                        analyses are excluded to ensure
+                                                        that only new, distinct sequences are highlighted.
                                                     </p>
                                                     <p>For each detected pattern, we track all occurrences with:</p>
                                                     <ul>
-                                                        <li><strong>Start Time:</strong> when the first event in the pattern
-                                                            begins.
+                                                        <li><strong>Start Time:</strong> when the first event in the
+                                                            pattern begins.
                                                         </li>
-                                                        <li><strong>End Time:</strong> when the last event in the pattern ends.
+                                                        <li><strong>End Time:</strong> when the last event in the
+                                                            pattern ends.
+                                                        </li>
+                                                    </ul>
+                                                    <p>Additional information:</p>
+                                                    <ul>
+                                                        <li>
+                                                            <strong>Global Detection Patterns:</strong> patterns
+                                                            extracted from a large dataset of multiple
+                                                            patients, representing typical sequences of glucose events
+                                                            observed at a population level.
+                                                        </li>
+                                                        <li>
+                                                            <strong>Dominant Target:</strong> the most frequent glucose
+                                                            range (e.g., Red, Yellow, Green)
+                                                            associated with this pattern according to the <strong>global
+                                                                detection patterns</strong>.
+                                                            It reflects whether the pattern is generally linked to
+                                                            favorable, normal, or adverse glucose outcomes.
+                                                        </li>
+                                                        <li>
+                                                            <strong>Max Lift:</strong> a measure of the strength of
+                                                            association between the pattern and
+                                                            its dominant target, calculated based on the <strong>global
+                                                                detection patterns</strong>.
+                                                            It represents the maximum ratio of observed frequency to
+                                                            expected frequency, highlighting patterns
+                                                            that are strongly associated with specific glucose outcomes.
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <?php if(isset($data['parsed_top_k_patterns']) && count($data['parsed_top_k_patterns']) > 0): ?>
-                                    <div class="table-responsive">
-                                        <table id="datatable-detection-patterns"
-                                               class="table table-bordered dt-responsive nowrap w-100">
-                                            <thead>
-                                            <tr>
-                                                <th>Pattern</th>
-                                                <th>Frequency</th>
-                                                <th>Occurrences</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php $__currentLoopData = $data['parsed_top_k_patterns']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pattern): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(isset($data['parsed_top_k_patterns']) && count($data['parsed_top_k_patterns']) > 0): ?>
+                                        <div class="table-responsive">
+                                            <table id="datatable-detection-patterns"
+                                                   class="table table-bordered dt-responsive nowrap w-100">
+                                                <thead>
                                                 <tr>
-                                                    <td><?php echo e(implode(' - ', array_map('strtolower', $pattern['pattern']))); ?></td>
-                                                    <td><?php echo e($pattern['frequency'] ?? '0'); ?></td>
-                                                    <td>
-                                                        <?php if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0): ?>
-                                                            <button type="button" class="btn btn-info btn-sm"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#modal-<?php echo e($loop->index); ?>-pattern">
-                                                                View Details
-                                                            </button>
+                                                    <th class="text-center" style="width: 120px;">Pattern</th>
+                                                    <th class="text-center" style="width: 80px;">Frequency</th>
+                                                    <th class="text-center" style="width: 100px;">Avg<br>Duration</th>
+                                                    <th class="text-center" style="width: 120px;">Dominant<br>Target</th>
+                                                    <th class="text-center" style="width: 80px;">Max Lift</th>
+                                                    <th class="text-center">Occurrences</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <?php $__currentLoopData = $data['parsed_top_k_patterns']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pattern): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <tr>
+                                                        <td><?php echo e(implode(' - ', array_map('strtolower', $pattern['pattern']))); ?></td>
+                                                        <td><?php echo e($pattern['frequency'] ?? '0'); ?></td>
+                                                        <?php
+                                                            $total_minutes = 0;
+                                                            $count = 0;
 
-                                                            <div class="modal fade" id="modal-<?php echo e($loop->index); ?>-pattern"
-                                                                 tabindex="-1"
-                                                                 aria-labelledby="modalLabel-<?php echo e($loop->index); ?>-pattern"
-                                                                 aria-hidden="true">
-                                                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header">
-                                                                            <h5 class="modal-title"
-                                                                                id="modalLabel-<?php echo e($loop->index); ?>-pattern">
-                                                                                Pattern
-                                                                                Details: <?php echo e(implode(' - ',array_map('strtolower', $pattern['pattern']))); ?>
+                                                            foreach($pattern['occurrences'] as $occ) {
+                                                                if(isset($occ[0]['duration'])) {
+                                                                    // Converti "HH:MM:SS" in secondi
+                                                                    [$h, $m, $s] = explode(':', $occ[0]['duration']);
+                                                                    $seconds = ($h * 3600) + ($m * 60) + $s;
+                                                                    $total_minutes += $seconds / 60;
+                                                                    $count++;
+                                                                }
+                                                            }
 
-                                                                            </h5>
-                                                                            <button type="button" class="btn-close"
-                                                                                    data-bs-dismiss="modal"
-                                                                                    aria-label="Close"></button>
-                                                                        </div>
-                                                                        <div class="modal-body">
-                                                                            <table class="table table-bordered">
-                                                                                <thead>
-                                                                                <tr>
-                                                                                    <th>#</th>
-                                                                                    <th>Start Time</th>
-                                                                                    <th>End Time</th>
-                                                                                </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                <?php $__currentLoopData = $pattern['occurrences']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $occ): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                                    <?php if(is_array($occ) && count($occ) > 0): ?>
-                                                                                        <?php
-                                                                                            $firstEvent = $occ[0];                  // primo evento della occorrenza
-                                                                                            $lastEvent = $occ[count($occ) - 1];     // ultimo evento della occorrenza
+                                                            if($count > 0) {
+                                                                $avg_minutes = round($total_minutes / $count, 2);
+                                                            } else {
+                                                                $avg_minutes = 0;
+                                                            }
+                                                        ?>
 
-                                                                                            $start = isset($firstEvent['start']) ? $firstEvent['start'] : null;
-                                                                                            $end = isset($lastEvent['end']) ? $lastEvent['end'] : null;
-                                                                                        ?>
-                                                                                        <tr>
-                                                                                            <td><?php echo e($k + 1); ?></td>
-                                                                                            <td><?php echo e($start ? \Carbon\Carbon::parse($start)->format('D, d M Y H:i') : 'N/A'); ?></td>
-                                                                                            <td><?php echo e($end ? \Carbon\Carbon::parse($end)->format('D, d M Y H:i') : 'N/A'); ?></td>
-                                                                                        </tr>
-                                                                                    <?php endif; ?>
-                                                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?></tbody>
-                                                                            </table>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary"
-                                                                                    data-bs-dismiss="modal">Close
-                                                                            </button>
+                                                        <td><?php echo e($avg_minutes); ?> min</td>
+
+                                                        <td><?php echo e($pattern['target'] ??  'N/A'); ?></td>
+
+
+                                                        <td><?php echo e(isset($pattern['max_lift']) ? number_format($pattern['max_lift'], 2) : 'N/A'); ?></td>
+                                                        <td>
+                                                            <?php if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0): ?>
+                                                                <button type="button" class="btn btn-info btn-sm"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#modal-<?php echo e($loop->index); ?>-pattern">
+                                                                    View Details
+                                                                </button>
+
+                                                                <!-- Modal dettagli occorrenze -->
+                                                                <div class="modal fade"
+                                                                     id="modal-<?php echo e($loop->index); ?>-pattern" tabindex="-1"
+                                                                     aria-labelledby="modalLabel-<?php echo e($loop->index); ?>-pattern"
+                                                                     aria-hidden="true">
+                                                                    <div
+                                                                            class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title"
+                                                                                    id="modalLabel-<?php echo e($loop->index); ?>-pattern">
+                                                                                    Pattern
+                                                                                    Details: <?php echo e(implode(' - ', array_map('strtolower', $pattern['pattern']))); ?>
+
+                                                                                </h5>
+                                                                                <button type="button" class="btn-close"
+                                                                                        data-bs-dismiss="modal"
+                                                                                        aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <table class="table table-bordered">
+                                                                                    <thead>
+                                                                                    <tr>
+                                                                                        <th>#</th>
+                                                                                        <th>Day</th>
+                                                                                        <th>Start Time</th>
+                                                                                        <th>End Time</th>
+                                                                                        <th>Duration (h)</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    <?php $__currentLoopData = $pattern['occurrences']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $occ): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                                        <?php if(is_array($occ) && count($occ) > 0): ?>
+                                                                                            <?php
+                                                                                                $firstEvent = $occ[0];
+                                                                                                $lastEvent = $occ[count($occ)-1];
+                                                                                                $start = $firstEvent['start'] ?? 'N/A';
+                                                                                                $end = $lastEvent['end'] ?? 'N/A';
+                                                                                                $duration = $occ[0]['duration'] ?? 'N/A';
+
+                                                                                                // Format duration in HH:MM:SS if numeric
+                                                                                                if(is_numeric($duration)) {
+                                                                                                    $total_seconds = (int)$duration;
+                                                                                                    $hours = floor($total_seconds / 3600);
+                                                                                                    $minutes = floor(($total_seconds % 3600) / 60);
+                                                                                                    $seconds = $total_seconds % 60;
+                                                                                                    $duration = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
+                                                                                                }
+
+                                                                                                // Calcolo il giorno formattato "Sun, 08 Sep 2024"
+                                                                                                if($start !== 'N/A') {
+                                                                                                    $day = date('D, d M Y', strtotime($start));
+                                                                                                } else {
+                                                                                                    $day = 'N/A';
+                                                                                                }
+                                                                                            ?>
+                                                                                            <tr>
+                                                                                                <td><?php echo e($k + 1); ?></td>
+                                                                                                <td><?php echo e($day); ?></td>
+                                                                                                <td><?php echo e($start); ?></td>
+                                                                                                <td><?php echo e($end); ?></td>
+                                                                                                <td><?php echo e($duration); ?></td>
+                                                                                            </tr>
+                                                                                        <?php endif; ?>
+                                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                                    </tbody>
+                                                                                </table>                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button"
+                                                                                        class="btn btn-secondary"
+                                                                                        data-bs-dismiss="modal">Close
+                                                                                </button>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        <?php else: ?>
-                                                            <span class="text-muted">No occurrences</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                <?php else: ?>
-                                    <p class="text-muted">Nessun pattern rilevato.</p>
-                                <?php endif; ?>
+                                                            <?php else: ?>
+                                                                <span class="text-muted">No occurrences</span>
+                                                            <?php endif; ?>
+                                                        </td>
+
+                                                    </tr>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    <?php else: ?>
+                                        <p class="text-muted">Nessun pattern rilevato.</p>
+                                    <?php endif; ?>
+                                </div>
                             </div>
-
-
                         </div>
+
                     </div>
-
-
                 </div>
             </div>
-
 
             <div class="card mt-4">
                 <div class="card-body">
@@ -1127,8 +1252,8 @@
                                                             <div class="modal-body">
                                                                 <!-- Tabella con i dettagli dei time swings -->
                                                                 <table
-                                                                    id="datatable-too-frequent_time_swings_details-<?php echo e($loop->index); ?>"
-                                                                    class="table table-bordered dt-responsive nowrap w-100">
+                                                                        id="datatable-too-frequent_time_swings_details-<?php echo e($loop->index); ?>"
+                                                                        class="table table-bordered dt-responsive nowrap w-100">
                                                                     <thead>
                                                                     <tr>
                                                                         <th>Day</th>
