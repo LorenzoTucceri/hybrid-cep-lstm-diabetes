@@ -20,1240 +20,871 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 
     <style>
-        /* Stile per il contenitore dell'input per centrarlo */
-        .daterange-container {
-            display: flex;
-            justify-content: center; /* Allinea orizzontalmente al centro */
-            align-items: center; /* Allinea verticalmente al centro */
-            margin: 0 auto; /* Centra il contenitore all'interno del suo genitore */
-            max-width: 400px; /* Imposta una larghezza massima per l'input */
+        /* Modern Card Styling */
+        .card {
+            border: none;
+            box-shadow: 0 0.75rem 1.5rem rgba(18, 38, 63, 0.03);
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
         }
 
-        /* Stile per l'input del daterangepicker */
+        .card,
+        .card-body {
+            overflow: visible !important;
+        }
+
+        .card:hover {
+            box-shadow: 0 1rem 3rem rgba(18, 38, 63, 0.08);
+        }
+
+        .card-header-custom {
+            background-color: transparent;
+            border-bottom: 1px solid #f6f6f6;
+            padding: 1.25rem;
+        }
+
+
+        /* Stat Icons */
+        .avatar-title {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Date Picker Customization */
+        .daterange-input-group {
+            background: #fff;
+            border-radius: 30px;
+            padding: 5px 15px;
+            border: 1px solid #e9e9ef;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
         input[name="daterange"] {
-            width: 100%; /* Occupa tutta la larghezza del contenitore */
-            max-width: 300px; /* Imposta una larghezza massima per l'input */
-            padding: 0.5rem; /* Padding interno ridotto per ridurre le dimensioni */
-            border: 1px solid #ced4da; /* Colore del bordo grigio chiaro */
-            border-radius: 5px; /* Arrotonda gli angoli del box */
-            font-size: 0.875rem; /* Dimensione del testo più piccola */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombra leggera per effetto sollevato */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transizione per colore del bordo e ombra */
-            background-color: #ffffff; /* Colore di sfondo bianco */
+            border: none;
+            outline: none;
+            width: 100%;
+            padding-left: 10px;
+            color: #495057;
+            font-weight: 500;
+            background: transparent;
         }
 
-        /* Stile per l'input del daterangepicker quando è in focus */
-        input[name="daterange"]:focus {
-            border-color: #007bff; /* Colore del bordo blu quando è attivo */
-            box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* Ombra blu attorno all'input quando è attivo */
-            outline: none; /* Rimuove l'outline predefinito */
-        }
-
-        /* Contenitore del bottone per centrarlo */
-        .form-container {
-            display: flex;
-            justify-content: center; /* Allinea orizzontalmente al centro */
-            align-items: center; /* Allinea verticalmente al centro se necessario */
-        }
-
-        /* Stile per il bottone */
-        .btn-center {
-            display: inline-block; /* Mantiene il bottone in linea */
-            margin-top: 1rem; /* Spazio sopra il bottone, se necessario */
-        }
-
-        .custom-close {
-            color: white;
-            background-color: #850404;
-            border-color: #850404;
-        }
-
+        /* Custom Colors */
         .bg-purple {
-            background-color: #800080; /* Purple color */
+            background-color: #6f42c1;
+            color: white;
+        }
+
+        .text-purple {
+            color: #6f42c1;
         }
 
         .bg-heavenly {
-            background-color: rgb(220, 110, 110, 0.5);
+            background-color: rgba(220, 110, 110, 0.15);
+            color: #d14949;
         }
 
-        .bg-heavenly-dark {
-            background-color: rgb(50, 150, 150); /* Un blu-verde più scuro */
+        .text-heavenly {
+            color: #d14949;
         }
 
+        .bg-soft-primary {
+            background-color: rgba(85, 110, 230, 0.1) !important;
+            color: #556ee6 !important;
+        }
 
+        .bg-soft-success {
+            background-color: rgba(52, 195, 143, 0.1) !important;
+            color: #34c38f !important;
+        }
+
+        .bg-soft-warning {
+            background-color: rgba(241, 180, 76, 0.1) !important;
+            color: #f1b44c !important;
+        }
+
+        .bg-soft-danger {
+            background-color: rgba(244, 106, 106, 0.1) !important;
+            color: #f46a6a !important;
+        }
+
+        .bg-soft-info {
+            background-color: rgba(80, 165, 241, 0.1) !important;
+            color: #50a5f1 !important;
+        }
+
+        /* Helpers */
+        .font-size-12 {
+            font-size: 12px !important;
+        }
+
+        .font-size-13 {
+            font-size: 13px !important;
+        }
     </style>
+
     <div class="row">
         <div class="col-lg-12">
-            <!-- Card for Patient Info -->
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="card-title mb-0">Patient: {{$patient->name." ".$patient->surname}}</h4>
-
-                        <div class="dropdown align-right"
-                             style="margin-bottom: 15px; display: flex; justify-content: flex-end;">
-                            <button class="btn btn-primary dropdown-toggle"
-                                    type="button"
-                                    id="bs-download-pdf-modal-button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false">
-                                <i class="bx bx-cog font-size-18"></i>
-                            </button>
-
-                            <div class="dropdown-menu p-3"
-                                 aria-labelledby="bs-download-pdf-modal"
-                                 style="max-height: 300px; overflow-y: auto; min-width: 250px;">
-                                <div class="text-center mb-2">
-                                    <h5 class="text-muted" style="font-size: 0.75rem;">Select section</h5>
+            <div class="card overflow-hidden">
+                <div class="bg-primary bg-soft">
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="text-primary p-3">
+                                <h5 class="text-primary">Patient Profile</h5>
+                                <p>Analysis Dashboard for {{$patient->name}}</p>
+                            </div>
+                        </div>
+                        <div class="col-5 align-self-end text-end">
+                            <i class="bx bx-pulse text-primary" style="font-size: 6rem; opacity: 0.3; margin-right: 10px; margin-bottom: -10px;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="d-flex justify-content-between align-items-start mt-3">
+                                <div>
+                                    <h5 class="font-size-15 text-truncate">{{$patient->name." ".$patient->surname}}</h5>
+                                    <p class="text-muted mb-0 text-truncate">{{ $patient->email }}</p>
                                 </div>
-                                <form id="downloadPdfForm" method="post"
-                                      action="{{ route('download.pdf', ['patientId' => $patient->id, 'csvId' => $csv->id] + (request('start_date') ? ['start_date' => request('start_date')] : []) + (request('end_date') ? ['end_date' => request('end_date')] : [])) }}">
-                                    @csrf
-                                    <canvas id="exportGlycemicSwingsChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="glycemicSwingsChart" id="glycemicSwingsChartImage">
 
-                                    <canvas id="exportTooLongChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="tooLongChart" id="tooLongChartImage">
+                                <div class="dropdown">
+                                    <button class="btn btn-primary btn-sm dropdown-toggle waves-effect waves-light"
+                                            type="button"
+                                            id="bs-download-pdf-modal-button"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-display="static"
+                                            aria-expanded="false">
+                                        <i class="bx bx-export me-1"></i> Export PDF
+                                    </button>
+                                        <div class="dropdown-menu dropdown-menu-end p-3"
+                                             aria-labelledby="bs-download-pdf-modal-button"
+                                             style="max-height: 300px; overflow-y: auto; min-width: 100px;">
+                                        <h6
+                                            class="dropdown-header">Export Options</h6>
+                                        <form id="downloadPdfForm" method="post"
+                                              action="{{ route('download.pdf', ['patientId' => $patient->id, 'csvId' => $csv->id] + (request('start_date') ? ['start_date' => request('start_date')] : []) + (request('end_date') ? ['end_date' => request('end_date')] : [])) }}">
+                                            @csrf
+                                            <canvas id="exportGlycemicSwingsChart" width="1200" height="600"
+                                                    style="display: none;"></canvas>
+                                            <input type="hidden" name="glycemicSwingsChart"
+                                                   id="glycemicSwingsChartImage">
+                                            <canvas id="exportTooLongChart" width="1200" height="600"
+                                                    style="display: none;"></canvas>
+                                            <input type="hidden" name="tooLongChart" id="tooLongChartImage">
+                                            <canvas id="exportTooFrequentChart" width="1200" height="600"
+                                                    style="display: none;"></canvas>
+                                            <input type="hidden" name="tooFrequentChart" id="tooFrequentChartImage">
+                                            <canvas id="exportTooFrequentTimeSwingsDurationChart" width="1200"
+                                                    height="600" style="display: none;"></canvas>
+                                            <input type="hidden" name="tooFrequentTimeSwingsDurationChart"
+                                                   id="tooFrequentTimeSwingsDurationChartImage">
+                                            <canvas id="exportTooFrequentTimeSwingsFrequencyChart" width="1200"
+                                                    height="600" style="display: none;"></canvas>
+                                            <input type="hidden" name="tooFrequentTimeSwingsFrequencyChart"
+                                                   id="tooFrequentTimeSwingsFrequencyChartImage">
+                                            <canvas id="exportTimeSwingTooLongGlucoseAnomaliesChart" width="1200"
+                                                    height="600" style="display: none;"></canvas>
+                                            <input type="hidden" name="timeSwingTooLongChart"
+                                                   id="timeSwingTooLongChartImage">
 
-                                    <canvas id="exportTooFrequentChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="tooFrequentChart" id="tooFrequentChartImage">
-
-                                    <canvas id="exportTooFrequentTimeSwingsDurationChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="tooFrequentTimeSwingsDurationChart"
-                                           id="tooFrequentTimeSwingsDurationChartImage">
-
-                                    <canvas id="exportTooFrequentTimeSwingsFrequencyChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="tooFrequentTimeSwingsFrequencyChart"
-                                           id="tooFrequentTimeSwingsFrequencyChartImage">
-
-                                    <canvas id="exportTimeSwingTooLongGlucoseAnomaliesChart" width="1200" height="600"
-                                            style="display: none;"></canvas>
-                                    <input type="hidden" name="timeSwingTooLongChart" id="timeSwingTooLongChartImage">
-
-
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="detail"
-                                                       id="column16" checked>
-                                                <label class="form-check-label" for="column16">Detail</label>
+                                            <div class="vstack gap-2">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="detail"
+                                                           id="column16" checked>
+                                                    <label class="form-check-label" for="column16">Detail</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="summary"
+                                                           id="column17" checked>
+                                                    <label class="form-check-label" for="column17">Summary</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="time_swing"
+                                                           id="column18" checked>
+                                                    <label class="form-check-label" for="column18">Time Swing</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="too_long"
+                                                           id="column19" checked>
+                                                    <label class="form-check-label" for="column19">Too Long
+                                                        Anomalies</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" name="too_frequent"
+                                                           id="column20" checked>
+                                                    <label class="form-check-label" for="column20">Too Frequent
+                                                        Anomalies</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="too_frequent_time_swing" id="column21" checked>
+                                                    <label class="form-check-label" for="column21">Too Frequent Time
+                                                        Swings</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                           name="time_swing_too_long" id="column22" checked>
+                                                    <label class="form-check-label" for="column22">Complex Time
+                                                        Swings</label>
+                                                </div>
+                                                <div class="mt-3 d-grid">
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                            id="downloadPdfButton">Download Report
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="summary"
-                                                       id="column17" checked>
-                                                <label class="form-check-label" for="column17">Summary</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="time_swing"
-                                                       id="column18" checked>
-                                                <label class="form-check-label" for="column18">Time Swing</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="too_long"
-                                                       id="column19" checked>
-                                                <label class="form-check-label" for="column19">Too Long Glucose
-                                                    Anomalies</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" name="too_frequent"
-                                                       id="column20" checked>
-                                                <label class="form-check-label" for="column20">Too Frequent Glucose
-                                                    Anomalies</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input"
-                                                       name="too_frequent_time_swing" id="column21" checked>
-                                                <label class="form-check-label" for="column21">Too Frequent Time
-                                                    Swings</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input"
-                                                       name="time_swing_too_long" id="column22" checked>
-                                                <label class="form-check-label" for="column22">Time Swing With Too Long
-                                                    Glucose Anomalies</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 text-center mt-3">
-                                            <button type="button" class="btn btn-primary" id="downloadPdfButton">
-                                                Download
-                                            </button>
-                                        </div>
+                                        </form>
                                     </div>
-                                </form>
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table align-middle table-nowrap">
-                            <tbody>
-                            <tr>
-                                <td><strong>Name:</strong></td>
-                                <td>{{ $patient->name ?? 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Surname:</strong></td>
-                                <td>{{ $patient->surname ?? 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Email:</strong></td>
-                                <td>{{ $patient->email ?? 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Date of Birth:</strong></td>
-                                <td>{{ $patient->birth ? \Carbon\Carbon::parse($patient->birth)->format('Y/m/d') : 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Address:</strong></td>
-                                <td>{{ $patient->address ?: 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Phone Number:</strong></td>
-                                <td>{{ $patient->telephone_number ?? 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Gender:</strong></td>
-                                <td>{{ $patient->gender ?? 'Not Specified' }}</td>
-                            </tr>
-                            <tr>
-                                <td><strong>Analysis date:</strong></td>
-                                <td>
-                                    From {{ $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('Y/m/d') : 'Not Specified' }}
-                                    to {{ $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('Y/m/d') : 'Not Specified' }}
-                                    @php
-                                        $startTime = $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('Y/m/d') : null;
-                                        $endTime = $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('Y/m/d') : null;
-                                        $startDateFormatted = isset($startDate) ? \Carbon\Carbon::parse($startDate)->format('Y/m/d') : null;
-                                        $endDateFormatted = isset($endDate) ? \Carbon\Carbon::parse($endDate)->format('Y/m/d') : null;
-                                    @endphp
-                                    @if(($startDateFormatted !== $startTime || $endDateFormatted !== $endTime) && $startDateFormatted && $endDateFormatted)
-                                        <br>
-                                        Filtered from {{ $startDateFormatted }} to {{ $endDateFormatted }}
-                                    @endif
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+                    <div class="pt-3">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless table-sm mb-0">
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row" style="width: 140px;">Date of Birth:</th>
+                                        <td class="text-muted">{{ $patient->birth ? \Carbon\Carbon::parse($patient->birth)->format('Y/m/d') : 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Address:</th>
+                                        <td class="text-muted">{{ $patient->address ?: 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Phone:</th>
+                                        <td class="text-muted">{{ $patient->telephone_number ?? 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Gender:</th>
+                                        <td class="text-muted">{{ $patient->gender ?? 'N/A' }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="alert alert-info border-0 shadow-sm" role="alert">
+                                    <div class="d-flex align-items-center">
+                                        <i class="mdi mdi-calendar-clock font-size-20 me-3"></i>
+                                        <div>
+                                            <h6 class="alert-heading font-size-14 mb-1">Analysis Period</h6>
+                                            <p class="mb-0">
+                                                {{ $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('Y/m/d') : 'N/A' }}
+                                                <i class="mdi mdi-arrow-right mx-1"></i>
+                                                {{ $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('Y/m/d') : 'N/A' }}
+                                            </p>
+                                            @php
+                                                $startTime = $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('Y/m/d') : null;
+                                                $endTime = $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('Y/m/d') : null;
+                                                $startDateFormatted = isset($startDate) ? \Carbon\Carbon::parse($startDate)->format('Y/m/d') : null;
+                                                $endDateFormatted = isset($endDate) ? \Carbon\Carbon::parse($endDate)->format('Y/m/d') : null;
+                                            @endphp
+                                            @if(($startDateFormatted !== $startTime || $endDateFormatted !== $endTime) && $startDateFormatted && $endDateFormatted)
+                                                <div class="mt-1 small"><span class="badge bg-white text-info">Filtered View</span> {{ $startDateFormatted }}
+                                                    - {{ $endDateFormatted }}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="container mt-4" id="scroll-to-form"> <!-- Aggiungi un ID qui -->
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">Filter Analysis</h3>
-                        <form id="date-form"
-                              action="{{ route('viewCsvRange', ['csvId' => $csv->id, 'patientId' => $patient->id]) }}"
-                              method="GET">
-                            <div class="row" id="range">
-                                <div class="col-sm-6 mb-3 mb-sm-0 daterange-container">
-                                    <input type="text" name="daterange" value=""/>
-                                    <input type="hidden" id="start-date" name="start_date"/>
-                                    <input type="hidden" id="end-date" name="end_date"/>
-                                </div>
+    <div class="row" id="scroll-to-form">
+        <div class="col-12">
+            <div class="card bg-transparent shadow-none">
+                <div class="card-body p-0">
+                    <form id="date-form"
+                          action="{{ route('viewCsvRange', ['csvId' => $csv->id, 'patientId' => $patient->id]) }}"
+                          method="GET">
+                        <div class="d-flex justify-content-center align-items-center gap-3">
+                            <div class="daterange-input-group">
+                                <i class="bx bx-calendar text-primary font-size-18"></i>
+                                <input type="text" name="daterange" value="" placeholder="Filter by date range..."/>
+                                <input type="hidden" id="start-date" name="start_date"/>
+                                <input type="hidden" id="end-date" name="end_date"/>
                             </div>
-                            <!-- Submit Button -->
-                            <div class="form-container mt-3">
-                                @if(($startDateFormatted !== $startTime || $endDateFormatted !== $endTime) && $startDateFormatted && $endDateFormatted)
-                                    <a href="{{ route('viewCsv', ['csvId' => $csv->id, 'patientId' => $patient->id]) }}"
-                                       class="btn btn-secondary btn-center"
-                                       style="background-color: #007bff; border-color: #007bff; color: white;">Reset
-                                        Filter</a>
+                            @if(($startDateFormatted !== $startTime || $endDateFormatted !== $endTime) && $startDateFormatted && $endDateFormatted)
+                                <a href="{{ route('viewCsv', ['csvId' => $csv->id, 'patientId' => $patient->id]) }}"
+                                   class="btn btn-primary rounded-pill">
+                                    <i class="bx bx-reset me-1"></i> Reset
+                                </a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header-custom">
+                    <h5 class="card-title mb-0">Glycemic Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <div class="mb-3">
+                                <i class="bx bx-pulse text-primary h1"></i>
+                            </div>
+                            <h3 class="mb-1">{{ round($data['avg'],2) ?? 'N/A' }}</h3>
+                            <p class="text-muted mb-0">Avg Glucose</p>
+                        </div>
+                        <div class="col-6">
+                            <div class="mb-3">
+                                @if($data['gmi'] < 7)
+                                    <i class="bx bx-check-shield text-success h1"></i>
+                                @elseif($data['gmi'] >= 7 && $data['gmi'] <= 8)
+                                    <i class="bx bx-shield-quarter text-warning h1"></i>
+                                @else
+                                    <i class="bx bx-shield-x text-danger h1"></i>
                                 @endif
                             </div>
-                        </form>
+                            <h3 class="mb-1">{{ round($data['gmi'],2)."%"?? 'N/A' }}</h3>
+                            <p class="text-muted mb-0">GMI</p>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-12">
-            <!-- Analysis Detection Pattern-->
-            <div class="container mt-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">Analysis Summary</h3>
-                        <div class="row">
 
-                            <!-- Totals Card -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Glycemic Trends</h5>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2"><strong>Average Glucose
-                                                    :</strong> {{ round($data['avg'],2) ?? 'N/A' }}</li>
-                                            <li class="mb-2"><strong>GMI
-                                                    :</strong> {{ round($data['gmi'],2)."%"?? 'N/A' }}
-                                                @if($data['gmi'] < 7)
-                                                    <span
-                                                            style="display:inline-block; width:10px; height:10px; background-color:green; border-radius:50%; margin-left:5px;"></span>
-                                                @elseif($data['gmi'] >= 7 && $data['gmi'] <= 8)
-                                                    <span
-                                                            style="display:inline-block; width:10px; height:10px; background-color:orange; border-radius:50%; margin-left:5px;"></span>
-                                                @else
-                                                    <span
-                                                            style="display:inline-block; width:10px; height:10px; background-color:red; border-radius:50%; margin-left:5px;"></span>
-                                                @endif
-                                            </li>
+                    <hr class="my-4">
 
-                                            <hr>
-                                            <h5 class="card-title">Totals</h5>
-
-                                            <li class="mb-2"><strong>Extremely
-                                                    High:</strong> {{ $data['totals_and_durations']['totals']['extremely_high'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Extremely
-                                                    High:</strong> {{ $data['totals_and_durations']['totals']['extremely_high'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Extremely
-                                                    Low:</strong> {{ $data['totals_and_durations']['totals']['extremely_low'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>High:</strong> {{ $data['totals_and_durations']['totals']['high'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Low:</strong> {{ $data['totals_and_durations']['totals']['low'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Normal:</strong> {{ $data['totals_and_durations']['totals']['normal'] ?? 'N/A' }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                    <h6 class="mb-3 text-muted text-uppercase font-size-12">Event Distribution</h6>
+                    <div class="row g-2">
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center">
+                                <p class="mb-1 text-muted font-size-12">High</p>
+                                <h6 class="mb-0 text-danger">{{ $data['totals_and_durations']['totals']['high'] ?? 0 }}</h6>
                             </div>
-
-                            <!-- Percentage Breakdown Card -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Percentage Breakdown</h5>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2"><strong>Extremely
-                                                    High:</strong> {{ number_format((float)($data['totals_and_durations']['percentages']['extremely_high'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2"><strong>Extremely
-                                                    Low:</strong> {{ number_format((float)($data['totals_and_durations']['percentages']['extremely_low'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>High:</strong> {{ number_format((float)($data['totals_and_durations']['percentages']['high'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Low:</strong> {{ number_format((float)($data['totals_and_durations']['percentages']['low'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2">
-                                                <strong>Normal:</strong> {{ number_format((float)($data['totals_and_durations']['percentages']['normal'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center">
+                                <p class="mb-1 text-muted font-size-12">Normal</p>
+                                <h6 class="mb-0 text-success">{{ $data['totals_and_durations']['totals']['normal'] ?? 0 }}</h6>
                             </div>
-
-                            <!-- Max Anomalous Day Card -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Max Anomalous Day</h5>
-                                        <p>
-                                            <strong>Date:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['date'] ?? 'N/A' }}
-                                        </p>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2"><strong>Extremely High
-                                                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely High Count'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Extremely Low
-                                                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Extremely Low Count'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>High
-                                                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['High Count'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Low
-                                                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Low Count'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Total
-                                                    Count:</strong> {{ $data['totals_and_durations']['max_anomalous_day']['details']['Total Count'] ?? 'N/A' }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="p-2 border rounded text-center">
+                                <p class="mb-1 text-muted font-size-12">Low</p>
+                                <h6 class="mb-0 text-info">{{ $data['totals_and_durations']['totals']['low'] ?? 0 }}</h6>
                             </div>
-
-                            <!-- Glycemic Swings Statistics Card -->
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Time Swings Statistics</h5>
-                                        <ul class="list-unstyled">
-                                            <li class="mb-2"><strong>Percentage of Time Swing With Too Long Glucose
-                                                    Anomalies:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_time_swing_too_long'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2"><strong>Percentage of Too frequent Time
-                                                    Swings:</strong> {{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_too_frequent_time_swings'] ?? 0), 2) }}
-                                                %
-                                            </li>
-                                            <li class="mb-2"><strong>Total Time
-                                                    Swing:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swings'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Total Time Swing With Too Long Glucose
-                                                    Anomalies:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_time_swing_too_long'] ?? 'N/A' }}
-                                            </li>
-                                            <li class="mb-2"><strong>Total Day of Too Frequent Time
-                                                    Swings:</strong> {{ $data['totals_and_durations']['time_swings_stats']['total_too_frequent_time_swings'] ?? 'N/A' }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 border rounded text-center bg-soft-warning">
+                                <p class="mb-1 text-dark font-size-12">Ext. High</p>
+                                <h6 class="mb-0 text-dark">{{ $data['totals_and_durations']['totals']['extremely_high'] ?? 0 }}</h6>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 border rounded text-center bg-light">
+                                <p class="mb-1 text-dark font-size-12">Ext. Low</p>
+                                <h6 class="mb-0 text-purple">{{ $data['totals_and_durations']['totals']['extremely_low'] ?? 0 }}</h6>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="container mt-4">
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header-custom">
+                    <h5 class="card-title mb-0">Time in Ranges (%)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mt-2">
+                        <div class="d-flex justify-content-between font-size-13 mb-1">
+                            <span>Extremely High (>250)</span>
+                            <span class="text-muted">{{ number_format((float)($data['totals_and_durations']['percentages']['extremely_high'] ?? 0), 2) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                 style="width: {{ $data['totals_and_durations']['percentages']['extremely_high'] ?? 0 }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between font-size-13 mb-1">
+                            <span>High (180-250)</span>
+                            <span class="text-muted">{{ number_format((float)($data['totals_and_durations']['percentages']['high'] ?? 0), 2) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-danger" role="progressbar"
+                                 style="width: {{ $data['totals_and_durations']['percentages']['high'] ?? 0 }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between font-size-13 mb-1">
+                            <span>Normal (81-179)</span>
+                            <span class="text-muted">{{ number_format((float)($data['totals_and_durations']['percentages']['normal'] ?? 0), 2) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                 style="width: {{ $data['totals_and_durations']['percentages']['normal'] ?? 0 }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between font-size-13 mb-1">
+                            <span>Low (55-80)</span>
+                            <span class="text-muted">{{ number_format((float)($data['totals_and_durations']['percentages']['low'] ?? 0), 2) }}%</span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-info" role="progressbar"
+                                 style="width: {{ $data['totals_and_durations']['percentages']['low'] ?? 0 }}%"></div>
+                        </div>
+
+                        <div class="d-flex justify-content-between font-size-13 mb-1">
+                            <span>Extremely Low (<55)</span>
+                            <span class="text-muted">{{ number_format((float)($data['totals_and_durations']['percentages']['extremely_low'] ?? 0), 2) }}%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-purple" role="progressbar"
+                                 style="width: {{ $data['totals_and_durations']['percentages']['extremely_low'] ?? 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card h-100">
+                <div class="card-header-custom">
+                    <h5 class="card-title mb-0">Risk Indicators</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar-sm">
+                                <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-20">
+                                    <i class="bx bx-calendar-exclamation"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Max Anomalous Day</h6>
+                            <p class="text-muted mb-0 font-size-13">
+                                {{ $data['totals_and_durations']['max_anomalous_day']['date'] ?? 'N/A' }}
+                                <span class="badge bg-danger rounded-pill ms-1">{{ $data['totals_and_durations']['max_anomalous_day']['details']['Total Count'] ?? 0 }} events</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="avatar-sm">
+                                <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-20">
+                                    <i class="bx bx-timer"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">Total Time Swings</h6>
+                            <p class="text-muted mb-0 font-size-13">
+                                {{ $data['totals_and_durations']['time_swings_stats']['total_time_swings'] ?? 'N/A' }}
+                                detected in total
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-light p-3 rounded">
+                        <h6 class="font-size-13 mb-3">Complex Metrics</h6>
+                        <div class="row text-center">
+                            <div class="col-6 border-end">
+                                <p class="mb-1 text-muted font-size-12">Prolonged Swings</p>
+                                <h5 class="mb-0 text-dark">{{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_time_swing_too_long'] ?? 0), 1) }}
+                                    %</h5>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-1 text-muted font-size-12">Frequent Swings</p>
+                                <h5 class="mb-0 text-dark">{{ number_format((float)($data['totals_and_durations']['time_swings_stats']['percentage_too_frequent_time_swings'] ?? 0), 1) }}
+                                    %</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container mt-4 p-0">
+                <div class="card border-primary border border-opacity-10">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="d-flex align-items-center gap-2" style="margin: 0 auto; position: relative;">
+                                <h3 class="card-title mb-0" style="font-size: 1.3rem;">AI Predictive Analysis</h3>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#lstmInfoModal"
+                                   title="How does AI Analysis work?" style="position: absolute; right: -40px;">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="lstmInfoModal" tabindex="-1" aria-labelledby="lstmInfoModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="lstmInfoModalLabel">What is AI Predictive
+                                            Analysis?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>This analysis is powered by a **Multi-Scale Ensemble LSTM** (Long Short-Term
+                                            Memory) Artificial Intelligence engine.</p>
+                                        <p>The system mimics a medical consultation board by analyzing the patient's
+                                            glucose history through four distinct time windows simultaneously:</p>
+                                        <ul>
+                                            <li><strong>15 Days:</strong> Detects acute and immediate emergencies.</li>
+                                            <li><strong>30 Days:</strong> Analyzes short-term monthly trends.</li>
+                                            <li><strong>60 & 90 Days:</strong> Evaluates long-term stability and chronic
+                                                conditions.
+                                            </li>
+                                        </ul>
+                                        <p><strong>Safety-First Logic:</strong> The AI applies an adaptive weighting
+                                            system. If a recent deterioration is detected (in the last 15-30 days), the
+                                            system prioritizes the short-term alert over the long-term stability,
+                                            ensuring no acute risk is overlooked ("Anti-Inertia" mechanism).</p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if(isset($data['lstm_result']) && isset($data['lstm_result']['status']) && $data['lstm_result']['status'] == 'success')
+                            @php
+                                $diag = strtoupper($data['lstm_result']['diagnosis']);
+                                $colorClass = 'bg-secondary';
+                                $textColor = 'text-white';
+                                $icon = 'bx-question-mark';
+
+                                if($diag == 'RED') {
+                                    $colorClass = 'bg-danger';
+                                    $icon = 'bx-error-circle';
+                                } elseif($diag == 'YELLOW') {
+                                    $colorClass = 'bg-warning';
+                                    $textColor = 'text-dark';
+                                    $icon = 'bx-error';
+                                } elseif($diag == 'GREEN') {
+                                    $colorClass = 'bg-success';
+                                    $icon = 'bx-check-circle';
+                                }
+                            @endphp
+
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border shadow-none">
+                                        <div
+                                            class="card-body text-center d-flex flex-column justify-content-center align-items-center {{ $colorClass }} {{ $textColor }} rounded">
+                                            <i class='bx {{ $icon }}' style="font-size: 4rem; margin-bottom: 10px;"></i>
+                                            <h5 class="card-title {{ $textColor }} mb-1">Clinical Profile</h5>
+                                            <h2 class="mb-0 {{ $textColor }}">{{ $diag }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="card h-100 border shadow-none">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-4">Technical Confidence</h5>
+
+                                            <div class="alert alert-light border-start border-primary border-4"
+                                                 role="alert">
+                                                <h6 class="text-primary"><i class="mdi mdi-stethoscope me-1"></i> AI
+                                                    Assessment:</h6>
+                                                <p class="mb-0" style="font-size: 1.1rem;">
+                                                    {{ $data['lstm_result']['clinical_message'] ?? 'Analysis complete.' }}
+                                                </p>
+                                            </div>
+
+                                            <div class="row mt-4">
+                                                <div class="col-md-6">
+                                                    <p class="text-muted mb-1">Model Confidence</p>
+                                                    <div class="progress mb-3" style="height: 20px;">
+                                                        <div
+                                                            class="progress-bar progress-bar-striped progress-bar-animated {{ $colorClass }}"
+                                                            role="progressbar"
+                                                            style="width: {{ $data['lstm_result']['confidence'] }}%;"
+                                                            aria-valuenow="{{ $data['lstm_result']['confidence'] }}"
+                                                            aria-valuemin="0"
+                                                            aria-valuemax="100">
+                                                            {{ $data['lstm_result']['confidence'] }}%
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p class="text-muted mb-1">Data Analyzed</p>
+                                                    <h4>{{ $data['lstm_result']['days_analyzed'] }} <small
+                                                            class="text-muted fs-6">Days</small></h4>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                <small class="text-muted">
+                                                    <i class="mdi mdi-brain me-1"></i>
+                                                    Active Models:
+                                                    @if(isset($data['lstm_result']['models_used']))
+                                                        @foreach($data['lstm_result']['models_used'] as $m)
+                                                            <span class="badge bg-primary bg-soft text-primary">{{ $m }}d LSTM</span>
+                                                        @endforeach
+                                                    @endif
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif(isset($data['lstm_result']) && isset($data['lstm_result']['status']) && $data['lstm_result']['status'] == 'error')
+                            <div class="alert alert-warning d-flex align-items-center" role="alert">
+                                <i class="bx bx-error-alt me-2 font-size-20"></i>
+                                <div>
+                                    <strong>AI Analysis Unavailable:</strong> {{ $data['lstm_result']['message'] }}
+                                </div>
+                            </div>
+                        @else
+                            <div class="text-center py-4">
+                                <p class="text-muted">AI Analysis not available for this dataset.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="container mt-4 p-0">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h3 class="card-title mb-4 text-center" style="font-size: 1.3rem;">
-                            Analysis Detected Pattern
-                        </h3>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="card-title mb-0" style="font-size: 1.3rem;">Analysis Detected Pattern</h3>
+                        </div>
 
                         @if(isset($data['patient_stats']))
-                            <div class="row mb-4">
-                                <div class="col-md-3 mb-2">
-                                    <div class="card text-center bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">Total Pattern</h6>
-                                            <p class="card-text">{{ $data['patient_stats']['total_Pattern'] ?? 0 }}</p>
+                            <div class="row mb-4 g-3">
+                                <div class="col-md-3">
+                                    <div class="card border shadow-none h-100 bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="avatar-sm mx-auto mb-3">
+                                                <span
+                                                    class="avatar-title rounded-circle bg-soft-primary text-primary font-size-20">
+                                                    <i class="bx bx-list-ul"></i>
+                                                </span>
+                                            </div>
+                                            <h6 class="text-muted mb-2">Total Pattern</h6>
+                                            <h4 class="mb-0">{{ $data['patient_stats']['total_patterns'] ?? 0 }}</h4>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <div class="card text-center bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">Most Frequent Pattern</h6>
-                                            <p class="card-text">{{ $data['patient_stats']['most_frequent_pattern'] ?? 'N/A' }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 mb-2">
-                                    <div class="card text-center bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">Target Distribution</h6>
-                                            <p class="card-text">
-                                                Red: {{ $data['patient_stats']['target_distribution']['red'] ?? 0 }}<br>
-                                                Yellow: {{ $data['patient_stats']['target_distribution']['yellow'] ?? 0 }}
-                                                <br>
-                                                Green: {{ $data['patient_stats']['target_distribution']['green'] ?? 0 }}
+                                <div class="col-md-3">
+                                    <div class="card border shadow-none h-100 bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="avatar-sm mx-auto mb-3">
+                                                <span
+                                                    class="avatar-title rounded-circle bg-soft-success text-success font-size-20">
+                                                    <i class="bx bx-trending-up"></i>
+                                                </span>
+                                            </div>
+                                            <h6 class="text-muted mb-2">Top Pattern</h6>
+                                            <p class="mb-0 fw-bold font-size-12 text-wrap"
+                                               title="{{ $data['patient_stats']['most_frequent_pattern'] ?? 'N/A' }}">
+                                                {{ $data['patient_stats']['most_frequent_pattern'] ?? 'N/A' }}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-2">
-                                    <div class="card text-center bg-light">
-                                        <div class="card-body">
-                                            <h6 class="card-title">Average Pattern Duration</h6>
-                                            <p class="card-text">{{ $data['patient_stats']['avg_duration'] ?? 'N/A' }}
-                                                min</p>
+                                <div class="col-md-3">
+                                    <div class="card border shadow-none h-100 bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="avatar-sm mx-auto mb-3">
+                                                <span
+                                                    class="avatar-title rounded-circle bg-soft-warning text-warning font-size-20">
+                                                    <i class="bx bx-pie-chart-alt-2"></i>
+                                                </span>
+                                            </div>
+                                            <h6 class="text-muted mb-2">Targets (R/Y/G)</h6>
+                                            <h5 class="mb-0">
+                                                <span
+                                                    class="text-danger">{{ $data['patient_stats']['target_distribution']['red'] ?? 0 }}</span>
+                                                /
+                                                <span
+                                                    class="text-warning">{{ $data['patient_stats']['target_distribution']['yellow'] ?? 0 }}</span>
+                                                /
+                                                <span
+                                                    class="text-success">{{ $data['patient_stats']['target_distribution']['green'] ?? 0 }}</span>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="card border shadow-none h-100 bg-light">
+                                        <div class="card-body text-center">
+                                            <div class="avatar-sm mx-auto mb-3">
+                                                <span
+                                                    class="avatar-title rounded-circle bg-soft-danger text-danger font-size-20">
+                                                    <i class="bx bx-time-five"></i>
+                                                </span>
+                                            </div>
+                                            <h6 class="text-muted mb-2">Avg Duration</h6>
+                                            <h4 class="mb-0">{{ $data['patient_stats']['avg_duration'] ?? '0' }} <small
+                                                    class="font-size-12 text-muted">min</small></h4>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         @endif
 
-                        <div class="row">
-                            <div class="card mb-4">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <h5 class="card-title mb-0">Patient Pattern</h5>
-                                            <a href="#" data-bs-toggle="modal"
-                                               data-bs-target="#detectionPatternInfoModal"
-                                               title="What are Pattern Detection?">
-                                                <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                            </a>
-                                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3 mt-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <h5 class="card-title mb-0">Patient Pattern Table</h5>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#detectionPatternInfoModal">
+                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-20"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="detectionPatternInfoModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">What are Pattern Detection?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
-                                    <!-- Info Modal -->
-                                    <div class="modal fade" id="detectionPatternInfoModal" tabindex="-1"
-                                         aria-labelledby="detectionPatternInfoModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="detectionPatternInfoModalLabel">What are
-                                                        Pattern Detection?</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>
-                                                        <strong>Pattern Detection</strong> represent sequences of
-                                                        glucose events that occur consecutively
-                                                        in the uploaded CSV data. These sequences are automatically
-                                                        analyzed by algorithms that identify
-                                                        recurring Pattern.
-                                                    </p>
-                                                    <p>
-                                                        The system extracts the <strong>top 10 most frequent
-                                                            Pattern</strong> from the dataset, allowing
-                                                        users and clinicians to focus on the most common or potentially
-                                                        risky sequences of events.
-                                                    </p>
-                                                    <p>
-                                                        Pattern that have already been covered or detected in previous
-                                                        analyses are excluded to ensure
-                                                        that only new, distinct sequences are highlighted.
-                                                    </p>
-                                                    <p>For each detected pattern, we track all occurrences with:</p>
-                                                    <ul>
-                                                        <li><strong>Start Time:</strong> when the first event in the
-                                                            pattern begins.
-                                                        </li>
-                                                        <li><strong>End Time:</strong> when the last event in the
-                                                            pattern ends.
-                                                        </li>
-                                                    </ul>
-                                                    <p>Additional information:</p>
-                                                    <ul>
-                                                        <li>
-                                                            <strong>Global Pattern Detection:</strong> Pattern
-                                                            extracted from a large dataset of multiple
-                                                            patients, representing typical sequences of glucose events
-                                                            observed at a population level.
-                                                        </li>
-                                                        <li>
-                                                            <strong>Dominant Target:</strong> the most frequent glucose
-                                                            range (e.g., Red, Yellow, Green)
-                                                            associated with this pattern according to the <strong>global
-                                                                Pattern Detection</strong>.
-                                                            It reflects whether the pattern is generally linked to
-                                                            favorable, normal, or adverse glucose outcomes.
-                                                        </li>
-                                                        <li>
-                                                            <strong>Max Lift:</strong> a measure of the strength of
-                                                            association between the pattern and
-                                                            its dominant target, calculated based on the <strong>global
-                                                                Pattern Detection</strong>.
-                                                            It represents the maximum ratio of observed frequency to
-                                                            expected frequency, highlighting Pattern
-                                                            that are strongly associated with specific glucose outcomes.
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
+                                    <div class="modal-body">
+                                        <p><strong>Pattern Detection</strong> represent sequences of glucose events that
+                                            occur consecutively in the uploaded CSV data. These sequences are
+                                            automatically analyzed by algorithms that identify recurring Pattern.</p>
+                                        <p>The system extracts the <strong>top 10 most frequent Pattern</strong> from
+                                            the dataset, allowing users and clinicians to focus on the most common or
+                                            potentially risky sequences of events.</p>
+                                        <ul>
+                                            <li><strong>Global Pattern Detection:</strong> Pattern extracted from a
+                                                large dataset.
+                                            </li>
+                                            <li><strong>Dominant Target:</strong> the most frequent glucose range.</li>
+                                            <li><strong>Max Lift:</strong> strength of association.</li>
+                                        </ul>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    @if(isset($data['parsed_top_k_Pattern']) && count($data['parsed_top_k_Pattern']) > 0)
-                                        <div class="table-responsive">
-                                            <table id="datatable-detection-Pattern"
-                                                   class="table table-bordered dt-responsive nowrap w-100">
-                                                <thead>
-                                                <tr>
-                                                    <th class="text-center" style="width: 120px;">Pattern</th>
-                                                    <th class="text-center" style="width: 80px;">Frequency</th>
-                                                    <th class="text-center" style="width: 100px;">Avg<br>Duration</th>
-                                                    <th class="text-center" style="width: 120px;">Dominant<br>Target</th>
-                                                    <th class="text-center" style="width: 80px;">Max Lift</th>
-                                                    <th class="text-center">Occurrences</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                @foreach ($data['parsed_top_k_Pattern'] as $pattern)
-                                                    <tr>
-                                                        <td>{{ implode(' - ', array_map('strtolower', $pattern['pattern'])) }}</td>
-                                                        <td>{{ $pattern['frequency'] ?? '0' }}</td>
-                                                        @php
-                                                            $total_minutes = 0;
-                                                            $count = 0;
+                        @if(isset($data['parsed_top_k_patterns']) && count($data['parsed_top_k_patterns']) > 0)
+                            <div class="table-responsive">
+                                <table id="datatable-detection-Pattern"
+                                       class="table table-hover table-striped table-bordered dt-responsive nowrap w-100">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 120px;">Pattern</th>
+                                        <th class="text-center" style="width: 80px;">Frequency</th>
+                                        <th class="text-center" style="width: 100px;">Avg Duration</th>
+                                        <th class="text-center" style="width: 120px;">Dominant Target</th>
+                                        <th class="text-center" style="width: 80px;">Max Lift</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach ($data['parsed_top_k_patterns'] as $pattern)
+                                        <tr>
+                                            <td class="fw-medium">{{ implode(' → ', array_map('ucfirst', $pattern['pattern'])) }}</td>
+                                            <td class="text-center"><span
+                                                    class="badge badge-soft-primary font-size-12">{{ $pattern['frequency'] ?? '0' }}</span>
+                                            </td>
 
-                                                            foreach($pattern['occurrences'] as $occ) {
-                                                                if(isset($occ[0]['duration'])) {
-                                                                    // Converti "HH:MM:SS" in secondi
-                                                                    [$h, $m, $s] = explode(':', $occ[0]['duration']);
-                                                                    $seconds = ($h * 3600) + ($m * 60) + $s;
-                                                                    $total_minutes += $seconds / 60;
-                                                                    $count++;
-                                                                }
-                                                            }
+                                            @php
+                                                $total_minutes = 0;
+                                                $count = 0;
+                                                foreach($pattern['occurrences'] as $occ) {
+                                                    if(isset($occ[0]['duration'])) {
+                                                        [$h, $m, $s] = explode(':', $occ[0]['duration']);
+                                                        $seconds = ($h * 3600) + ($m * 60) + $s;
+                                                        $total_minutes += $seconds / 60;
+                                                        $count++;
+                                                    }
+                                                }
+                                                $avg_minutes = $count > 0 ? round($total_minutes / $count, 2) : 0;
+                                            @endphp
 
-                                                            if($count > 0) {
-                                                                $avg_minutes = round($total_minutes / $count, 2);
-                                                            } else {
-                                                                $avg_minutes = 0;
-                                                            }
-                                                        @endphp
+                                            <td class="text-center">{{ $avg_minutes }} min</td>
+                                            <td class="text-center">
+                                                @if(strtolower($pattern['target']) == 'red')
+                                                    <span class="badge bg-danger">Red</span>
+                                                @elseif(strtolower($pattern['target']) == 'yellow')
+                                                    <span class="badge bg-warning">Yellow</span>
+                                                @else
+                                                    <span class="badge bg-success">Green</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">{{ isset($pattern['max_lift']) ? number_format($pattern['max_lift'], 2) : 'N/A' }}</td>
+                                            <td class="text-center">
+                                                @if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0)
+                                                    <button type="button" class="btn btn-outline-info btn-sm"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modal-{{ $loop->index }}-pattern">
+                                                        <i class="bx bx-list-ul"></i> Details
+                                                    </button>
 
-                                                        <td>{{ $avg_minutes }} min</td>
-
-                                                        <td>{{ $pattern['target'] ??  'N/A'}}</td>
-
-
-                                                        <td>{{ isset($pattern['max_lift']) ? number_format($pattern['max_lift'], 2) : 'N/A' }}</td>
-                                                        <td>
-                                                            @if(isset($pattern['occurrences']) && count($pattern['occurrences']) > 0)
-                                                                <button type="button" class="btn btn-info btn-sm"
-                                                                        data-bs-toggle="modal"
-                                                                        data-bs-target="#modal-{{ $loop->index }}-pattern">
-                                                                    View Details
-                                                                </button>
-
-                                                                <!-- Modal dettagli occorrenze -->
-                                                                <div class="modal fade"
-                                                                     id="modal-{{ $loop->index }}-pattern" tabindex="-1"
-                                                                     aria-labelledby="modalLabel-{{ $loop->index }}-pattern"
-                                                                     aria-hidden="true">
-                                                                    <div
-                                                                            class="modal-dialog modal-lg modal-dialog-scrollable">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title"
-                                                                                    id="modalLabel-{{ $loop->index }}-pattern">
-                                                                                    Pattern
-                                                                                    Details: {{ implode(' - ', array_map('strtolower', $pattern['pattern'])) }}
-                                                                                </h5>
-                                                                                <button type="button" class="btn-close"
-                                                                                        data-bs-dismiss="modal"
-                                                                                        aria-label="Close"></button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <table class="table table-bordered">
-                                                                                    <thead>
-                                                                                    <tr>
-                                                                                        <th>#</th>
-                                                                                        <th>Day</th>
-                                                                                        <th>Start Time</th>
-                                                                                        <th>End Time</th>
-                                                                                        <th>Duration (h)</th>
-                                                                                    </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                    @foreach($pattern['occurrences'] as $k => $occ)
-                                                                                        @if(is_array($occ) && count($occ) > 0)
-                                                                                            @php
-                                                                                                $firstEvent = $occ[0];
-                                                                                                $lastEvent = $occ[count($occ)-1];
-                                                                                                $start = $firstEvent['start'] ?? 'N/A';
-                                                                                                $end = $lastEvent['end'] ?? 'N/A';
-                                                                                                $duration = $occ[0]['duration'] ?? 'N/A';
-
-                                                                                                // Format duration in HH:MM:SS if numeric
-                                                                                                if(is_numeric($duration)) {
-                                                                                                    $total_seconds = (int)$duration;
-                                                                                                    $hours = floor($total_seconds / 3600);
-                                                                                                    $minutes = floor(($total_seconds % 3600) / 60);
-                                                                                                    $seconds = $total_seconds % 60;
-                                                                                                    $duration = sprintf("%02d:%02d:%02d", $hours, $minutes, $seconds);
-                                                                                                }
-
-                                                                                                // Calcolo il giorno formattato "Sun, 08 Sep 2024"
-                                                                                                if($start !== 'N/A') {
-                                                                                                    $day = date('D, d M Y', strtotime($start));
-                                                                                                } else {
-                                                                                                    $day = 'N/A';
-                                                                                                }
-                                                                                            @endphp
-                                                                                            <tr>
-                                                                                                <td>{{ $k + 1 }}</td>
-                                                                                                <td>{{ $day }}</td>
-                                                                                                <td>{{ $start }}</td>
-                                                                                                <td>{{ $end }}</td>
-                                                                                                <td>{{ $duration }}</td>
-                                                                                            </tr>
-                                                                                        @endif
-                                                                                    @endforeach
-                                                                                    </tbody>
-                                                                                </table>                                                                            </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button"
-                                                                                        class="btn btn-secondary"
-                                                                                        data-bs-dismiss="modal">Close
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                    <div class="modal fade" id="modal-{{ $loop->index }}-pattern"
+                                                         tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Pattern Occurrences</h5>
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
                                                                 </div>
-                                                            @else
-                                                                <span class="text-muted">No occurrences</span>
-                                                            @endif
-                                                        </td>
-
-                                                    </tr>
-                                                @endforeach
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    @else
-                                        <p class="text-muted">Nessun pattern rilevato.</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3 text-center" style="font-size: 1.3rem;">Analysis Results</h4>
-
-                    <!-- Glycemic Swings Card -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-2">
-                                    <h5 class="card-title mb-0">Time Swing</h5>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#timeSwingInfoModal"
-                                       title="What is Time Swing?">
-                                        <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                    </a>
-                                </div>
-                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#glycemicSwingsModal">
-                                    View Chart
-                                </button>
-                            </div>
-                            <div class="modal fade" id="timeSwingInfoModal" tabindex="-1"
-                                 aria-labelledby="timeSwingInfoModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="timeSwingInfoModalLabel">What is Time
-                                                Swing?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p><strong>Time Swing</strong> refers to the interval between two
-                                                significant glycemic events, especially when glucose levels rapidly
-                                                change between different categories (e.g., from Low to High)
-                                                <strong>within a maximum time frame of two hours</strong>.</p>
-
-                                            <p>This helps identify sharp fluctuations in blood glucose that may require
-                                                attention or adjustment in treatment.</p>
-
-                                            <p><strong>Example:</strong> A user experiences a hypoglycemic event (Low)
-                                                at 10:00 AM and then reaches a hyperglycemic level (High) by 12:00 PM.
-                                                Since this transition occurred within the defined threshold of two
-                                                hours, it is flagged as a Time Swing.</p>
-
-                                            <p>Monitoring Time Swings is useful for detecting glycemic instability,
-                                                assessing therapy effectiveness, and optimizing insulin and meal
-                                                strategies.</p>
-                                            <div class="text-center mt-4">
-                                                <img src="{{ URL::asset('/assets/images/pattern/p_ts.png') }}"
-                                                     alt="Time Swing Pattern"
-                                                     class="img-fluid rounded"
-                                                     style="width: 300px; height: auto;">
-                                                <small class="d-block mt-2 text-muted">Time Swing from High to Low in
-                                                    one hour</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            @if(isset($data['time_swing']) && count($data['time_swing']) > 0)
-                                <div class="table-responsive">
-                                    <table class="table table-bordered datatable-glycemic-swings" style="width: 100%">
-                                        <thead>
-                                        <tr>
-                                            <th>Day</th>
-                                            <th>First Event</th>
-                                            <th>Second Event</th>
-                                            <th>Duration Time Swing (h)</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach ($data['time_swing'] as $swing)
-                                            <tr>
-                                                <td>{{ $swing['day'] ?? 'N/A' }}</td>
-                                                <td>{{ $swing['first_event'] ?? 'N/A' }}</td>
-                                                <td>{{ $swing['second_event'] ?? 'N/A' }}</td>
-                                                <td>{{ $swing['duration_time_swing'] ?? 'N/A' }}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @else
-                                <p class="text-muted">Nessun dato trovato per time swings.</p>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="modal fade" id="glycemicSwingsModal" tabindex="-1"
-                         aria-labelledby="glycemicSwingsModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="glycemicSwingsModalLabel">Time Swing Chart</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <strong>Legend:</strong>
-                                        <span class="badge bg-heavenly text-dark">Time Swing (Max: 2h)</span>
-                                    </div>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Canvas where the Chart.js graph will be rendered -->
-                                    <canvas id="glycemicSwingsChart" width="400" height="200"></canvas>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Swings Followed By Anomalous Duration Card -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="card-title mb-0">Too Long Glucose Anomalies</h5>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooLongGlucoseInfoModal"
-                                   title="What is Too Long Glucose Anomalies?">
-                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                </a>
-                            </div>
-                            <button class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#tooLongGlucoseAnomaliesModal">
-                                View Chart
-                            </button>
-                        </div>
-                        <div class="modal fade" id="tooLongGlucoseInfoModal" tabindex="-1"
-                             aria-labelledby="tooLongGlucoseInfoModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="tooLongGlucoseInfoModalLabel">What is Too Long
-                                            Glucose Anomalies?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Too Long Glucose Anomalies</strong> refers to the time spent in
-                                            abnormal glucose ranges, which could indicate deteriorating health
-                                            conditions. These ranges are defined by specific time thresholds:</p>
-                                        <ul>
-                                            <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes in a
-                                                hyperglycemic state.
-                                            </li>
-                                            <li><strong>Low Glucose:</strong> Minimum of 30 minutes in a hypoglycemic
-                                                state.
-                                            </li>
-                                            <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes in a
-                                                critically high glucose range.
-                                            </li>
-                                            <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes in a
-                                                critically low glucose range.
-                                            </li>
-
-                                        </ul>
-
-                                        <p>This helps identify prolonged glucose anomalies that may require adjustments
-                                            in treatment, lifestyle, or monitoring.</p>
-
-                                        <p><strong>Example :</strong> A user experiences a hypoglycemic event (Low) from
-                                            9:00 AM to 9:30 AM, then remains in a hyperglycemic state (High) from 11:00
-                                            AM to 12:30 PM. Since this high period lasted over 1 hour and 30 minutes, it
-                                            qualifies as a Too Long Glucose Anomaly.</p>
-
-                                        <p>Monitoring these anomalies is crucial for detecting prolonged glucose
-                                            instability, preventing complications, and optimizing treatment strategies,
-                                            such as adjusting insulin dosages or meal plans.</p>
-                                        <div class="text-center mt-4">
-                                            <img src="{{ URL::asset('/assets/images/pattern/p_tl.png') }}"
-                                                 alt="Too Long Glucose Anomalies Pattern"
-                                                 class="img-fluid rounded"
-                                                 style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Prolonged glucose anomalies with High
-                                                glucose for four hours</small>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-
-                        <br>
-                        @if(isset($data['too_long_glucose_anomalies']) && count($data['too_long_glucose_anomalies']) > 0)
-                            <div class="table-responsive">
-                                <table id="datatable-too-long-duration"
-                                       class="table table-bordered dt-responsive nowrap w-100">
-                                    <thead>
-                                    <tr>
-                                        <th>Day</th>
-                                        <th>Event</th>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                        <th>Durations (h)</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($data['too_long_glucose_anomalies'] as $swing)
-                                        <tr>
-                                            <td>{{ $swing['day'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['event'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['start_time'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['end_time'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['duration'] ?? 'N/A' }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <p class="text-muted">Nessun dato trovato per swings followed by anomalous duration.</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="modal fade" id="tooLongGlucoseAnomaliesModal" tabindex="-1"
-                     aria-labelledby="tooLongGlucoseAnomaliesModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="tooLongGlucoseAnomaliesModal">Too Long Glucose Anomalies
-                                    Chart</h5>
-
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <strong>Legend:</strong>
-                                    <span class="badge bg-danger">High (Min: 1h 30m)</span>
-                                    <span class="badge bg-primary">Low (Min: 30m)</span>
-                                    <span class="badge bg-warning text-dark">Extremely High (Min: 45m)</span>
-                                    <span class="badge bg-purple text-white">Extremely Low (Min: 10m)</span>
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Canvas where the Chart.js graph will be rendered -->
-                                <canvas id="tooLongGlucoseAnomaliesChart" width="400" height="200"></canvas>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Anomalous Frequency Card -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="card-title mb-0">Too Frequent Glucose Anomalies</h5>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooFrequentGlucoseInfoModal"
-                                   title="What is Too Frequent Glucose Anomalies?">
-                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                </a>
-                            </div>
-                            <button class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#tooFrequentGlucoseAnomaliesModal">
-                                View Chart
-                            </button>
-                        </div>
-                        <div class="modal fade" id="tooFrequentGlucoseInfoModal" tabindex="-1"
-                             aria-labelledby="tooFrequentGlucoseInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
-                                            Frequent Glucose Anomalies?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Too Frequent Glucose Anomalies</strong> refers to the occurrence of
-                                            abnormal glucose events happening too frequently within a specific period.
-                                            These events are categorized by certain thresholds of frequency and
-                                            duration:</p>
-
-                                        <ul>
-                                            <li><strong>High Glucose:</strong> Minimum of 3 instances during the
-                                                observation period.
-                                            </li>
-                                            <li><strong>Low Glucose:</strong> Minimum of 3 instances during the
-                                                observation period.
-                                            </li>
-                                            <li><strong>Extremely High Glucose:</strong> Occurs at least 1 time during
-                                                the observation period.
-                                            </li>
-                                            <li><strong>Extremely Low Glucose:</strong> Occurs at least 1 time during
-                                                the observation period.
-                                            </li>
-                                        </ul>
-
-                                        <p>Frequent occurrences of glucose anomalies may indicate an issue with blood
-                                            sugar control or the need for adjustments in insulin therapy, meal planning,
-                                            or lifestyle modifications.</p>
-
-                                        <p><strong>Example 1:</strong> A user experiences more than 3 instances of High
-                                            glucose (>180 mg/dL) during the observation period. This would be flagged as
-                                            a frequent anomaly, indicating that their glucose levels are not
-                                            well-controlled.</p>
-
-                                        <p><strong>Example 2:</strong> If a user has more than 3 events of Low glucose
-                                            (<70 mg/dL) during the observation period, this would also be flagged as a
-                                            frequent anomaly and may prompt further investigation into the cause of
-                                            frequent hypoglycemia.</p>
-
-                                        <p>Monitoring the frequency of these anomalies is important to evaluate the
-                                            effectiveness of the treatment plan and prevent health complications.</p>
-                                        <div class="text-center mt-4">
-                                            <img src="{{ URL::asset('/assets/images/pattern/p_tf.png') }}"
-                                                 alt="Too Frequent Glucose Anomalies Pattern"
-                                                 class="img-fluid rounded"
-                                                 style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Too Frequent Glucose Anomalies with
-                                                Low glucose for one hour every
-                                                two hours</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        @if(isset($data['too_frequent_glucose_anomalies']) && count($data['too_frequent_glucose_anomalies']) > 0)
-                            <div class="table-responsive">
-                                <table id="datatable-anomalous-frequency"
-                                       class="table table-bordered dt-responsive nowrap w-100">
-                                    <thead>
-                                    <tr>
-                                        <th>Day</th>
-                                        <th>High Count</th>
-                                        <th>Low Count</th>
-                                        <th>Extremely High Count</th>
-                                        <th>Extremely Low Count</th>
-                                        <th>Total Count</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($data['too_frequent_glucose_anomalies'] as $frequency)
-                                        <tr>
-                                            <td>{{ $frequency['day'] ?? 'N/A' }}</td>
-                                            <td>{{ $frequency['high_count'] ?? 'N/A' }}</td>
-                                            <td>{{ $frequency['low_count'] ?? 'N/A' }}</td>
-                                            <td>{{ $frequency['extremely_high_count'] ?? 'N/A' }}</td>
-                                            <td>{{ $frequency['extremely_low_count'] ?? 'N/A' }}</td>
-                                            <td>{{ $frequency['total_count'] ?? 'N/A' }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <p class="text-muted">Nessun dato trovato per anomalous frequency.</p>
-                        @endif
-                    </div>
-                </div>
-                <div class="modal fade" id="tooFrequentGlucoseAnomaliesModal" tabindex="-1"
-                     aria-labelledby="tooFrequentGlucoseAnomaliesModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="tooFrequentGlucoseAnomaliesModal">Too Frequent Glucose
-                                    Anomalies
-                                    Chart</h5>
-
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <strong>Legend:</strong>
-                                    <span class="badge bg-danger">High (Min: 3 times)</span>
-                                    <span class="badge bg-primary">Low (Min: 3 times)</span>
-                                    <span class="badge bg-warning text-dark">Extremely High (1 time)</span>
-                                    <span class="badge bg-purple text-white">Extremely Low (1 time)</span>
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Canvas where the Chart.js graph will be rendered -->
-                                <canvas id="tooFrequentGlucoseAnomaliesChart" width="400" height="200"></canvas>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Swings Followed By Anomalous Frequency Card -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="card-title mb-0">Too Frequent Time Swings</h5>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsInfoModal"
-                                   title="What is Too Frequent Time Swings?">
-                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                </a>
-                            </div>
-                            <div>
-                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#tooFrequentTimeSwingsDurationModal">
-                                    View Duration Chart
-                                </button>
-                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#tooFrequentTimeSwingsFrequencyModal">
-                                    View Frequency Chart
-                                </button>
-                            </div>
-                        </div>
-                        <div class="modal fade" id="tooFrequentTimeSwingsInfoModal" tabindex="-1"
-                             aria-labelledby="tooFrequentTimeSwingsInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="tooFrequentGlucoseInfoModalLabel">What is Too
-                                            Frequent Time Swings?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Too Frequent Time Swings</strong> refers to the frequency of rapid
-                                            glucose level changes within a specific time frame (within two hours), which
-                                            may indicate
-                                            potential issues with glucose stability or treatment effectiveness.</p>
-
-                                        <p>To identify these swings, we evaluate the frequency of significant glucose
-                                            transitions (e.g., from Low to High or vice versa) within the observation
-                                            period. A minimum of two Time Swings within a day can indicate a need for
-                                            closer monitoring or treatment adjustments.</p>
-
-                                        <ul>
-                                            <li><strong>High to Low Glucose Swings:</strong> A shift from a
-                                                hyperglycemic state to a hypoglycemic state within a short period (e.g.,
-                                                2 hours).
-                                            </li>
-                                            <li><strong>Low to High Glucose Swings:</strong> A shift from a hypoglycemic
-                                                state to a hyperglycemic state within a short period (e.g., 2 hours).
-                                            </li>
-                                        </ul>
-
-                                        <p>Evaluating the frequency of Time Swings is important to assess the overall
-                                            stability of glucose levels, ensuring that appropriate interventions are
-                                            made to optimize glucose control.</p>
-                                        <div class="text-center mt-4">
-                                            <img src="{{ URL::asset('/assets/images/pattern/p_tstf.png') }}"
-                                                 alt="Too Frequent Time Swings Pattern"
-                                                 class="img-fluid rounded"
-                                                 style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Rapid Time Swings between High and
-                                                Low glucose events within a few
-                                                hours
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <br>
-                        @if(isset($data['too_frequent_time_swings']) && count($data['too_frequent_time_swings']) > 0)
-                            <div class="table-responsive">
-                                <table id="datatable-swings-followed-by-frequency"
-                                       class="table table-bordered dt-responsive nowrap w-100">
-                                    <thead>
-                                    <tr>
-                                        <th>Day</th>
-                                        <th>First Swing Event</th>
-                                        <th>Second Swing Event</th>
-                                        <th>Duration Time Swing (h)</th>
-                                        <th>Frequency</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($data['too_frequent_time_swings'] as $swing)
-                                        <tr>
-                                            <td>{{ $swing['Events'][0]['Day'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['Events'][0]['First event'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['Events'][0]['Second event'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['Events'][0]['Duration time swing'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['Number of Time Swings'] ?? 'N/A' }}</td>
-                                            <td>
-                                                <!-- Bottone per aprire il modale -->
-                                                <button type="button"
-                                                        class="btn btn-info btn-sm"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#modal-{{ $loop->index }}">
-                                                    View Details
-                                                </button>
-
-                                                <!-- Modale per visualizzare i dettagli -->
-                                                <div class="modal fade" id="modal-{{ $loop->index }}" tabindex="-1"
-                                                     aria-labelledby="modalLabel-{{ $loop->index }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title"
-                                                                    id="modalLabel-{{ $loop->index }}">Time Swings
-                                                                    Details</h5>
-                                                                <button type="button" class="btn-close"
-                                                                        data-bs-dismiss="modal"
-                                                                        aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <!-- Tabella con i dettagli dei time swings -->
-                                                                <table
-                                                                        id="datatable-too-frequent_time_swings_details-{{ $loop->index }}"
-                                                                        class="table table-bordered dt-responsive nowrap w-100">
-                                                                    <thead>
-                                                                    <tr>
-                                                                        <th>Day</th>
-                                                                        <th>First event</th>
-                                                                        <th>Second event</th>
-                                                                        <th>Duration time swing</th>
-                                                                    </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                    @foreach ($swing['Events'] as $event)
+                                                                <div class="modal-body text-start">
+                                                                    <table class="table table-sm table-bordered">
+                                                                        <thead>
                                                                         <tr>
-                                                                            <td>{{ $event['Day'] ?? 'N/A' }}</td>
-                                                                            <td>{{ $event['First event'] ?? 'N/A' }}</td>
-                                                                            <td>{{ $event['Second event'] ?? 'N/A' }}</td>
-                                                                            <td>{{ $event['Duration time swing'] ?? 'N/A' }}</td>
+                                                                            <th>#</th>
+                                                                            <th>Day</th>
+                                                                            <th>Start</th>
+                                                                            <th>End</th>
+                                                                            <th>Duration</th>
                                                                         </tr>
-                                                                    @endforeach
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                        data-bs-dismiss="modal">Close
-                                                                </button>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        @foreach($pattern['occurrences'] as $k => $occ)
+                                                                            @if(is_array($occ) && count($occ) > 0)
+                                                                                @php
+                                                                                    $first = $occ[0]; $last = $occ[count($occ)-1];
+                                                                                    $start = $first['start'] ?? 'N/A'; $end = $last['end'] ?? 'N/A';
+                                                                                    $dur = $occ[0]['duration'] ?? 'N/A';
+                                                                                    $day = $start !== 'N/A' ? date('D, d M Y', strtotime($start)) : 'N/A';
+                                                                                @endphp
+                                                                                <tr>
+                                                                                    <td>{{$k+1}}</td>
+                                                                                    <td>{{$day}}</td>
+                                                                                    <td>{{$start}}</td>
+                                                                                    <td>{{$end}}</td>
+                                                                                    <td>{{$dur}}</td>
+                                                                                </tr>
+                                                                            @endif
+                                                                        @endforeach
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                @else
+                                                    <span class="text-muted">-</span>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -1261,1305 +892,1180 @@
                                 </table>
                             </div>
                         @else
-                            <p class="text-muted">Nessun dato trovato per time swings too frequent.</p>
+                            <div class="alert alert-light text-center" role="alert">No patterns detected for this
+                                range.
+                            </div>
                         @endif
                     </div>
                 </div>
-                <div class="modal fade" id="tooFrequentTimeSwingsDurationModal" tabindex="-1"
-                     aria-labelledby="tooFrequentTimeSwingsDurationModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Time Swing Duration Chart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-4 bg-light border-0">
+        <div class="card-body p-0">
+            <h4 class="card-title mb-4 text-center mt-3" style="font-size: 1.3rem;">Detailed Anomalies & Swings</h4>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-primary text-primary font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-transfer"></i></span>
+                                    Time Swings
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#timeSwingInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#glycemicSwingsModal">Chart</button>
                             </div>
-                            <div class="modal-body">
-                                <canvas id="tooFrequentTimeSwingsDurationChart" width="400" height="200"></canvas>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Modal per Frequenza -->
-                <div class="modal fade" id="tooFrequentTimeSwingsFrequencyModal" tabindex="-1"
-                     aria-labelledby="tooFrequentTimeSwingsFrequencyModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Time Swing Frequency Chart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <canvas id="tooFrequentTimeSwingsFrequencyChart" width="400" height="200"></canvas>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Swings Followed By Anomalous Duration Card -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h5 class="card-title"></h5>
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <div class="d-flex align-items-center gap-2">
-                                <h5 class="card-title mb-0">Time Swing With Too Long Glucose Anomalies</h5>
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#timeSwingTooLongGlucoseInfoModal"
-                                   title="What is Time Swing With Too Long Glucose Anomalies?">
-                                    <i class="mdi mdi-information-outline fs-5 text-muted font-size-24"></i>
-                                </a>
-                            </div>
-                            <button class="btn btn-primary" data-bs-toggle="modal"
-                                    data-bs-target="#timeSwingTooLongGlucoseAnomaliesModal">
-                                View Chart
-                            </button>
-                        </div>
-                        <div class="modal fade" id="timeSwingTooLongGlucoseInfoModal" tabindex="-1"
-                             aria-labelledby="timeSwingTooLongGlucoseInfoModal" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="timeSwingTooLongGlucoseInfoModal">What is Time Swing
-                                            With Too Long Glucose Anomalies?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p><strong>Time Swing With Too Long Glucose Anomalies</strong> refers to
-                                            analyzing swings where one of the intervals before or after the swing has a
-                                            prolonged period of abnormal glucose levels. This indicates extended
-                                            instability in glucose regulation, which may require further attention or
-                                            intervention.</p>
-
-                                        <p>To detect such swings, we evaluate if one of the periods before or after a
-                                            time swing (e.g., from Low to High or High to Low) <strong>occurs within a
-                                                maximum time window of two hours</strong> falls within the
-                                            following defined Too Long Glucose Anomalies:</p>
-
-                                        <ul>
-                                            <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes in a
-                                                hyperglycemic state.
-                                            </li>
-                                            <li><strong>Low Glucose:</strong> Minimum of 30 minutes in a hypoglycemic
-                                                state.
-                                            </li>
-                                            <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes in a
-                                                critically high glucose range.
-                                            </li>
-                                            <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes in a
-                                                critically low glucose range.
-                                            </li>
-                                        </ul>
-
-                                        <p>These swings indicate that not only is there a rapid change in glucose
-                                            levels, but that one of the periods before or after the swing is prolonged,
-                                            signifying longer-than-usual periods of instability.</p>
-
-
-                                        <p><strong>Example:</strong> If a user experiences a Low glucose event from 8:00
-                                            AM to 8:30 AM, followed by a High glucose event from 10:00 AM to 11:30 AM,
-                                            this would qualify as a Time Swing with Too Long Glucose Anomalies if the
-                                            transition occurred within 2 hours, and either the Low or High period
-                                            exceeded the minimum time threshold.</p>
-
-                                        <p>Monitoring these swings helps in identifying significant glucose instability
-                                            and may prompt necessary adjustments to treatment plans.</p>
-                                        <div class="text-center mt-4">
-                                            <img src="{{ URL::asset('/assets/images/pattern/p_tstl.png') }}"
-                                                 alt="Time Swing With Too Long Glucose Anomalies Pattern"
-                                                 class="img-fluid rounded"
-                                                 style="width: 300px; height: auto;">
-                                            <small class="d-block mt-2 text-muted">Time Swing from Low to High with a
-                                                four-hour High glucose anomaly
-                                            </small>
+                            <div class="modal fade" id="timeSwingInfoModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">What is Time Swing?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Time Swing</strong> refers to the interval between two significant glycemic events, especially when glucose levels rapidly change between different categories (e.g., from Low to High) <strong>within a maximum time frame of two hours</strong>.</p>
+                                            <p>This helps identify sharp fluctuations in blood glucose that may require attention or adjustment in treatment.</p>
+                                            <p><strong>Example:</strong> A user experiences a hypoglycemic event (Low) at 10:00 AM and then reaches a hyperglycemic level (High) by 12:00 PM. Since this transition occurred within the defined threshold of two hours, it is flagged as a Time Swing.</p>
+                                            <p>Monitoring Time Swings is useful for detecting glycemic instability, assessing therapy effectiveness, and optimizing insulin and meal strategies.</p>
+                                            <div class="text-center mt-4">
+                                                <img src="{{ URL::asset('/assets/images/pattern/p_ts.png') }}" alt="Time Swing Pattern" class="img-fluid rounded" style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Time Swing from High to Low in one hour</small>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="glycemicSwingsModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Time Swing Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="glycemicSwingsChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['time_swing']) && count($data['time_swing']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped datatable-glycemic-swings">
+                                        <thead><tr><th>Day</th><th>From</th><th>To</th><th>Dur (h)</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['time_swing'] as $swing)
+                                            <tr><td>{{ $swing['day'] }}</td><td>{{ $swing['first_event'] }}</td><td>{{ $swing['second_event'] }}</td><td>{{ $swing['duration_time_swing'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No Time Swings detected.</p>
+                            @endif
                         </div>
-                        <br>
-                        @if(isset($data['time_swing_with_too_long_glucose_anomalies']) && count($data['time_swing_with_too_long_glucose_anomalies']) > 0)
-                            <div class="table-responsive">
-                                <table id="datatable-swings-followed-by-duration"
-                                       class="table table-bordered dt-responsive nowrap w-100">
-                                    <thead>
-                                    <tr>
-                                        <th>Day</th>
-                                        <th>First Swing Event</th>
-                                        <th>Second Swing Event</th>
-                                        <th>Duration Time Swing (h)</th>
-                                        <th>Duration(h)</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($data['time_swing_with_too_long_glucose_anomalies'] as $swing)
-                                        <tr>
-                                            <td>{{ $swing['day'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['first_event'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['second_event'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['duration_time_swing'] ?? 'N/A' }}</td>
-                                            <td>{{ $swing['anomalous_durations'] ?? 'N/A' }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        @else
-                            <p class="text-muted">Nessun dato trovato per swings followed by anomalous duration.</p>
-                        @endif
                     </div>
                 </div>
-                <div class="modal fade" id="timeSwingTooLongGlucoseAnomaliesModal" tabindex="-1"
-                     aria-labelledby="timeSwingTooLongGlucoseAnomaliesModal" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="timeSwingTooLongGlucoseAnomaliesModal">Time Swing with Too
-                                    Long Glucose Anomalies
-                                    Chart</h5>
 
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-warning text-warning font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-hourglass"></i></span>
+                                    Too Long Anomalies
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#tooLongGlucoseInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#tooLongGlucoseAnomaliesModal">Chart</button>
                             </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <strong>Legend:</strong>
-                                    <span class="badge bg-heavenly text-dark">Time Swing (Max: 2h)</span>
-                                    <span class="badge bg-danger">High (Min: 1h 30m)</span>
-                                    <span class="badge bg-primary">Low (Min: 30m)</span>
-                                    <span class="badge bg-warning text-dark">Extremely High (Min: 45m)</span>
-                                    <span class="badge bg-purple text-white">Extremely Low (Min: 10m)</span>
+
+                            <div class="modal fade" id="tooLongGlucoseInfoModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">What is Too Long Glucose Anomalies?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Too Long Glucose Anomalies</strong> refers to the time spent in abnormal glucose ranges, which could indicate deteriorating health conditions. These ranges are defined by specific time thresholds:</p>
+                                            <ul>
+                                                <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes.</li>
+                                                <li><strong>Low Glucose:</strong> Minimum of 30 minutes.</li>
+                                                <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes.</li>
+                                                <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes.</li>
+                                            </ul>
+                                            <p>This helps identify prolonged glucose anomalies that may require adjustments in treatment, lifestyle, or monitoring.</p>
+                                            <p><strong>Example:</strong> A user experiences a hypoglycemic event (Low) from 9:00 AM to 9:30 AM, then remains in a hyperglycemic state (High) from 11:00 AM to 12:30 PM. Since this high period lasted over 1 hour and 30 minutes, it qualifies as a Too Long Glucose Anomaly.</p>
+                                            <div class="text-center mt-4">
+                                                <img src="{{ URL::asset('/assets/images/pattern/p_tl.png') }}" alt="Too Long Glucose Anomalies Pattern" class="img-fluid rounded" style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Prolonged glucose anomalies with High glucose for four hours</small>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-body">
-                                <!-- Canvas where the Chart.js graph will be rendered -->
-                                <canvas id="timeSwingTooLongGlucoseAnomaliesChart" width="400" height="200"></canvas>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
-                                </button>
-                            </div>
+
+                            <div class="modal fade" id="tooLongGlucoseAnomaliesModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooLongGlucoseAnomaliesChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['too_long_glucose_anomalies']) && count($data['too_long_glucose_anomalies']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table id="datatable-too-long-duration" class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>Event</th><th>Duration (h)</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['too_long_glucose_anomalies'] as $swing)
+                                            <tr><td>{{ $swing['day'] }}</td><td>{{ $swing['event'] }}</td><td>{{ $swing['duration'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
 
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-bar-chart-alt-2"></i></span>
+                                    Too Frequent Anomalies
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#tooFrequentGlucoseInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#tooFrequentGlucoseAnomaliesModal">Chart</button>
+                            </div>
+
+                            <div class="modal fade" id="tooFrequentGlucoseInfoModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">What is Too Frequent Glucose Anomalies?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Too Frequent Glucose Anomalies</strong> refers to the occurrence of abnormal glucose events happening too frequently within a specific period. These events are categorized by certain thresholds of frequency and duration:</p>
+                                            <ul>
+                                                <li><strong>High Glucose:</strong> Minimum of 3 instances.</li>
+                                                <li><strong>Low Glucose:</strong> Minimum of 3 instances.</li>
+                                                <li><strong>Extremely High/Low Glucose:</strong> Occurs at least 1 time.</li>
+                                            </ul>
+                                            <p>Frequent occurrences of glucose anomalies may indicate an issue with blood sugar control or the need for adjustments in insulin therapy, meal planning, or lifestyle modifications.</p>
+                                            <div class="text-center mt-4">
+                                                <img src="{{ URL::asset('/assets/images/pattern/p_tf.png') }}" alt="Too Frequent Glucose Anomalies Pattern" class="img-fluid rounded" style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Too Frequent Glucose Anomalies with Low glucose for one hour every two hours</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="tooFrequentGlucoseAnomaliesModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooFrequentGlucoseAnomaliesChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['too_frequent_glucose_anomalies']) && count($data['too_frequent_glucose_anomalies']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table id="datatable-anomalous-frequency" class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>Total</th><th>High</th><th>Low</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['too_frequent_glucose_anomalies'] as $f)
+                                            <tr><td>{{ $f['day'] }}</td><td>{{ $f['total_count'] }}</td><td>{{ $f['high_count'] }}</td><td>{{ $f['low_count'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-info text-info font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-history"></i></span>
+                                   Too Frequent Time Swings
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsDurationModal">Dur</button>
+                                    <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#tooFrequentTimeSwingsFrequencyModal">Freq</button>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="tooFrequentTimeSwingsInfoModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">What is Too Frequent Time Swings?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Too Frequent Time Swings</strong> refers to the frequency of rapid glucose level changes within a specific time frame (within two hours), which may indicate potential issues with glucose stability or treatment effectiveness.</p>
+                                            <p>To identify these swings, we evaluate the frequency of significant glucose transitions (e.g., from Low to High or vice versa) within the observation period. A minimum of two Time Swings within a day can indicate a need for closer monitoring or treatment adjustments.</p>
+                                            <ul>
+                                                <li><strong>High to Low Glucose Swings:</strong> A shift from a hyperglycemic state to a hypoglycemic state within a short period (e.g., 2 hours).</li>
+                                                <li><strong>Low to High Glucose Swings:</strong> A shift from a hypoglycemic state to a hyperglycemic state within a short period (e.g., 2 hours).</li>
+                                            </ul>
+                                            <div class="text-center mt-4">
+                                                <img src="{{ URL::asset('/assets/images/pattern/p_tstf.png') }}" alt="Too Frequent Time Swings Pattern" class="img-fluid rounded" style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Rapid Time Swings between High and Low glucose events within a few hours</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="tooFrequentTimeSwingsDurationModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooFrequentTimeSwingsDurationChart" width="400" height="200"></canvas></div></div></div></div>
+                            <div class="modal fade" id="tooFrequentTimeSwingsFrequencyModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooFrequentTimeSwingsFrequencyChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['too_frequent_time_swings']) && count($data['too_frequent_time_swings']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table id="datatable-swings-followed-by-frequency" class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>Count</th><th>Action</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['too_frequent_time_swings'] as $swing)
+                                            <tr>
+                                                <td>{{ $swing['Events'][0]['Day'] ?? 'N/A' }}</td>
+                                                <td>{{ $swing['Number of Time Swings'] ?? 'N/A' }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-{{ $loop->index }}">Details</button>
+                                                    <div class="modal fade" id="modal-{{ $loop->index }}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">
+                                                                    <table id="datatable-too-frequent_time_swings_details-{{ $loop->index }}" class="table table-bordered dt-responsive nowrap w-100">
+                                                                        <thead><tr><th>Day</th><th>First</th><th>Second</th><th>Dur</th></tr></thead>
+                                                                        <tbody>@foreach ($swing['Events'] as $event) <tr><td>{{ $event['Day'] }}</td><td>{{ $event['First event'] }}</td><td>{{ $event['Second event'] }}</td><td>{{ $event['Duration time swing'] }}</td></tr> @endforeach</tbody>
+                                                                    </table>
+                                                                </div></div></div></div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-error-alt"></i></span>
+                                    Time Swing With Too Long Anomalies
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#timeSwingTooLongGlucoseInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#timeSwingTooLongGlucoseAnomaliesModal">Chart</button>
+                            </div>
+
+                            <div class="modal fade" id="timeSwingTooLongGlucoseInfoModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">What is Time Swing With Too Long Glucose Anomalies?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Time Swing With Too Long Glucose Anomalies</strong> refers to analyzing swings where one of the intervals before or after the swing has a prolonged period of abnormal glucose levels. This indicates extended instability in glucose regulation.</p>
+                                            <p>To detect such swings, we evaluate if one of the periods before or after a time swing (e.g., from Low to High or High to Low) <strong>occurs within a maximum time window of two hours</strong> falls within the defined Too Long Glucose Anomalies thresholds.</p>
+                                            <ul>
+                                                <li><strong>High Glucose:</strong> Minimum of 1 hour and 30 minutes.</li>
+                                                <li><strong>Low Glucose:</strong> Minimum of 30 minutes.</li>
+                                                <li><strong>Extremely High Glucose:</strong> Minimum of 45 minutes.</li>
+                                                <li><strong>Extremely Low Glucose:</strong> Minimum of 30 minutes.</li>
+                                            </ul>
+                                            <div class="text-center mt-4">
+                                                <img src="{{ URL::asset('/assets/images/pattern/p_tstl.png') }}" alt="Time Swing With Too Long Glucose Anomalies Pattern" class="img-fluid rounded" style="width: 300px; height: auto;">
+                                                <small class="d-block mt-2 text-muted">Time Swing from Low to High with a four-hour High glucose anomaly</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="timeSwingTooLongGlucoseAnomaliesModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="timeSwingTooLongGlucoseAnomaliesChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['time_swing_with_too_long_glucose_anomalies']) && count($data['time_swing_with_too_long_glucose_anomalies']) > 0)
+                                <div class="table-responsive">
+                                    <table id="datatable-swings-followed-by-duration" class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>First Swing</th><th>Second Swing</th><th>Dur Swing</th><th>Dur Anomaly</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['time_swing_with_too_long_glucose_anomalies'] as $swing)
+                                            <tr><td>{{ $swing['day'] }}</td><td>{{ $swing['first_event'] }}</td><td>{{ $swing['second_event'] }}</td><td>{{ $swing['duration_time_swing'] }}</td><td>{{ $swing['anomalous_durations'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                                    <span class="avatar-title rounded-circle bg-soft-dark text-dark font-size-16 me-2" style="width: 30px; height: 30px;"><i class="bx bx-tachometer"></i></span>
+                                    Extremely Time Swings
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#extremelyTimeSwingInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#extremelyGlycemicSwingsModal">Chart</button>
+                            </div>
+
+                            <div class="modal fade" id="extremelyTimeSwingInfoModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Info</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p><strong>Extremely Time Swings</strong> refers to rapid fluctuations involving "Extremely High" or "Extremely Low" glucose levels within 2 hours.</p></div></div></div></div>
+
+                            <div class="modal fade" id="extremelyGlycemicSwingsModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Extremely Time Swing Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="extremelyGlycemicSwingsChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['extremely_time_swing']) && count($data['extremely_time_swing']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>From</th><th>To</th><th>Dur (h)</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['extremely_time_swing'] as $swing)
+                                            <tr><td>{{ $swing['day'] }}</td><td>{{ $swing['first_event'] }}</td><td>{{ $swing['second_event'] }}</td><td>{{ $swing['duration_time_swing'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No Extremely Time Swings detected.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <span class="avatar-title rounded-circle bg-soft-purple text-purple font-size-16 me-2" style="width: 30px; height: 30px;">
+                        <i class="bx bx-layer"></i> </span>
+                                    Frequent Ext. Swings
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#tooFrequentExtremelyTimeSwingsInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-purple me-1" data-bs-toggle="modal" data-bs-target="#tooFrequentExtremelyTimeSwingsDurationModal">Dur</button>
+                                    <button class="btn btn-sm btn-outline-purple" data-bs-toggle="modal" data-bs-target="#tooFrequentExtremelyTimeSwingsFrequencyModal">Freq</button>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="tooFrequentExtremelyTimeSwingsInfoModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Info</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Info about frequent extreme swings...</p></div></div></div></div>
+                            <div class="modal fade" id="tooFrequentExtremelyTimeSwingsDurationModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooFrequentExtremelyTimeSwingsDurationChart" width="400" height="200"></canvas></div></div></div></div>
+                            <div class="modal fade" id="tooFrequentExtremelyTimeSwingsFrequencyModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="tooFrequentExtremelyTimeSwingsFrequencyChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['too_frequent_extremely_time_swings']) && count($data['too_frequent_extremely_time_swings']) > 0)
+                                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>Count</th><th>Action</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['too_frequent_extremely_time_swings'] as $swing)
+                                            <tr>
+                                                <td>{{ $swing['Events'][0]['Day'] ?? 'N/A' }}</td>
+                                                <td>{{ $swing['Number of Time Swings'] ?? 'N/A' }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-ext-{{ $loop->index }}">Details</button>
+                                                    <div class="modal fade" id="modal-ext-{{ $loop->index }}" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body">
+                                                                    <table class="table table-bordered dt-responsive nowrap w-100">
+                                                                        <thead><tr><th>Day</th><th>First</th><th>Second</th><th>Dur</th></tr></thead>
+                                                                        <tbody>@foreach ($swing['Events'] as $event) <tr><td>{{ $event['Day'] }}</td><td>{{ $event['First event'] }}</td><td>{{ $event['Second event'] }}</td><td>{{ $event['Duration time swing'] }}</td></tr> @endforeach</tbody>
+                                                                    </table>
+                                                                </div></div></div></div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card h-100 border shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0 d-flex align-items-center">
+                    <span class="avatar-title rounded-circle bg-soft-purple text-purple font-size-16 me-2" style="width: 30px; height: 30px;">
+                        <i class="bx bx-timer"></i> </span>
+                                    Ext. Swing With Too Long Anomalies
+                                    <a href="#" class="ms-2 text-muted" data-bs-toggle="modal" data-bs-target="#extTimeSwingTooLongInfoModal"><i class="mdi mdi-information-outline"></i></a>
+                                </h5>
+                                <button class="btn btn-sm btn-outline-purple" data-bs-toggle="modal" data-bs-target="#extTimeSwingTooLongModal">Chart</button>
+                            </div>
+
+                            <div class="modal fade" id="extTimeSwingTooLongInfoModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Info</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><p>Details about extremely complex swings...</p></div></div></div></div>
+                            <div class="modal fade" id="extTimeSwingTooLongModal" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">Chart</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><canvas id="extTimeSwingTooLongChart" width="400" height="200"></canvas></div></div></div></div>
+
+                            @if(isset($data['extremely_time_swing_with_too_long_glucose_anomalies']) && count($data['extremely_time_swing_with_too_long_glucose_anomalies']) > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead><tr><th>Day</th><th>First Swing</th><th>Second Swing</th><th>Dur Swing</th><th>Dur Anomaly</th></tr></thead>
+                                        <tbody>
+                                        @foreach ($data['extremely_time_swing_with_too_long_glucose_anomalies'] as $swing)
+                                            <tr><td>{{ $swing['day'] }}</td><td>{{ $swing['first_event'] }}</td><td>{{ $swing['second_event'] }}</td><td>{{ $swing['duration_time_swing'] }}</td><td>{{ $swing['anomalous_durations'] }}</td></tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <p class="text-muted text-center py-4">No data found.</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    </div>
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let swingData = [
-                    @foreach ($data['time_swing'] ?? [] as $swing)                {
-                    day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",  // Formattazione della data
-                    duration: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}", // Durata in formato HH:mm
-                    time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}" // Tipo di evento (high-low, low-high)
-                },
-                @endforeach
-            ];
-
-            // Convertire HH:mm in minuti per il grafico
-            let durationsInMinutes = swingData.map(swing => {
-                let [hours, minutes] = swing.duration.split(":").map(Number);
-                return hours * 60 + minutes; // Convertiamo tutto in minuti
-            });
-
-            let days = swingData.map(swing => swing.day);
-            let timeSwingTypes = swingData.map(swing => swing.time_swing_type);
-
-            let ctx = document.getElementById('glycemicSwingsChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Duration of Time Swings (HH:mm)',
-                        data: durationsInMinutes, // Passiamo i valori in minuti
-                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
-                        borderColor: 'rgba(220, 110, 110, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)'
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    let hours = Math.floor(value / 60);
-                                    let minutes = value % 60;
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Mostra in HH:mm con due cifre
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                autoSkip: true,
-                                maxRotation: 45,
-                                minRotation: 45,
-                            },
-                            grid: {
-                                display: false,
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let durationInMinutes = durationsInMinutes[index];
-                                    let hours = Math.floor(durationInMinutes / 60);
-                                    let minutes = durationInMinutes % 60;
-                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}\nTime Swing: ${swingData[index].time_swing_type}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            let ctx2 = document.getElementById('exportGlycemicSwingsChart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Duration of Time Swings (HH:mm)',
-                        data: durationsInMinutes, // Passiamo i valori in minuti
-                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
-                        borderColor: 'rgba(220, 110, 110, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: false, // disabilita il resize automatico
-                    maintainAspectRatio: false, // già presente, ok
-                    width: 1200,
-                    height: 600,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)'
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    let hours = Math.floor(value / 60);
-                                    let minutes = value % 60;
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Mostra in HH:mm con due cifre
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                autoSkip: true,
-                                maxRotation: 45,
-                                minRotation: 45,
-                            },
-                            grid: {
-                                display: false,
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let durationInMinutes = durationsInMinutes[index];
-                                    let hours = Math.floor(durationInMinutes / 60);
-                                    let minutes = durationInMinutes % 60;
-                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}\nTime Swing: ${swingData[index].time_swing_type}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            let anomalyData = [
-                    @foreach ($data['too_long_glucose_anomalies'] ?? [] as $anomaly)
-                {
-                    day: "{{ \Carbon\Carbon::parse($anomaly['day'])->format('d/m/Y') }}", // Formattazione della data
-                    event: "{{ $anomaly['event'] }}",
-                    duration: "{{ \Carbon\Carbon::parse($anomaly['duration'])->format('H:i') }}" // Formattazione HH:mm
-                },
-                @endforeach
-            ];
-
-            let days = [...new Set(anomalyData.map(anomaly => anomaly.day))]; // Lista unica di date
-
-            // Convertire HH:mm in minuti per Chart.js
-            let convertToMinutes = (hhmm) => {
-                let [hours, minutes] = hhmm.split(":").map(Number);
-                return hours * 60 + minutes;
-            };
-
-            let eventTypes = ["high", "low", "extremely_high", "extremely_low"];
-            let colors = {
-                "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
-                "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
-                "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
-                "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
-            };
-
-            let datasets = eventTypes.map(event => ({
-                label: event.replace("_", " ").toUpperCase(),
-                data: days.map(day => {
-                    let anomaly = anomalyData.find(a => a.day === day && a.event === event);
-                    return anomaly ? convertToMinutes(anomaly.duration) : 0; // Convertiamo in minuti
-                }),
-                backgroundColor: colors[event].bg,
-                borderColor: colors[event].border,
-                borderWidth: 1
-            }));
-
-            let ctx = document.getElementById('tooLongGlucoseAnomaliesChart').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    let hours = Math.floor(value / 60);
-                                    let minutes = value % 60;
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Formattazione HH:mm
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let durationInMinutes = datasets[tooltipItem.datasetIndex].data[index];
-                                    let hours = Math.floor(durationInMinutes / 60);
-                                    let minutes = durationInMinutes % 60;
-                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            let ctx2 = document.getElementById('exportTooLongChart').getContext('2d');
-
-            new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: false,
-                    maintainAspectRatio: false,
-                    width: 1200,
-                    height: 600,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
-                            },
-                            ticks: {
-                                callback: function (value) {
-                                    let hours = Math.floor(value / 60);
-                                    let minutes = value % 60;
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`; // Formattazione HH:mm
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let durationInMinutes = datasets[tooltipItem.datasetIndex].data[index];
-                                    let hours = Math.floor(durationInMinutes / 60);
-                                    let minutes = durationInMinutes % 60;
-                                    return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            let frequencyData = [
-                    @foreach ($data['too_frequent_glucose_anomalies']   ?? [] as $frequency)
-                {
-                    day: "{{ \Carbon\Carbon::parse($frequency['day'])->format('d/m/Y') }}", // Formattazione della data
-                    high_count: {{ $frequency['high_count'] ?? 0 }},
-                    low_count: {{ $frequency['low_count'] ?? 0 }},
-                    extremely_high_count: {{ $frequency['extremely_high_count'] ?? 0 }},
-                    extremely_low_count: {{ $frequency['extremely_low_count'] ?? 0 }},
-                    total_count: {{ $frequency['total_count'] ?? 0 }}
-                },
-                @endforeach
-            ];
-
-            let days = frequencyData.map(frequency => frequency.day);
-            let highCounts = frequencyData.map(frequency => frequency.high_count);
-            let lowCounts = frequencyData.map(frequency => frequency.low_count);
-            let extremelyHighCounts = frequencyData.map(frequency => frequency.extremely_high_count);
-            let extremelyLowCounts = frequencyData.map(frequency => frequency.extremely_low_count);
-
-            let ctx = document.getElementById('tooFrequentGlucoseAnomaliesChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [
-                        {
-                            label: 'High Count',
-                            data: highCounts,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Low Count',
-                            data: lowCounts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Extremely High Count',
-                            data: extremelyHighCounts,
-                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Extremely Low Count',
-                            data: extremelyLowCounts,
-                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Event Counts'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    return `${tooltipItem.dataset.label}: ${tooltipItem.raw} events`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            let ctx2 = document.getElementById('exportTooFrequentChart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [
-                        {
-                            label: 'High Count',
-                            data: highCounts,
-                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Low Count',
-                            data: lowCounts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Extremely High Count',
-                            data: extremelyHighCounts,
-                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'Extremely Low Count',
-                            data: extremelyLowCounts,
-                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: false,
-                    width: 1200,
-                    height: 600,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Event Counts'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    return `${tooltipItem.dataset.label}: ${tooltipItem.raw} events`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            let frequentSwingData = [
-                    @foreach ($data['too_frequent_time_swings'] ?? []  as $swing)
-                {
-                    day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
-                    durations: [
-                        @foreach ($swing['Events'] as $event)
-                            "{{ \Carbon\Carbon::parse($event['Duration time swing'])->format('H:i') }}",
-                        @endforeach
-                    ],
-                    frequency: {{ $swing['Number of Time Swings'] ?? 0 }}
-                },
-                @endforeach
-            ];
-
-            // Estrarre i giorni unici
-            let days = frequentSwingData.map(swing => swing.day);
-            let uniqueDays = [...new Set(days)]; // Rimuove i duplicati
-
-// Creare i dataset per ogni giorno (array di array)
-            let durationDatasets = [];
-            let maxSwings = Math.max(...frequentSwingData.map(swing => swing.durations.length));
-
-            for (let i = 0; i < maxSwings; i++) {
-                durationDatasets.push({
-                    label: `Time Swing ${i + 1}`,
-                    data: uniqueDays.map(day => {
-                        let swing = frequentSwingData.find(s => s.day === day);
-                        if (swing && swing.durations[i]) {
-                            // Convertiamo la durata in minuti
-                            let [hours, minutes] = swing.durations[i].split(":").map(Number);
-                            let totalMinutes = hours * 60 + minutes; // Durata in minuti
-                            return totalMinutes; // Restituiamo il valore in minuti
-                        }
-                        return null; // Se non esiste la durata
-                    }),
-                    backgroundColor: 'rgba(220, 110, 110, 0.5)',
-                    borderColor: 'rgba(220, 110, 110, 1)',
-                    borderWidth: 1
+    @section('script')
+        <script>
+            $(document).ready(function () {
+                $.fn.dataTable.moment("ddd, DD MMM YYYY");
+                $('.datatable-glycemic-swings').DataTable({order: [[0, "desc"]]});
+                $('#datatable-anomalous-duration').DataTable({order: [[0, "desc"]]});
+                $('#datatable-anomalous-frequency').DataTable({order: [[0, "desc"]]});
+                $('#datatable-too-long-duration').DataTable({order: [[0, "desc"]]});
+                $('#datatable-detection-Pattern').DataTable({
+                    order: [[1, "desc"]],
+                    columnDefs: [{orderable: false, targets: -1}]
                 });
+                $('#datatable-swings-followed-by-frequency').DataTable({
+                    order: [[0, "desc"]],
+                    columnDefs: [{orderable: false, targets: -1}]
+                });
+                $('#datatable-swings-followed-by-duration').DataTable({order: [[0, "desc"]]});
+
+                $('button[data-toggle="modal"]').on('click', function () {
+                    var modalId = $(this).data('target');
+                    var tableId = $(modalId).find('table').attr('id');
+                    if (tableId && !$.fn.DataTable.isDataTable('#' + tableId)) {
+                        $('#' + tableId).DataTable({
+                            responsive: true,
+                            autoWidth: false,
+                            order: [[0, "desc"]]
+                        });
+                    }
+                });
+            });
+
+            $(function () {
+                var startDate = "{{ $startDate ? \Carbon\Carbon::parse($startDate)->format('m/d/Y') : ($data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('m/d/Y') : moment().startOf('month').format('m/d/Y')) }}";
+                var endDate = "{{ $endDate ? \Carbon\Carbon::parse($endDate)->format('m/d/Y') : ($data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('m/d/Y') : moment().endOf('month').format('m/d/Y')) }}";
+                var minDate = "{{ $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('m/d/Y') : '' }}";
+                var maxDate = "{{ $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('m/d/Y') : '' }}";
+
+                $('input[name="daterange"]').daterangepicker({
+                    startDate: startDate,
+                    endDate: endDate,
+                    minDate: minDate,
+                    maxDate: maxDate,
+                    opens: 'right',
+                    locale: {format: 'MM/DD/YYYY'}
+                }, function (start, end, label) {
+                    $('#start-date').val(start.format('YYYY-MM-DD'));
+                    $('#end-date').val(end.format('YYYY-MM-DD'));
+                    var range = start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD');
+                    var form = $('#date-form');
+                    var action = form.attr('action');
+                    form.attr('action', action.split('?')[0] + '?range=' + encodeURIComponent(range));
+                    form.submit();
+                });
+            });
+
+            function slowScrollTo(element, duration) {
+                var targetPosition = element.getBoundingClientRect().top;
+                var startPosition = window.pageYOffset;
+                var startTime = null;
+
+                function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    var timeElapsed = currentTime - startTime;
+                    var run = ease(timeElapsed, startPosition, targetPosition, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) requestAnimationFrame(animation);
+                }
+
+                function ease(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t + b;
+                    t--;
+                    return -c / 2 * (t * (t - 2) - 1) + b;
+                }
+
+                requestAnimationFrame(animation);
             }
 
-// Funzione per formattare l'asse Y in HH:mm
-            const formatTimeLabel = (value) => {
-                if (value === null) return '00:00'; // In caso di valore nullo
-                let hours = Math.floor(value / 60); // Ore
-                let minutes = value % 60; // Minuti
-                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            };
-
-// Grafico Durata (una sola data per gruppo di Time Swings)
-            let ctxDuration = document.getElementById('tooFrequentTimeSwingsDurationChart').getContext('2d');
-
-            new Chart(ctxDuration, {
-                type: 'bar',
-                data: {
-                    labels: uniqueDays, // Mostra solo date uniche
-                    datasets: durationDatasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)'
-                            },
-                            ticks: {
-                                stepSize: 30, // Aggiusta stepSize per adattarsi alla visualizzazione
-                                callback: (value) => formatTimeLabel(value) // Usa la funzione per formattare
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Dates'
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                // Personalizzare la visualizzazione del tooltip
-                                label: function (tooltipItem) {
-                                    let minutes = tooltipItem.raw; // Recupera i dati numerici
-                                    return `Duration: ${formatTimeLabel(minutes)}`; // Mostra in formato HH:mm
-                                }
-                            }
-                        }
+            document.addEventListener("DOMContentLoaded", function () {
+                if (window.location.search.includes('start_date') || window.location.search.includes('end_date')) {
+                    var element = document.getElementById("scroll-to-form");
+                    if (element) {
+                        slowScrollTo(element, 1500);
                     }
                 }
             });
 
-            let ctxDuration2 = document.getElementById('exportTooFrequentTimeSwingsDurationChart').getContext('2d');
-
-            new Chart(ctxDuration2, {
-                type: 'bar',
-                data: {
-                    labels: uniqueDays, // Mostra solo date uniche
-                    datasets: durationDatasets
-                },
-                options: {
-                    responsive: false,
-                    width: 1200,
-                    height: 600,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)'
-                            },
-                            ticks: {
-                                stepSize: 30, // Aggiusta stepSize per adattarsi alla visualizzazione
-                                callback: (value) => formatTimeLabel(value) // Usa la funzione per formattare
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Dates'
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                // Personalizzare la visualizzazione del tooltip
-                                label: function (tooltipItem) {
-                                    let minutes = tooltipItem.raw; // Recupera i dati numerici
-                                    return `Duration: ${formatTimeLabel(minutes)}`; // Mostra in formato HH:mm
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            // Grafico Frequenza
-            let frequencyData = frequentSwingData.map(swing => swing.frequency);
-            let ctxFrequency = document.getElementById('tooFrequentTimeSwingsFrequencyChart').getContext('2d');
-            new Chart(ctxFrequency, {
-                type: 'bar',
-                data: {
-                    labels: uniqueDays, // Mostra solo date uniche
-                    datasets: [{
-                        label: 'Frequency of Time Swings',
-                        data: frequencyData,
-                        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Swings'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        }
-                    }
-                }
-            });
-
-            let ctxFrequency2 = document.getElementById('exportTooFrequentTimeSwingsFrequencyChart').getContext('2d');
-            new Chart(ctxFrequency2, {
-                type: 'bar',
-                data: {
-                    labels: uniqueDays, // Mostra solo date uniche
-                    datasets: [{
-                        label: 'Frequency of Time Swings',
-                        data: frequencyData,
-                        backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: false,
-                    width: 1200,
-                    height: 600,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Number of Swings'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        }
-                    }
-                }
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            let timeSwingData = [
-                    @foreach ($data['time_swing_with_too_long_glucose_anomalies'] ?? []  as $swing)
-                {
-                    day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}", // Formattazione data
-                    duration_time_swing: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}", // Durata in HH:mm
-                    anomalous_duration: "{{ \Carbon\Carbon::parse(str_replace(['Low event: ', 'High event: ', 'Extremely high event: ', 'Extremely low event: '], '', $swing['anomalous_durations']))->format('H:i') }}",
-                    time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}",
-                    anomalous_event: "{{ $swing['anomalous_durations'] }}",
-                    event_type: "{{ strtolower($swing['first_event']) }}" // Normalizziamo l'evento per i colori
-                },
-                @endforeach
-            ];
-
-            let days = timeSwingData.map(swing => swing.day);
-            let durationTimeSwing = timeSwingData.map(swing => swing.duration_time_swing);
-            let anomalousDurations = timeSwingData.map(swing => swing.anomalous_duration);
-            let eventTypes = timeSwingData.map(swing => swing.event_type); // Per determinare il colore
-
-            // Colori per ogni evento anomalo
-            let colors = {
-                "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
-                "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
-                "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
-                "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
-            };
-
-            // Funzione di formattazione HH:mm
-            const formatTime = (time) => {
-                let [hours, minutes] = time.split(":").map(Number);
-                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-            };
-
-            let ctx = document.getElementById('timeSwingTooLongGlucoseAnomaliesChart').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Duration Time Swing (HH:mm)',
-                        data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))), // Converte HH:mm in formato numerico
-                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
-                        borderColor: 'rgba(220, 110, 110, 1)', // Colore di bordo per il dataset Duration Time Swing
-                        borderWidth: 1
-                    }, {
-                        label: 'Anomalous Duration (HH:mm)',
-                        data: anomalousDurations.map(d => parseFloat(d.replace(':', '.'))),
-                        // Usa il colore di sfondo e di bordo definito in colors per ciascun tipo di evento anomalo
-                        backgroundColor: eventTypes.map(event => colors[event] ? colors[event].bg : 'rgba(255, 99, 132, 0.2)'),
-                        borderColor: eventTypes.map(event => colors[event] ? colors[event].border : 'rgba(255, 99, 132, 1)'),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
-                            },
-                            ticks: {
-                                stepSize: 0.5, // Intervallo di 30 minuti (0.5 ore)
-                                callback: function (value) {
-                                    // Calcola ore e minuti
-                                    let hours = Math.floor(value); // Ore
-                                    let minutes = Math.round((value - hours) * 60); // Minuti
-
-                                    // Ritorna la durata nel formato HH:mm
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let timeSwing = timeSwingData[index];
-
-                                    // Estrai il tipo di evento anomalo
-                                    let anomalousType = timeSwing.event_type.charAt(0).toUpperCase() + timeSwing.event_type.slice(1); // Prima lettera maiuscola
-
-                                    return [
-                                        'Time Swing: ' + timeSwing.time_swing_type,
-                                        'Duration Time Swing: ' + formatTime(timeSwing.duration_time_swing), // Usa la funzione di formattazione per durata
-                                        'Anomalous Duration: ' + anomalousType + " " + formatTime(timeSwing.anomalous_duration)  // Usa la funzione di formattazione per anomalous_duration
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            let ctx2 = document.getElementById('exportTimeSwingTooLongGlucoseAnomaliesChart').getContext('2d');
-
-            new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: days,
-                    datasets: [{
-                        label: 'Duration Time Swing (HH:mm)',
-                        data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))), // Converte HH:mm in formato numerico
-                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
-                        borderColor: 'rgba(220, 110, 110, 1)',     // Colore di bordo per il dataset Duration Time Swing
-                        borderWidth: 1
-                    }, {
-                        label: 'Anomalous Duration (HH:mm)',
-                        data: anomalousDurations.map(d => parseFloat(d.replace(':', '.'))),
-                        // Usa il colore di sfondo e di bordo definito in colors per ciascun tipo di evento anomalo
-                        backgroundColor: eventTypes.map(event => colors[event] ? colors[event].bg : 'rgba(255, 99, 132, 0.2)'),
-                        borderColor: eventTypes.map(event => colors[event] ? colors[event].border : 'rgba(255, 99, 132, 1)'),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: false,
-                    width: 1200,
-                    height: 600,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Duration (HH:mm)' // Testo aggiornato per HH:mm
-                            },
-                            ticks: {
-                                stepSize: 0.5, // Intervallo di 30 minuti (0.5 ore)
-                                callback: function (value) {
-                                    // Calcola ore e minuti
-                                    let hours = Math.floor(value); // Ore
-                                    let minutes = Math.round((value - hours) * 60); // Minuti
-
-                                    // Ritorna la durata nel formato HH:mm
-                                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-                                }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            },
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 30
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: true
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function (tooltipItem) {
-                                    let index = tooltipItem.dataIndex;
-                                    let timeSwing = timeSwingData[index];
-
-                                    // Estrai il tipo di evento anomalo
-                                    let anomalousType = timeSwing.event_type.charAt(0).toUpperCase() + timeSwing.event_type.slice(1); // Prima lettera maiuscola
-
-                                    return [
-                                        'Time Swing: ' + timeSwing.time_swing_type,
-                                        'Duration Time Swing: ' + formatTime(timeSwing.duration_time_swing), // Usa la funzione di formattazione per durata
-                                        'Anomalous Duration: ' + anomalousType + " " + formatTime(timeSwing.anomalous_duration)  // Usa la funzione di formattazione per anomalous_duration
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        });
-
-    </script>
-
-@endsection
-
-@section('script')
-    <!-- apexcharts -->
-    <script>
-
-
-        $(document).ready(function () {
-
-
-            $.fn.dataTable.moment("ddd, DD MMM YYYY");
-
-            // Inizializza DataTables su tutte le tabelle con ordinamento sulla prima colonna (indice 0)
-            $('.datatable-glycemic-swings').DataTable({order: [[0, "desc"]]});
-            $('#datatable-anomalous-duration').DataTable({order: [[0, "desc"]]});
-            $('#datatable-anomalous-frequency').DataTable({order: [[0, "desc"]]});
-            $('#datatable-too-long-duration').DataTable({order: [[0, "desc"]]});
-            $('#datatable-detection-Pattern').DataTable({
-                order: [[1, "desc"]], // Ordina per la prima colonna (data)
-                columnDefs: [
-                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
-                ]
-            });
-            $('#datatable-swings-followed-by-frequency').DataTable({
-                order: [[0, "desc"]], // Ordina per la prima colonna (data)
-                columnDefs: [
-                    {orderable: false, targets: -1} // Disabilita ordinamento sull'ultima colonna
-                ]
-            });
-            $('#datatable-swings-followed-by-duration').DataTable({order: [[0, "desc"]]});
-
-            //PER DETAILS TOO FREQUENT TIME SWINGS
-            $('button[data-toggle="modal"]').on('click', function () {
-                var modalId = $(this).data('target'); // Ottieni l'ID del modal
-                var tableId = $(modalId).find('table').attr('id'); // Trova l'ID della tabella dentro il modal
-
-                if (!$.fn.DataTable.isDataTable('#' + tableId)) { // Evita di reinizializzare la tabella
-                    $('#' + tableId).DataTable({
-                        responsive: true,
-                        autoWidth: false,
-                        order: [[0, "desc"]] // Ordina per data decrescente
-                    });
-                }
-            });
-        });
-
-
-        $(function () {
-            // Estrai le date dal backend e formattale in modo appropriato
-            var startDate = "{{ $startDate ? \Carbon\Carbon::parse($startDate)->format('m/d/Y') : ($data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('m/d/Y') : moment().startOf('month').format('m/d/Y')) }}";
-            var endDate = "{{ $endDate ? \Carbon\Carbon::parse($endDate)->format('m/d/Y') : ($data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('m/d/Y') : moment().endOf('month').format('m/d/Y')) }}";
-            var minDate = "{{ $data['start_time'] ? \Carbon\Carbon::parse($data['start_time'])->format('m/d/Y') : '' }}";
-            var maxDate = "{{ $data['end_time'] ? \Carbon\Carbon::parse($data['end_time'])->format('m/d/Y') : '' }}";
-
-            // Log per verificare se i dati sono corretti
-            console.log("Start Date:", startDate);
-            console.log("End Date:", endDate);
-
-            // Configura il daterangepicker
-            $('input[name="daterange"]').daterangepicker({
-                startDate: startDate,
-                endDate: endDate,
-                minDate: minDate,
-                maxDate: maxDate,
-                opens: 'right',
-                locale: {
-                    format: 'MM/DD/YYYY' // Formato della data
-                }
-            }, function (start, end, label) {
-                // Imposta i valori dei campi nascosti
-                $('#start-date').val(start.format('YYYY-MM-DD'));
-                $('#end-date').val(end.format('YYYY-MM-DD'));
-
-                // Costruisci il range in formato 'YYYY-MM-DD - YYYY-MM-DD'
-                var range = start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD');
-
-                // Imposta il parametro range nella query string
-                var form = $('#date-form'); // Assicurati di usare l'ID corretto del form
-                var action = form.attr('action');
-                form.attr('action', action.split('?')[0] + '?range=' + encodeURIComponent(range));
-
-                // Invia il form
-                form.submit();
-            });
-        });
-
-        function slowScrollTo(element, duration) {
-            var targetPosition = element.getBoundingClientRect().top;
-            var startPosition = window.pageYOffset;
-            var startTime = null;
-
-            function animation(currentTime) {
-                if (startTime === null) startTime = currentTime;
-                var timeElapsed = currentTime - startTime;
-                var run = ease(timeElapsed, startPosition, targetPosition, duration);
-                window.scrollTo(0, run);
-                if (timeElapsed < duration) requestAnimationFrame(animation);
+            function getCanvasWithWhiteBackground(canvas) {
+                const copy = document.createElement('canvas');
+                copy.width = canvas.width;
+                copy.height = canvas.height;
+                const ctx = copy.getContext('2d');
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, copy.width, copy.height);
+                ctx.drawImage(canvas, 0, 0);
+                return copy;
             }
 
-            // Funzione di easing per rendere lo scroll più naturale
-            function ease(t, b, c, d) {
-                t /= d / 2;
-                if (t < 1) return c / 2 * t * t + b;
-                t--;
-                return -c / 2 * (t * (t - 2) - 1) + b;
-            }
+            document.addEventListener("DOMContentLoaded", function () {
+                const downloadButton = document.getElementById('downloadPdfButton');
+                const form = document.getElementById('downloadPdfForm');
+                const canvasIds = ['exportGlycemicSwingsChart', 'exportTooLongChart', 'exportTooFrequentChart', 'exportTooFrequentTimeSwingsDurationChart', 'exportTooFrequentTimeSwingsFrequencyChart', 'exportTimeSwingTooLongGlucoseAnomaliesChart'];
+                const hiddenInputs = ['glycemicSwingsChartImage', 'tooLongChartImage', 'tooFrequentChartImage', 'tooFrequentTimeSwingsDurationChartImage', 'tooFrequentTimeSwingsFrequencyChartImage', 'timeSwingTooLongChartImage'];
 
-            requestAnimationFrame(animation);
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // Controlla se l'URL contiene parametri indicativi dell'invio del form
-            if (window.location.search.includes('start_date') || window.location.search.includes('end_date')) {
-                var element = document.getElementById("scroll-to-form");
-                if (element) {
-                    slowScrollTo(element, 1500); // Imposta la durata dello scroll (in millisecondi), ad esempio 1500ms
-                }
-            }
-        });
-
-
-        function getCanvasWithWhiteBackground(canvas) {
-            const copy = document.createElement('canvas');
-            copy.width = canvas.width;
-            copy.height = canvas.height;
-
-            const ctx = copy.getContext('2d');
-
-            // Sfondo bianco
-            ctx.fillStyle = 'white';
-            ctx.fillRect(0, 0, copy.width, copy.height);
-
-            // Disegna il canvas originale sopra
-            ctx.drawImage(canvas, 0, 0);
-
-            return copy;
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const downloadButton = document.getElementById('downloadPdfButton');
-            const form = document.getElementById('downloadPdfForm');
-
-            const canvasIds = [
-                'exportGlycemicSwingsChart',
-                'exportTooLongChart',
-                'exportTooFrequentChart',
-                'exportTooFrequentTimeSwingsDurationChart',
-                'exportTooFrequentTimeSwingsFrequencyChart',
-                'exportTimeSwingTooLongGlucoseAnomaliesChart'
-            ];
-
-            const hiddenInputs = [
-                'glycemicSwingsChartImage',
-                'tooLongChartImage',
-                'tooFrequentChartImage',
-                'tooFrequentTimeSwingsDurationChartImage',
-                'tooFrequentTimeSwingsFrequencyChartImage',
-                'timeSwingTooLongChartImage'
-            ];
-
-            downloadButton.addEventListener('click', function () {
-                canvasIds.forEach((canvasId, index) => {
-                    const canvas = document.getElementById(canvasId);
-                    const hiddenInput = document.getElementById(hiddenInputs[index]);
-
-                    if (!canvas) {
-                        alert("Errore: grafico " + canvasId + " non trovato.");
-                        return;
-                    }
-
-                    try {
-                        // Usa il canvas con sfondo bianco
-                        const canvasWithBg = getCanvasWithWhiteBackground(canvas);
-                        const imageData = canvasWithBg.toDataURL('image/png');
-
-                        if (!imageData.startsWith('data:image/png;base64,')) {
-                            alert("Errore nella conversione del grafico.");
+                downloadButton.addEventListener('click', function () {
+                    canvasIds.forEach((canvasId, index) => {
+                        const canvas = document.getElementById(canvasId);
+                        const hiddenInput = document.getElementById(hiddenInputs[index]);
+                        if (!canvas) {
+                            alert("Errore: grafico " + canvasId + " non trovato.");
                             return;
                         }
+                        try {
+                            const canvasWithBg = getCanvasWithWhiteBackground(canvas);
+                            const imageData = canvasWithBg.toDataURL('image/png');
+                            hiddenInput.value = imageData;
+                        } catch (e) {
+                            console.error("Errore export", e);
+                        }
+                    });
+                    form.submit();
+                });
+            });
 
-                        hiddenInput.value = imageData;
-                    } catch (e) {
-                        console.error("Errore durante l'export del grafico " + canvasId + ":", e);
-                        alert("Errore tecnico nella generazione dell'immagine.");
+            document.addEventListener("DOMContentLoaded", function () {
+                let swingData = [
+                        @foreach ($data['time_swing'] ?? [] as $swing)                {
+                        day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",
+                        duration: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}",
+                        time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}"
+                    },
+                    @endforeach
+                ];
+                let durationsInMinutes = swingData.map(swing => {
+                    let [hours, minutes] = swing.duration.split(":").map(Number);
+                    return hours * 60 + minutes;
+                });
+                let days = swingData.map(swing => swing.day);
+
+                let ctx = document.getElementById('glycemicSwingsChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'Duration of Time Swings (HH:mm)',
+                            data: durationsInMinutes,
+                            backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                            borderColor: 'rgba(220, 110, 110, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        let hours = Math.floor(value / 60);
+                                        let minutes = value % 60;
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        let index = tooltipItem.dataIndex;
+                                        let durationInMinutes = durationsInMinutes[index];
+                                        let hours = Math.floor(durationInMinutes / 60);
+                                        let minutes = durationInMinutes % 60;
+                                        return `Duration: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}\nTime Swing: ${swingData[index].time_swing_type}`;
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
 
-                const dropdownToggle = document.getElementById('bs-download-pdf-modal');
-                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (dropdownInstance) {
-                    dropdownInstance.hide();
-                }
-
-                form.submit();
+                // Export Chart
+                let ctx2 = document.getElementById('exportGlycemicSwingsChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'Duration of Time Swings (HH:mm)',
+                            data: durationsInMinutes,
+                            backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                            borderColor: 'rgba(220, 110, 110, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false, width: 1200, height: 600, maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function (value) {
+                                        let hours = Math.floor(value / 60);
+                                        let minutes = value % 60;
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const downloadButton = document.getElementById('downloadPdfButton');
-            const dropdownToggle = document.getElementById('bs-download-pdf-modal');
+            document.addEventListener("DOMContentLoaded", function () {
+                let anomalyData = [
+                        @foreach ($data['too_long_glucose_anomalies'] ?? [] as $anomaly)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($anomaly['day'])->format('d/m/Y') }}",
+                        event: "{{ $anomaly['event'] }}",
+                        duration: "{{ \Carbon\Carbon::parse($anomaly['duration'])->format('H:i') }}"
+                    },
+                    @endforeach
+                ];
+                let days = [...new Set(anomalyData.map(anomaly => anomaly.day))];
+                let convertToMinutes = (hhmm) => {
+                    let [hours, minutes] = hhmm.split(":").map(Number);
+                    return hours * 60 + minutes;
+                };
+                let eventTypes = ["high", "low", "extremely_high", "extremely_low"];
+                let colors = {
+                    "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
+                    "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
+                    "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
+                    "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
+                };
+                let datasets = eventTypes.map(event => ({
+                    label: event.replace("_", " ").toUpperCase(),
+                    data: days.map(day => {
+                        let anomaly = anomalyData.find(a => a.day === day && a.event === event);
+                        return anomaly ? convertToMinutes(anomaly.duration) : 0;
+                    }),
+                    backgroundColor: colors[event].bg, borderColor: colors[event].border, borderWidth: 1
+                }));
 
-            downloadButton.addEventListener('click', function () {
-                const dropdownInstance = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (dropdownInstance) {
-                    dropdownInstance.hide(); // chiude il dropdown
-                }
+                let ctx = document.getElementById('tooLongGlucoseAnomaliesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {labels: days, datasets: datasets},
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, ticks: {
+                                    callback: function (value) {
+                                        let hours = Math.floor(value / 60);
+                                        let minutes = value % 60;
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
 
-                // Facoltativo: invia il form
-                // document.getElementById('downloadPdfForm').submit();
+                let ctx2 = document.getElementById('exportTooLongChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {labels: days, datasets: datasets},
+                    options: {
+                        responsive: false,
+                        width: 1200,
+                        height: 600,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, ticks: {
+                                    callback: function (value) {
+                                        let hours = Math.floor(value / 60);
+                                        let minutes = value % 60;
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
             });
-        });
 
+            document.addEventListener("DOMContentLoaded", function () {
+                let frequencyData = [
+                        @foreach ($data['too_frequent_glucose_anomalies']   ?? [] as $frequency)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($frequency['day'])->format('d/m/Y') }}",
+                        high_count: {{ $frequency['high_count'] ?? 0 }},
+                        low_count: {{ $frequency['low_count'] ?? 0 }},
+                        extremely_high_count: {{ $frequency['extremely_high_count'] ?? 0 }},
+                        extremely_low_count: {{ $frequency['extremely_low_count'] ?? 0 }},
+                        total_count: {{ $frequency['total_count'] ?? 0 }}
+                    },
+                    @endforeach
+                ];
+                let days = frequencyData.map(frequency => frequency.day);
+                let highCounts = frequencyData.map(frequency => frequency.high_count);
+                let lowCounts = frequencyData.map(frequency => frequency.low_count);
+                let extremelyHighCounts = frequencyData.map(frequency => frequency.extremely_high_count);
+                let extremelyLowCounts = frequencyData.map(frequency => frequency.extremely_low_count);
 
-    </script>
+                let ctx = document.getElementById('tooFrequentGlucoseAnomaliesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'High Count',
+                            data: highCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Low Count',
+                            data: lowCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Extremely High Count',
+                            data: extremelyHighCounts,
+                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Extremely Low Count',
+                            data: extremelyLowCounts,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+                });
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+                let ctx2 = document.getElementById('exportTooFrequentChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'High Count',
+                            data: highCounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Low Count',
+                            data: lowCounts,
+                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Extremely High Count',
+                            data: extremelyHighCounts,
+                            backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Extremely Low Count',
+                            data: extremelyLowCounts,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        width: 1200,
+                        height: 600,
+                        maintainAspectRatio: false,
+                        scales: {y: {beginAtZero: true}}
+                    }
+                });
+            });
 
-    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-    <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let frequentSwingData = [
+                        @foreach ($data['too_frequent_time_swings'] ?? []  as $swing)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
+                        durations: [@foreach ($swing['Events'] as $event) "{{ \Carbon\Carbon::parse($event['Duration time swing'])->format('H:i') }}", @endforeach ],
+                        frequency: {{ $swing['Number of Time Swings'] ?? 0 }}
+                    },
+                    @endforeach
+                ];
+                let days = frequentSwingData.map(swing => swing.day);
+                let uniqueDays = [...new Set(days)];
+                let durationDatasets = [];
+                let maxSwings = Math.max(...frequentSwingData.map(swing => swing.durations.length));
+
+                for (let i = 0; i < maxSwings; i++) {
+                    durationDatasets.push({
+                        label: `Time Swing ${i + 1}`,
+                        data: uniqueDays.map(day => {
+                            let swing = frequentSwingData.find(s => s.day === day);
+                            if (swing && swing.durations[i]) {
+                                let [hours, minutes] = swing.durations[i].split(":").map(Number);
+                                return hours * 60 + minutes;
+                            }
+                            return null;
+                        }),
+                        backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                        borderColor: 'rgba(220, 110, 110, 1)',
+                        borderWidth: 1
+                    });
+                }
+                const formatTimeLabel = (value) => {
+                    if (value === null) return '00:00';
+                    let hours = Math.floor(value / 60);
+                    let minutes = value % 60;
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                };
+
+                let ctxDuration = document.getElementById('tooFrequentTimeSwingsDurationChart').getContext('2d');
+                new Chart(ctxDuration, {
+                    type: 'bar',
+                    data: {labels: uniqueDays, datasets: durationDatasets},
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {y: {beginAtZero: true, ticks: {callback: (value) => formatTimeLabel(value)}}},
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        return `Duration: ${formatTimeLabel(tooltipItem.raw)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                let ctxDuration2 = document.getElementById('exportTooFrequentTimeSwingsDurationChart').getContext('2d');
+                new Chart(ctxDuration2, {
+                    type: 'bar',
+                    data: {labels: uniqueDays, datasets: durationDatasets},
+                    options: {
+                        responsive: false,
+                        width: 1200,
+                        height: 600,
+                        maintainAspectRatio: false,
+                        scales: {y: {beginAtZero: true, ticks: {callback: (value) => formatTimeLabel(value)}}}
+                    }
+                });
+
+                let frequencyData = frequentSwingData.map(swing => swing.frequency);
+                let ctxFrequency = document.getElementById('tooFrequentTimeSwingsFrequencyChart').getContext('2d');
+                new Chart(ctxFrequency, {
+                    type: 'bar',
+                    data: {
+                        labels: uniqueDays,
+                        datasets: [{
+                            label: 'Frequency of Time Swings',
+                            data: frequencyData,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true}}}
+                });
+
+                let ctxFrequency2 = document.getElementById('exportTooFrequentTimeSwingsFrequencyChart').getContext('2d');
+                new Chart(ctxFrequency2, {
+                    type: 'bar',
+                    data: {
+                        labels: uniqueDays,
+                        datasets: [{
+                            label: 'Frequency of Time Swings',
+                            data: frequencyData,
+                            backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        width: 1200,
+                        height: 600,
+                        maintainAspectRatio: false,
+                        scales: {y: {beginAtZero: true}}
+                    }
+                });
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                let timeSwingData = [
+                        @foreach ($data['time_swing_with_too_long_glucose_anomalies'] ?? []  as $swing)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",
+                        duration_time_swing: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}",
+                        anomalous_duration: "{{ \Carbon\Carbon::parse(str_replace(['Low event: ', 'High event: ', 'Extremely high event: ', 'Extremely low event: '], '', $swing['anomalous_durations']))->format('H:i') }}",
+                        time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}",
+                        event_type: "{{ strtolower($swing['first_event']) }}"
+                    },
+                    @endforeach
+                ];
+                let days = timeSwingData.map(swing => swing.day);
+                let durationTimeSwing = timeSwingData.map(swing => swing.duration_time_swing);
+                let anomalousDurations = timeSwingData.map(swing => swing.anomalous_duration);
+                let eventTypes = timeSwingData.map(swing => swing.event_type);
+                let colors = {
+                    "high": {bg: "rgba(255, 99, 132, 0.5)", border: "rgba(255, 99, 132, 1)"},
+                    "low": {bg: "rgba(54, 162, 235, 0.5)", border: "rgba(54, 162, 235, 1)"},
+                    "extremely_high": {bg: "rgba(255, 159, 64, 0.5)", border: "rgba(255, 159, 64, 1)"},
+                    "extremely_low": {bg: "rgba(153, 102, 255, 0.5)", border: "rgba(153, 102, 255, 1)"}
+                };
+                const formatTime = (time) => {
+                    let [hours, minutes] = time.split(":").map(Number);
+                    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                };
+
+                let ctx = document.getElementById('timeSwingTooLongGlucoseAnomaliesChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'Duration Time Swing (HH:mm)',
+                            data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))),
+                            backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                            borderColor: 'rgba(220, 110, 110, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Anomalous Duration (HH:mm)',
+                            data: anomalousDurations.map(d => parseFloat(d.replace(':', '.'))),
+                            backgroundColor: eventTypes.map(event => colors[event] ? colors[event].bg : 'rgba(255, 99, 132, 0.2)'),
+                            borderColor: eventTypes.map(event => colors[event] ? colors[event].border : 'rgba(255, 99, 132, 1)'),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, ticks: {
+                                    stepSize: 0.5, callback: function (value) {
+                                        let hours = Math.floor(value);
+                                        let minutes = Math.round((value - hours) * 60);
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                let ctx2 = document.getElementById('exportTimeSwingTooLongGlucoseAnomaliesChart').getContext('2d');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [{
+                            label: 'Duration Time Swing (HH:mm)',
+                            data: durationTimeSwing.map(d => parseFloat(d.replace(':', '.'))),
+                            backgroundColor: 'rgba(220, 110, 110, 0.5)',
+                            borderColor: 'rgba(220, 110, 110, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Anomalous Duration (HH:mm)',
+                            data: anomalousDurations.map(d => parseFloat(d.replace(':', '.'))),
+                            backgroundColor: eventTypes.map(event => colors[event] ? colors[event].bg : 'rgba(255, 99, 132, 0.2)'),
+                            borderColor: eventTypes.map(event => colors[event] ? colors[event].border : 'rgba(255, 99, 132, 1)'),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        width: 1200,
+                        height: 600,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true, ticks: {
+                                    stepSize: 0.5, callback: function (value) {
+                                        let hours = Math.floor(value);
+                                        let minutes = Math.round((value - hours) * 60);
+                                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // --- 7. Frequent Ext. Time Swings (NEW CHARTS) ---
+            document.addEventListener("DOMContentLoaded", function () {
+                let freqData = [
+                        @foreach ($data['too_frequent_extremely_time_swings'] ?? [] as $swing) {
+                        day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
+                        freq: {{ $swing['Number of Time Swings'] ?? 0 }},
+                        // Raccogliamo le durate per calcolare la media
+                        durs: [
+                            @foreach ($swing['Events'] as $ev)
+                                "{{ \Carbon\Carbon::parse($ev['Duration time swing'])->format('H:i') }}",
+                            @endforeach
+                        ]
+                    }, @endforeach
+                ];
+
+                let days = freqData.map(d => d.day);
+                let uniqueDays = [...new Set(days)];
+
+                // 7A. Frequency Chart
+                let ctxFreq = document.getElementById('tooFrequentExtremelyTimeSwingsFrequencyChart').getContext('2d');
+                new Chart(ctxFreq, {
+                    type: 'bar',
+                    data: {
+                        labels: uniqueDays,
+                        datasets: [{
+                            label: 'Frequency',
+                            data: freqData.map(d => d.freq),
+                            backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
+                            borderColor: 'rgba(111, 66, 193, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+
+                // 7B. Duration Chart (Average duration per day)
+                let avgDurs = freqData.map(d => {
+                    let totalMin = 0;
+                    let count = 0;
+                    d.durs.forEach(t => {
+                        let [h, m] = t.split(":").map(Number);
+                        totalMin += h * 60 + m;
+                        count++;
+                    });
+                    return count > 0 ? totalMin / count : 0;
+                });
+
+                let ctxDur = document.getElementById('tooFrequentExtremelyTimeSwingsDurationChart').getContext('2d');
+                new Chart(ctxDur, {
+                    type: 'bar',
+                    data: {
+                        labels: uniqueDays,
+                        datasets: [{
+                            label: 'Avg Duration (min)',
+                            data: avgDurs,
+                            backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
+                            borderColor: 'rgba(111, 66, 193, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                });
+            });
+
+            // --- 8. Ext. Swing + Too Long (NEW CHART with FIX) ---
+            document.addEventListener("DOMContentLoaded", function () {
+                let complexData = [
+                        @foreach ($data['extremely_time_swing_with_too_long_glucose_anomalies'] ?? [] as $swing)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",
+
+                        // Durata Swing (Pulita)
+                        durSwing: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}",
+
+                        // Durata Anomalia (Sporca - La passiamo grezza)
+                        rawAnom: "{{ $swing['anomalous_durations'] }}"
+                    },
+                    @endforeach
+                ];
+
+                let days = complexData.map(d => d.day);
+
+                // Funzione Helper per pulire e convertire in ore
+                const toHours = (t) => {
+                    if(!t) return 0;
+                    // Rimuove testo tipo "Extremely_high event: " lasciando solo 02:30:00
+                    let cleanTime = t.replace(/[^0-9:]/g, '');
+                    let parts = cleanTime.split(":");
+                    if(parts.length < 2) return 0;
+                    return parseInt(parts[0]) + parseInt(parts[1])/60; // Ore + minuti decimali
+                };
+
+                let ctx = document.getElementById('extTimeSwingTooLongChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [
+                            {
+                                label: 'Swing Duration (h)',
+                                data: complexData.map(d => toHours(d.durSwing)),
+                                backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
+                                borderColor: 'rgba(111, 66, 193, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Anomaly Duration (h)',
+                                data: complexData.map(d => toHours(d.rawAnom)),
+                                backgroundColor: 'rgba(220, 53, 69, 0.5)', // Red for danger
+                                borderColor: 'rgba(220, 53, 69, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Hours' }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let val = context.raw;
+                                        let h = Math.floor(val);
+                                        let m = Math.round((val - h) * 60);
+                                        return context.dataset.label + ": " + h + "h " + m + "m";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+        <script src="https://cdn.datatables.net/plug-ins/1.13.6/sorting/datetime-moment.js"></script>
+        <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    @endsection
+
 @endsection
-

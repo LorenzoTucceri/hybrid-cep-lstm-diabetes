@@ -1,22 +1,33 @@
 import ast
 import csv
 import re
+import os
+import subprocess
+import tempfile
+from datetime import datetime
 
+import pandas as pd
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import os
 
 import analysis
-import detection_pattern
+import pattern_detection
 from interval_action_detector import IntervalActionDetector
 from iseql import ISEQL
 from interval import Interval
-import subprocess
-from utils import *
-import tempfile
+from utils import calculate_gmi, datetime_to_unix_timestamp, unix_timestamp_to_datetime, format_day, format_duration, \
+    format_datetime
+
+from lstm_logic import ClinicalEnsembleAdaptive
 
 app = Flask(__name__)
 CORS(app)
+
+# ==============================================================================
+# INIZIALIZZAZIONE AI (Carica i modelli 15d, 30d, 60d, 90d all'avvio)
+# ==============================================================================
+# Assicurati che la cartella 'data/models_opt' esista e contenga i file .pth
+lstm_engine = ClinicalEnsembleAdaptive(model_dir_path="./data/models_opt")
 
 
 def create_interval_labeling_csv(intervals):
@@ -48,6 +59,9 @@ def process_csv():
         return jsonify({'error': 'No file provided'}), 400
 
     upload_folder = "./data/laravel_csv"
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+
     file_path = os.path.join(upload_folder, file.filename)
 
     try:
@@ -56,9 +70,24 @@ def process_csv():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    # Preprocessing data
+    # -------------------------------------------------------------------------
+    # 1. (LSTM ENSEMBLE)
+    # -------------------------------------------------------------------------
+    print("--- Avvio Analisi AI ---")
+    try:
+        # Passiamo il path del file appena salvato al motore LSTM
+        lstm_result = lstm_engine.predict_smart(file_path)
+    except Exception as e:
+        print(f"[AI ERROR] {e}")
+        lstm_result = {"status": "error", "message": str(e), "diagnosis": "N/A"}
+    print("--- Fine Analisi AI ---")
+    # -------------------------------------------------------------------------
+
+    # Preprocessing data standard
     columns_specific = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                         'Valore del glucosio (mg/dL)']
+
+    # Gestione robusta delle righe iniziali (header variabile)
     glucose_data = glucose_data[columns_specific].iloc[18:]
     glucose_data_copia = glucose_data[columns_specific].iloc[18:]
 
@@ -94,7 +123,7 @@ def process_csv():
     create_interval_labeling_csv(intervals)
 
     # Detection pattern
-    top_k_pattern = detection_pattern.extract_patient_patterns(intervals)
+    top_k_pattern = pattern_detection.extract_patient_patterns(intervals)
 
     with tempfile.NamedTemporaryFile(mode='w', delete=False, newline='') as f:
         f.write("pattern\n")  # header
@@ -105,8 +134,6 @@ def process_csv():
                 p_str = str(p)
             f.write(f"{p_str}\n")
         tmp_file_path = f.name
-
-    # print(f"File CSV temporaneo creato: {tmp_file_path}")
 
     with open("eventi.txt", "w") as file:
         file.write("start_time,end_time,label\n")  # Header
@@ -187,7 +214,7 @@ def process_csv():
                     except Exception as e:
                         print("[WARNING] Errore parsing:", e)
 
-                    print(occurrences)
+                    # print(occurrences)
 
                 parsed.append({
                     'pattern': pattern,
@@ -197,10 +224,9 @@ def process_csv():
 
             df_patient_patterns = pd.DataFrame(parsed)
 
-            df_enriched = detection_pattern.enrich_patient_patterns(df_patient_patterns)
+            df_enriched = pattern_detection.enrich_patient_patterns(df_patient_patterns)
 
             # Costruiamo la lista finale da restituire con tutte le info disponibili
-
             parsed_final = []
 
             for _, row in df_enriched.iterrows():
@@ -226,6 +252,7 @@ def process_csv():
             if parsed_final:
                 targets = [p['target'].lower() for p in parsed_final]  # red, yellow, green in inglese
                 most_freq_item = max(parsed_final, key=lambda x: x['frequency'])
+
                 patient_stats = {
                     'total_patterns': len(parsed_final),
                     'most_frequent_pattern': " - ".join(
@@ -250,47 +277,28 @@ def process_csv():
 
             return parsed_final, patient_stats
 
-
         else:
-
             result = subprocess.run(
-
                 ["../cpp-iseql/build/src/iseql", command, ""],
-
                 check=True,
-
                 capture_output=True,
-
                 text=True
-
             )
-
             parsed = []
-
             lines = result.stdout.strip().split("\n")
-
             for line in lines:
-
                 parts = line.strip().split(" -- ")
-
                 if len(parts) != 2:
                     continue
-
                 interval1 = parse_part(parts[0])
-
                 interval2 = parse_part(parts[1])
-
                 parsed.append((interval1, interval2))
-
             return parsed
 
     try:
         parsed_time_swings = run_and_parse("time-swing")
         parsed_extremely_time_swings = run_and_parse("extremely-time-swing")
         parsed_top_k_pattern, patient_stats = run_and_parse("detection_pattern")
-
-
-
 
     except subprocess.CalledProcessError as e:
         print(f"Errore durante l'esecuzione del programma C: {e}")
@@ -303,33 +311,25 @@ def process_csv():
         iseq.add_interval(interval_iseql)
 
     # Process results
-    # time_swings = iseq.find_time_swing()
     time_swing_duration = iseq.find_time_swing_with_too_long_glucose_anomalies()
     time_swings_too_frequent = iseq.find_too_frequent_time_swings()
+
+
 
     extremely_time_swing_duration = iseq.find_extremely_time_swing_with_too_long_glucose_anomalies()
     extremely_time_swings_too_frequent = iseq.find_too_frequent_extremely_time_swings()
 
+
     anomalous_frequency = iseq.find_too_frequent_glucose_anomalies()
     anomalous_duration = iseq.find_too_long_glucose_anomalies()
 
-    '''
-             'time_swing': [
-            {
-                'day': format_day(time_swing[0].start_time.date()),
-                'first_event': time_swing[0].event,
-                'second_event': time_swing[1].event,
-                'duration_time_swing': format_duration(time_swing[1].start_time - time_swing[0].end_time)
-            }
-            for time_swing in time_swings
-        ],
-        
-        '''
-
     result = {
-
         'avg': avg,
         'gmi': gmi,
+
+        # --- OUTPUT AI LSTM ---
+        'lstm_result': lstm_result,
+        # ----------------------
 
         'time_swing': [
             {
@@ -350,12 +350,11 @@ def process_csv():
                 'extremely_low_count': extremely_low_anomalous_count,
                 'total_count': total_count
             }
-
             for
             start_date, end_time, high_anomalous_count, low_anomalous_count, extremely_high_anomalous_count, extremely_low_anomalous_count, total_count
-            in
-            anomalous_frequency
+            in anomalous_frequency
         ],
+
         'too_frequent_time_swings': [
             {
                 'Number of Time Swings': len(swing_set),
@@ -371,16 +370,18 @@ def process_csv():
             }
             for swing_set in time_swings_too_frequent
         ],
+
         'too_long_glucose_anomalies': [
             {
-                'day': format_day(intrvl.start_time.date()),  # Adjusted to match 'Day' in time_swing_too_frequent
+                'day': format_day(intrvl.start_time.date()),
                 'event': intrvl.event,
-                'start_time': format_datetime(intrvl.start_time),  # Adjusted to match 'Start time' in format
-                'end_time': format_datetime(intrvl.end_time),  # Adjusted to match 'End time' in format
+                'start_time': format_datetime(intrvl.start_time),
+                'end_time': format_datetime(intrvl.end_time),
                 'duration': format_duration(intrvl.duration)
             }
             for intrvl in anomalous_duration
         ],
+
         'time_swing_with_too_long_glucose_anomalies': [
             {
                 'day': format_day(interval1.start_time.date()),
@@ -419,7 +420,6 @@ def process_csv():
         ],
 
         'extremely_time_swing_with_too_long_glucose_anomalies': [
-
             {
                 'day': format_day(interval1.start_time.date()),
                 'first_event': interval1.event,
@@ -428,7 +428,6 @@ def process_csv():
                 'anomalous_durations': description
             }
             for interval1, interval2, description in extremely_time_swing_duration
-
         ],
 
         'parsed_top_k_patterns': [
@@ -438,20 +437,18 @@ def process_csv():
                 'occurrences': item['occurrences'],
                 'target': item.get('target'),
                 'max_lift': item.get('max_lift'),
-
             }
             for item in parsed_top_k_pattern
         ],
         'patient_stats': patient_stats
-
     }
 
     date_column = 'Data e ora (AAAA-MM-GGThh:mm:ss)'
 
     # Convert the date column to datetime format
     glucose_data_copia[date_column] = pd.to_datetime(glucose_data_copia[date_column], format='%Y-%m-%dT%H:%M:%S')
-    first_date = glucose_data_copia[date_column].iloc[0]  # Row 19 (0-based index)
-    last_date = glucose_data_copia[date_column].iloc[-1]  # Last row
+    first_date = glucose_data_copia[date_column].iloc[0]
+    last_date = glucose_data_copia[date_column].iloc[-1]
     result['start_time'] = first_date.strftime('%Y-%m-%d')
     result['end_time'] = last_date.strftime('%Y-%m-%d')
 

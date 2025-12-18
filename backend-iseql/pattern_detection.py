@@ -190,7 +190,7 @@ def extract_patient_patterns(sequence, n_list=[4, 5], top_k=10,
 # -------------------------------------------------------
 
 
-def enrich_patient_patterns(df_patient, global_patterns_csv="global_pattern/global_final_pattern.csv"):
+def enrich_patient_patterns(df_patient, global_patterns_csv="data/global_pattern/global_final_pattern.csv"):
     """
     Arricchisce i pattern del paziente con le informazioni globali (target, max_lift, ecc.)
     senza perdere le colonne originali. Converte i valori del target in inglese (Red, Yellow, Green).
