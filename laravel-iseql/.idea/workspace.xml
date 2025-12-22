@@ -5,26 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/data/models_opt/model_15d.pth" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/data/models_opt/model_30d.pth" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/data/models_opt/model_60d.pth" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/data/models_opt/model_90d.pth" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/lstm_logic.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/notebook/lstm.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data_processing_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/pattern_detection.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/pattern_detection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/detection_pattern_backup.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/detection_pattern_backup.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/global_pattern/global_final_pattern.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/global_pattern/global_final_pattern.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/lstm.ipynb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/interval_action_detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/interval_action_detector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/lstm_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/lstm_logic.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/notebook/lstm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/lstm.ipynb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/index.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/09675dc9669abd2f8f6a10cec1811483.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/09675dc9669abd2f8f6a10cec1811483.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userManagement.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userManagement.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/userProfile.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/userProfile.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/views/0be11c54bd59b3273b685f7130e68264.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/0be11c54bd59b3273b685f7130e68264.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/framework/views/378c45c190572b99a2436078b107073a.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/378c45c190572b99a2436078b107073a.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/d0a2cf9b58af60a06ccaa2b57ff5085d.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/d0a2cf9b58af60a06ccaa2b57ff5085d.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -317,6 +310,13 @@
       <workItem from="1765725125579" duration="6000" />
       <workItem from="1766091115271" duration="3652000" />
       <workItem from="1766099401351" duration="2542000" />
+      <workItem from="1766135732283" duration="1744000" />
+      <workItem from="1766145799122" duration="6863000" />
+      <workItem from="1766156383454" duration="1680000" />
+      <workItem from="1766160689452" duration="626000" />
+      <workItem from="1766230724566" duration="3000" />
+      <workItem from="1766339491525" duration="732000" />
+      <workItem from="1766403735589" duration="3000" />
     </task>
     <servers />
   </component>

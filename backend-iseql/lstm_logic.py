@@ -10,27 +10,15 @@ from torch import nn
 DEFAULT_MODEL_DIR = "./data/models_opt"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# --- OLD THRESHOLDS (Compatible with current .pth models) ---
-# Extremely Low: < 60
-# Low: 60 - 80
-# Normal: 80 - 160
-# High: 160 - 240
-# Extremely High: > 240
-THRESHOLDS = {
-    "hypo_extreme": 60,
-    "hypo": 80,
-    "hyper": 160,
-    "hyper_extreme": 240
-}
-
-# English Mappings
 INT_TO_LABEL = {0: "RED", 1: "YELLOW", 2: "GREEN"}
+# Internal Mapping (must match training keys, but these are internal)
+TARGET_TO_INT = {"rosso": 0, "giallo": 1, "verde": 2}
 STATE_ID = {"extremely_low": 0, "low": 1, "normal": 2, "high": 3, "extremely_high": 4}
 NUM_STATES = 5
 
 
 # ==================================================================================
-# 2. NEURAL NETWORK ARCHITECTURE
+# 2. NEURAL NETWORK ARCHITECTURE (MATCHING TRAINING EXACTLY)
 # ==================================================================================
 class AttentionBlock(nn.Module):
     def __init__(self, h_dim):
@@ -61,123 +49,78 @@ class LSTMAttentionClassifier(nn.Module):
 
 
 # ==================================================================================
-# 3. DATA TRANSLATION (Parser & Features)
+# 3. FEATURE ENGINEERING (ALIGNED WITH 'build_compressed_features_v2')
 # ==================================================================================
-
-def get_state_dynamic(g):
-    if g < THRESHOLDS["hypo_extreme"]:
-        return "extremely_low"
-    elif g < THRESHOLDS["hypo"]:
-        return "low"
-    elif g <= THRESHOLDS["hyper"]:
-        return "normal"
-    elif g <= THRESHOLDS["hyper_extreme"]:
-        return "high"
-    else:
-        return "extremely_high"
-
-
 def transform_glucose_risk(g):
     g_clipped = np.clip(g, 20, 600)
     return 1.509 * (np.log(g_clipped) ** 1.084 - 5.381)
 
 
-def parse_csv_specialized(csv_path):
-    try:
-        df = pd.read_csv(csv_path, delimiter=';', low_memory=False)
-
-        col_date = 'Data e ora (AAAA-MM-GGThh:mm:ss)'
-        col_gluc = 'Valore del glucosio (mg/dL)'
-
-        if col_date not in df.columns:
-            df = pd.read_csv(csv_path, delimiter=';', skiprows=1, low_memory=False)
-
-        if col_date not in df.columns or col_gluc not in df.columns:
-            if df.shape[1] >= 4:
-                col_date = df.columns[2]
-                col_gluc = df.columns[3]
-            else:
-                return [], 0
-
-        df[col_date] = pd.to_datetime(df[col_date], errors='coerce')
-        df[col_gluc] = pd.to_numeric(df[col_gluc], errors='coerce')
-        df = df.dropna(subset=[col_date, col_gluc]).sort_values(col_date).reset_index(drop=True)
-
-        if len(df) < 5: return [], 0
-
-        total_duration_days = (df[col_date].iloc[-1] - df[col_date].iloc[0]).total_seconds() / 86400.0
-
-        sequence = []
-        for i in range(len(df) - 1):
-            curr = df.iloc[i]
-            nex = df.iloc[i + 1]
-            dur_min = (nex[col_date] - curr[col_date]).total_seconds() / 60.0
-            dur_min = max(1, min(dur_min, 480))
-
-            val = float(curr[col_gluc])
-            state = get_state_dynamic(val)
-            sequence.append((state, int(dur_min), val))
-
-        last_val = float(df.iloc[-1][col_gluc])
-        sequence.append((get_state_dynamic(last_val), 15, last_val))
-
-        return sequence, total_duration_days
-
-    except Exception as e:
-        print(f"[AI PARSER ERROR] {e}")
-        return [], 0
-
-
-def build_features_18(run_list):
+def build_features_prod(run_list):
+    """
+    Exact replica of build_compressed_features_v2 used in training.
+    Output shape: (T, 18)
+    """
     T = len(run_list)
     if T == 0: return np.zeros((1, 18))
 
+    # Extract raw data
     states = np.array([STATE_ID.get(s, 2) for s, _, _ in run_list], dtype=int)
     durs = np.array([d for _, d, _ in run_list], dtype=float)
     gs = np.array([g for *_, g in run_list], dtype=float)
 
+    # 1. One-Hot Encoding Current State (5 features)
     state_oh = np.eye(NUM_STATES)[states]
+
+    # 2. One-Hot Encoding Previous State (5 features)
     prev_s = np.roll(states, 1);
-    prev_s[0] = states[0];
+    prev_s[0] = states[0]
     prev_oh = np.eye(NUM_STATES)[prev_s]
+
+    # 3. Duration Features (2 features)
     dur_norm = np.clip(durs / 240.0, 0, 1)
     log_dur = np.log1p(durs)
+
+    # 4. Glucose Dynamics (2 features)
     g_delta = gs - np.roll(gs, 1);
     g_delta[0] = 0
-    with np.errstate(divide='ignore', invalid='ignore'): roc = np.nan_to_num(g_delta / durs)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        roc = np.nan_to_num(g_delta / durs)
+
+    # 5. Risk & Load Metrics (4 features)
     risk = transform_glucose_risk(gs)
     load = (gs - 100) * (durs / 60.0)
     zsc = (gs - 140) / 50.0
     roll_risk = np.convolve(risk, np.ones(5) / 5, mode='same')
 
+    # Stack: 5 + 5 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 18 Features
     feats = np.column_stack([state_oh, prev_oh, dur_norm, log_dur, zsc, g_delta, roc, risk, roll_risk, load])
     return np.nan_to_num(feats).astype(np.float32)
 
 
 # ==================================================================================
-# 4. INFERENCE ENGINE (FULL ENSEMBLE)
+# 4. INFERENCE ENGINE (CLINICAL BACKEND)
 # ==================================================================================
 class ClinicalEnsembleAdaptive:
     def __init__(self, model_dir_path=None):
         self.device = DEVICE
         self.models = {}
-
         search_path = model_dir_path if model_dir_path else DEFAULT_MODEL_DIR
         print(f"[LSTM INIT] Loading models from: {search_path}")
 
+        # Load all available models (15, 30, 60, 90)
         for d in [15, 30, 60, 90]:
             path = os.path.join(search_path, f"model_{d}d.pth")
             if os.path.exists(path):
                 try:
+                    # Input dim fixed at 18 as per training
                     m = LSTMAttentionClassifier(input_dim=18).to(self.device)
                     m.load_state_dict(torch.load(path, map_location=self.device))
                     m.eval()
                     self.models[d] = m
                     print(f"   ✅ Model {d}d ready.")
                 except Exception as e:
-                    print(f"   ❌ Error loading {d}d: {e}")
-            else:
-                print(f"   ⚠️ Model {d}d not found in {path}")
+                    print(f"   ❌ Error {d}d: {e}")
 
     def extract_slice(self, full_sequence, days):
         target_minutes = days * 1440
@@ -194,93 +137,143 @@ class ClinicalEnsembleAdaptive:
                 current_minutes += dur
         return sliced_seq
 
-    def predict_smart(self, csv_path):
+    def predict_smart(self, intervals):
         """
-        FULL ENSEMBLE ALWAYS:
-        Uses all available models, weighing them dynamically.
+        Input: list of tuples (symbol, start, end, label, DURATION, AVG_GLUCOSE)
         """
-        sequence, total_days = parse_csv_specialized(csv_path)
+        if not intervals:
+            return {"status": "error", "message": "No data available", "diagnosis": "N/A"}
 
-        if not sequence or total_days < 3:
-            return {
-                "status": "error",
-                "message": "Insufficient data (Minimum 3 days required)",
-                "diagnosis": "N/A",
-                "days_analyzed": round(total_days, 1)
-            }
+        # Map labels from Detector to LSTM internal labels
+        state_map = {
+            'extremely_high': 'extremely_high', 'high': 'high',
+            'normal': 'normal', 'low': 'low', 'extremely_low': 'extremely_low',
+            'hyper': 'high', 'hypo': 'low'
+        }
+
+        sequence = []
+
+        # Parse frontend input
+        for item in intervals:
+            if len(item) < 6: continue
+            label_raw = str(item[3]).lower().strip()
+            duration_minutes = item[4]
+            avg_val = item[5]
+
+            state = 'normal'
+            if label_raw in state_map:
+                state = state_map[label_raw]
+            else:
+                for k, v in state_map.items():
+                    if k in label_raw: state = v; break
+
+            sequence.append((state, max(1, int(duration_minutes)), float(avg_val)))
+
+        if not sequence:
+            return {"status": "error", "message": "Could not build sequence", "diagnosis": "N/A"}
+
+        # Global stats for Guardrails
+        total_minutes = sum(x[1] for x in sequence)
+        total_days = total_minutes / 1440.0
+
+        if total_days > 0:
+            avg_g = sum(x[1] * x[2] for x in sequence) / total_minutes
+        else:
+            avg_g = 100
 
         runnable = [d for d in [15, 30, 60, 90] if d in self.models]
+        if not runnable: return {"status": "error", "message": "No models loaded", "diagnosis": "N/A"}
 
-        if not runnable:
-            return {"status": "error", "message": "No LSTM models available", "diagnosis": "N/A"}
-
-        single_preds = {}
         probs_sum = np.zeros(3)
         active_weight = 0
+        single_preds = {}
+
+        # --- ENSEMBLE LOGIC (Aligned with Stress Test) ---
+        # --- ENSEMBLE LOGIC (With Per-Model Debug Prints) ---
+        print(f"\n--- [DEBUG MODELS] Analyzing {total_days:.1f} days of data ---")
 
         with torch.no_grad():
             for days in runnable:
                 model = self.models[days]
                 sub_seq = self.extract_slice(sequence, days)
-                feat = build_features_18(sub_seq)
 
+                if not sub_seq:
+                    print(f"   [Model {days:2d}d]: No data in window. Skipping.")
+                    single_preds[days] = np.array([0.0, 0.0, 0.0])
+                    continue
+
+                feat = build_features_prod(sub_seq)
                 feat_t = torch.tensor(feat, dtype=torch.float32).unsqueeze(0).to(self.device)
                 l_t = torch.tensor([len(sub_seq)]).to(self.device)
 
                 logits = model(feat_t, l_t)
                 probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
-                single_preds[days] = probs.tolist()
+                single_preds[days] = probs
 
-                # --- DYNAMIC WEIGHTING (Full Ensemble) ---
+                # --- STAMPA DI DEBUG PER SINGOLO MODELLO ---
+                m_class = np.argmax(probs)
+                m_label = INT_TO_LABEL[m_class]
+                m_conf = probs[m_class] * 100
+                print(
+                    f"   [Model {days:2d}d]: Prediction={m_label:6s} | Confidence={m_conf:5.1f}% | (R:{probs[0]:.2f}, Y:{probs[1]:.2f}, G:{probs[2]:.2f})")
+
+                # --- WEIGHTING STRATEGY ---
                 w = 1.0
 
-                # A. SHORT FILE (< 30d)
-                if total_days <= 30:
-                    if days <= 30:
-                        w = 2.0  # Boost short-term
-                    else:
-                        w = 1.0
-
-                # B. LONG FILE (> 30d)
-                else:
-                    if days == 15:
-                        w = 2.0  # Safety First (Rapid Alert)
-                    elif days == 90:
-                        w = 1.5  # Historical Stability
-                    else:
-                        w = 1.0
 
                 probs_sum += probs * w
                 active_weight += w
 
+        print(f"--- [DEBUG END] ---\n")
+
+        if active_weight == 0: return {"status": "error", "message": "Prediction failed", "diagnosis": "N/A"}
+
         ens_probs = probs_sum / active_weight
-        ens_class = np.argmax(ens_probs)
+        ai_class = np.argmax(ens_probs)
+        ai_label = INT_TO_LABEL[ai_class]
+
+        # =========================================================
+        # TREND ANALYSIS (History vs Recent)
+        # =========================================================
+        insight_msg = ""
+
+        # Use 90d (if available) as historical baseline and ensemble as "today"
+        if 90 in single_preds and np.sum(single_preds[90]) > 0:
+            probs_90 = single_preds[90]
+            class_90 = np.argmax(probs_90)
+            label_90 = INT_TO_LABEL[class_90]
+
+            # If history differs from current
+            if label_90 != ai_label:
+                if label_90 == "GREEN" and ai_label in ["YELLOW", "RED"]:
+                    insight_msg = " ⚠️ Warning: Deterioration detected compared to stable history."
+                elif label_90 in ["RED", "YELLOW"] and ai_label == "GREEN":
+                    insight_msg = " ✅ Positive signs: Improvement detected compared to history."
+
+        # =========================================================
+        # SAFETY GUARDRAILS (Hard-Coded Clinical Rules)
+        # =========================================================
+        final_diagnosis = ai_label
+        explanation = f"AI Diagnosis: {ai_label} ({int(ens_probs[ai_class] * 100)}% conf). " + insight_msg
+
+        # Clinical Override (Independent of AI)
+        if avg_g > 180:
+            final_diagnosis = "RED"
+            explanation = "Override: RED. Critical average Hyperglycemia (> 180 mg/dL)."
+        elif avg_g < 70:
+            final_diagnosis = "RED"
+            explanation = "Override: RED. Critical average Hypoglycemia (< 70 mg/dL)."
+        elif 150 < avg_g <= 180 or 70 <= avg_g < 80:
+            if ai_label == "GREEN":
+                final_diagnosis = "YELLOW"
+                explanation = "Override: YELLOW. Borderline average values, caution required."
 
         return {
             "status": "success",
-            "diagnosis": INT_TO_LABEL[ens_class],
+            "diagnosis": final_diagnosis,
             "confidence": round(float(np.max(ens_probs)) * 100, 1),
             "days_analyzed": round(total_days, 1),
             "models_used": runnable,
-            "clinical_message": self._generate_explanation(ens_class, single_preds),
-            "details": single_preds
+            "clinical_message": explanation,
+            "details": {k: v.tolist() for k, v in single_preds.items()}
         }
-
-    def _generate_explanation(self, ens_idx, singles):
-        label = INT_TO_LABEL[ens_idx]
-        msg = f"Clinical Profile: {label}."
-
-        if 15 in singles and 90 in singles:
-            i15 = np.argmax(singles[15])
-            i90 = np.argmax(singles[90])
-
-            if i15 < i90:
-                msg += " Warning: Recent deterioration detected over stable history."
-            elif i15 > i90:
-                msg += " Positive signs: Recent improvement trend detected."
-            else:
-                msg += " Condition stable over time."
-        elif 15 in singles:
-            msg += " Analysis based on short-term data."
-
-        return msg
