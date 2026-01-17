@@ -1,11 +1,9 @@
-import os
-
 import matplotlib
 
 from utils import *
-from interval import Interval
-from interval_action_detector import IntervalActionDetector
-from iseql import ISEQL
+from iseql.interval import Interval
+from iseql.interval_action_detector import IntervalActionDetector
+from iseql.iseql import ISEQL
 import pandas as pd
 import time
 import matplotlib.pyplot as plt
@@ -463,7 +461,7 @@ def draw_graphs(dataset_sizes, times_offline, times_find_time_swing, times_find_
 def main():
     # Loading data (modify the file path as necessary)
     print("Loading data...")
-    glucose_data = pd.read_csv('./data/glucoseLevel.csv', delimiter=';')
+    glucose_data = pd.read_csv('data/csv/glucoseLevel.csv', delimiter=';')
     print("Data loaded successfully.\n")
 
     # Selecting specific columns and filtering data
@@ -538,7 +536,7 @@ def main():
 
 
 def prova():
-    gl = pd.read_csv('./data/glucoseLevel.csv', delimiter=';')
+    gl = pd.read_csv('data/csv/glucoseLevel.csv', delimiter=';')
 
     colonne_specifiche = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                           'Valore del glucosio (mg/dL)']
@@ -599,7 +597,7 @@ def efficiency_extremely_time_swing():
 
     df = df[df["end_time"] >= df["start_time"]]
 
-    with open("eventi.txt", "w") as f:
+    with open("data/csv/eventi.txt", "w") as f:
         for _, r in df.iterrows():
             f.write(f"{int(r['start_time'])},{int(r['end_time'])},{r['label']}\n")
 

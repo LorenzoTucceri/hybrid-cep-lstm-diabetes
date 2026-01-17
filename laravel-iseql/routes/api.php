@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Login.
 Route::post("/login", [LoginController::class, "login"]);
+Route::post('/internal/model-ready', [App\Http\Controllers\CsvController::class, 'markModelReady'])->name('internal.modelReady');
 
 // Rotte da proteggere.
 Route::middleware(["auth:sanctum"])->group(function () {
@@ -67,4 +68,15 @@ Route::middleware(["auth:sanctum"])->group(function () {
     // Profilo.
     Route::put("/users/me/profile", [UserController::class, "updateProfile"]);
     Route::put("/users/me/profile/password", [UserController::class, "updatePassword"]);
+
+    Route::get('/check-model-status/{id}', function($id) {
+        // Qui $id è l'ID di Laravel (es. 1)
+        $patient = \App\Models\Patient::find($id);
+        return response()->json([
+            'ready' => (bool)$patient->has_trained_model,
+            'sensor_id' => $patient->sensor_id // utile per debug
+        ]);
+    });
+
+
 });

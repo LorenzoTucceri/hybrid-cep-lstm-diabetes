@@ -1,0 +1,10 @@
+backend-iseql/
+│
+├── app.py                # Gestisce solo le richieste Web (Flask)
+├── config.py             # Percorsi cartelle, Redis, URL Laravel
+├── tasks.py              # Gestisce solo i lavori pesanti in background (Celery)
+│
+├── services/             # Contiene la logica "sporca"
+│   ├── __init__.py       # (File vuoto necessario per Python)
+│   ├── data_processing.py# Si occupa solo di leggere e pulire i CSV
+│   └── legacy_iseql.py   # Si occupa solo di chiamare il C++ e i Pattern

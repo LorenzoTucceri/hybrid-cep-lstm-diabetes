@@ -14,10 +14,12 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+
 
 class PatientController extends Controller
 {
@@ -28,7 +30,7 @@ class PatientController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except("markModelReady");
     }
 
     /**
@@ -361,6 +363,5 @@ class PatientController extends Controller
             ]);
         }
     }
-
 
 }

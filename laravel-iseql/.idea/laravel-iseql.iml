@@ -163,5 +163,6 @@
     <orderEntry type="library" name="moment.js" level="application" />
     <orderEntry type="library" name="datetime-moment" level="application" />
     <orderEntry type="library" name="html2canvas" level="application" />
+    <orderEntry type="library" name="flatpickr" level="application" />
   </component>
 </module>

@@ -83,6 +83,10 @@ Route::middleware(['auth', 'role:1|3'])->group(function () {
     Route::post("/updatePatient", [App\Http\Controllers\PatientController::class, 'updatePatient'])->name("updatePatient");
     Route::get('/send/registration/{patientId}', [\App\Http\Controllers\PatientController::class, 'sendRegistration'])->name('sendRegistration');
 
+
+    Route::any('/monitor', function () {
+        return view('monitor');
+    })->name('monitor.view');
 });
 
 Route::middleware(['auth', 'role:3'])->group(function () {

@@ -300,8 +300,10 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table align-middle table-nowrap table-hover yajra-datatable-patient w-100">
-                                <thead class="table-light">
+                            <table
+                                class="table table-hover table-bordered dt-responsive nowrap w-100 yajra-datatable-file align-middle"
+                                id="csvTable">
+                                <thead class="bg-light text-uppercase table-light">
                                 <tr>
                                     <th>File Name</th>
                                     <th>Start Time</th>
@@ -349,8 +351,10 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="table align-middle table-nowrap table-hover yajra-datatable w-100">
-                                <thead class="table-light">
+                            <table
+                                class="table table-hover table-bordered dt-responsive nowrap w-100 yajra-datatable-patient align-middle"
+                                id="csvTable">
+                                <thead class="bg-light text-uppercase table-light">
                                 <tr>
                                     <th>Patient Name</th>
                                     <th>Email</th>
@@ -488,20 +492,19 @@
         }
 
         $(document).ready(function () {
-            $('.yajra-datatable').DataTable({
+            $('.yajra-datatable-file').DataTable({
                 order: [[0, "desc"]],
                 columnDefs: [
                     {orderable: false, targets: -1}
                 ],
                 pageLength: 5,
                 lengthMenu: [5, 10, 20],
-                language: {
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    }
-                },
+                language: {search: "", searchPlaceholder: "Search files..."},
+                dom: 'rtip',
                 drawCallback: function () {
+                    // Aggiunge lo stile ai bottoni.
+                    // NOTA: 'pagination-rounded' li rende arrotondati.
+                    // Se li vuoi perfettamente quadrati, rimuovi .addClass('pagination-rounded')
                     $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
                 }
             });
@@ -513,15 +516,8 @@
                 ],
                 pageLength: 5,
                 lengthMenu: [5, 10, 20],
-                language: {
-                    paginate: {
-                        previous: "<i class='mdi mdi-chevron-left'>",
-                        next: "<i class='mdi mdi-chevron-right'>"
-                    }
-                },
-                drawCallback: function () {
-                    $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
-                }
+                language: {search: "", searchPlaceholder: "Search files..."},
+                dom: 'rtip'
             });
 
             // Initialize Tooltips
@@ -529,8 +525,7 @@
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl)
             });
-        });
-    </script>
+        });    </script>
 
     <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>

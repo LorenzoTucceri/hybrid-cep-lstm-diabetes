@@ -146,8 +146,10 @@
 
                     <h4 class="card-title mb-3">Manage Operators</h4>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover dt-responsive nowrap w-100 yajra-datatable align-middle">
-                            <thead class="table-light">
+                        <table
+                            class="table table-hover table-bordered dt-responsive nowrap w-100 yajra-datatable align-middle"
+                            >
+                            <thead class="bg-light text-uppercase table-light">
                             <tr>
                                 <th>Email</th>
                                 <th>First Name</th>
@@ -249,16 +251,10 @@
 
             // Init DataTable
             $('.yajra-datatable').DataTable({
-                responsive: true,
-                order: [[0, "asc"]],
-                language: {
-                    paginate: { next: '>', previous: '<' },
-                    search: "Search:",
-                    lengthMenu: "Show _MENU_ entries"
-                },
-                columnDefs: [
-                    { orderable: false, targets: -1 } // Disable sorting on Actions column
-                ]
+                order: [[0, "desc"]], // Ordina per Start Date
+                columnDefs: [{orderable: false, targets: -1}],
+                language: {search: "", searchPlaceholder: "Search files..."},
+                dom: 'rtip' // Nascondiamo la barra di ricerca default, la gestiamo noi o lasciamo pulito
             });
         });
     </script>

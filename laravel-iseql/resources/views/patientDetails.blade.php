@@ -1463,14 +1463,14 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0 d-flex align-items-center">
-                                    <span class="avatar-title rounded-circle bg-soft-dark text-dark font-size-16 me-2"
-                                          style="width: 30px; height: 30px;"><i class="bx bx-tachometer"></i></span>
+                                    <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-16 me-2"
+                                          style="width: 30px; height: 30px;"> <i class="bx bx-transfer"></i></span>
                                     Extremely Time Swings
                                     <a href="#" class="ms-2 text-muted" data-bs-toggle="modal"
                                        data-bs-target="#extremelyTimeSwingInfoModal"><i
                                             class="mdi mdi-information-outline"></i></a>
                                 </h5>
-                                <button class="btn btn-sm btn-outline-dark" data-bs-toggle="modal"
+                                <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
                                         data-bs-target="#extremelyGlycemicSwingsModal">Chart
                                 </button>
                             </div>
@@ -1481,9 +1481,13 @@
                                         <div class="modal-header"><h5 class="modal-title">Info</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body"><p><strong>Extremely Time Swings</strong> refers to
-                                                rapid fluctuations involving "Extremely High" or "Extremely Low" glucose
-                                                levels within 2 hours.</p></div>
+                                        <div class="modal-body">
+                                            <p>
+                                                <strong>Extremely Time Swings</strong> refer to rapid fluctuations in glucose levels,
+                                                where values shift to <strong>extremely high</strong> or <strong>extremely low</strong>
+                                                within a two-hour period.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1537,19 +1541,19 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0 d-flex align-items-center">
-                    <span class="avatar-title rounded-circle bg-soft-purple text-purple font-size-16 me-2"
+                    <span class="avatar-title rounded-circle bg-soft-info text-info font-size-16 me-2"
                           style="width: 30px; height: 30px;">
                         <i class="bx bx-layer"></i> </span>
-                                    Frequent Ext. Swings
+                                    Frequent Ext. Time Swings
                                     <a href="#" class="ms-2 text-muted" data-bs-toggle="modal"
                                        data-bs-target="#tooFrequentExtremelyTimeSwingsInfoModal"><i
                                             class="mdi mdi-information-outline"></i></a>
                                 </h5>
                                 <div>
-                                    <button class="btn btn-sm btn-outline-purple me-1" data-bs-toggle="modal"
+                                    <button class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal"
                                             data-bs-target="#tooFrequentExtremelyTimeSwingsDurationModal">Dur
                                     </button>
-                                    <button class="btn btn-sm btn-outline-purple" data-bs-toggle="modal"
+                                    <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
                                             data-bs-target="#tooFrequentExtremelyTimeSwingsFrequencyModal">Freq
                                     </button>
                                 </div>
@@ -1562,7 +1566,13 @@
                                         <div class="modal-header"><h5 class="modal-title">Info</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body"><p>Info about frequent extreme swings...</p></div>
+                                        <div class="modal-body">
+                                            <p>
+                                                This refers to <strong>frequent Extreme Time Swings</strong> occurring within a single day,
+                                                characterized by repeated episodes of <strong>extremely high</strong> or <strong>extremely low</strong>
+                                                glucose levels.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1666,7 +1676,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0 d-flex align-items-center">
-                    <span class="avatar-title rounded-circle bg-soft-purple text-purple font-size-16 me-2"
+                    <span class="avatar-title rounded-circle bg-soft-warning text-warning font-size-16 me-2"
                           style="width: 30px; height: 30px;">
                         <i class="bx bx-timer"></i> </span>
                                     Ext. Swing With Too Long Anomalies
@@ -1674,7 +1684,7 @@
                                        data-bs-target="#extTimeSwingTooLongInfoModal"><i
                                             class="mdi mdi-information-outline"></i></a>
                                 </h5>
-                                <button class="btn btn-sm btn-outline-purple" data-bs-toggle="modal"
+                                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
                                         data-bs-target="#extTimeSwingTooLongModal">Chart
                                 </button>
                             </div>
@@ -1685,7 +1695,14 @@
                                         <div class="modal-header"><h5 class="modal-title">Info</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                         </div>
-                                        <div class="modal-body"><p>Details about extremely complex swings...</p></div>
+                                        <div class="modal-body">
+                                            <p>
+                                                This refers to <strong>extremely complex swings</strong> characterized by an
+                                                <strong>anomalous duration</strong> of extreme glucose events, where
+                                                <strong>extremely high</strong> levels persist for at least <strong>45 minutes</strong>
+                                                and <strong>extremely low</strong> levels last for at least <strong>10 minutes</strong>.
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2335,67 +2352,277 @@
                 ctx2.canvas.height = 600;
                 new Chart(ctx2, exportConfig);
             });
-            // --- 7. Frequent Ext. Time Swings (NEW CHARTS) ---
+
+
+            // --- FIX: EXTREMELY TIME SWINGS CHARTS ---
+
+            // 1. Chart per "Extremely Time Swings" (Mancante nel tuo codice)
             document.addEventListener("DOMContentLoaded", function () {
-                let freqData = [
-                        @foreach ($data['too_frequent_extremely_time_swings'] ?? [] as $swing) {
-                        day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
-                        freq: {{ $swing['Number of Time Swings'] ?? 0 }},
-                        // Raccogliamo le durate per calcolare la media
-                        durs: [
-                            @foreach ($swing['Events'] as $ev)
-                                "{{ \Carbon\Carbon::parse($ev['Duration time swing'])->format('H:i') }}",
-                            @endforeach
-                        ]
-                    }, @endforeach
+                const canvas = document.getElementById('extremelyGlycemicSwingsChart');
+                if (!canvas) return; // Safety check
+
+                let extSwingData = [
+                        @foreach ($data['extremely_time_swing'] ?? [] as $swing)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",
+                        duration: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}",
+                        time_swing_type: "{{ $swing['first_event'] }} to {{ $swing['second_event'] }}"
+                    },
+                    @endforeach
                 ];
 
-                let days = freqData.map(d => d.day);
-                let uniqueDays = [...new Set(days)];
+                let durationsInMinutes = extSwingData.map(swing => {
+                    let [hours, minutes] = swing.duration.split(":").map(Number);
+                    return hours * 60 + minutes;
+                });
+                let days = extSwingData.map(swing => swing.day);
 
-                // 7A. Frequency Chart
-                let ctxFreq = document.getElementById('tooFrequentExtremelyTimeSwingsFrequencyChart').getContext('2d');
-                new Chart(ctxFreq, {
+                let ctx = canvas.getContext('2d');
+                new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: uniqueDays,
+                        labels: days,
                         datasets: [{
-                            label: 'Frequency',
-                            data: freqData.map(d => d.freq),
-                            backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
-                            borderColor: 'rgba(111, 66, 193, 1)',
+                            label: 'Duration (Minutes)',
+                            data: durationsInMinutes,
+                            // Uso il colore Dark/Black per coerenza con l'icona "bg-soft-dark" della card
+                            backgroundColor: 'rgba(220, 53, 69, 0.5)', // Red for danger
+                            borderColor: 'rgba(220, 53, 69, 1)',
                             borderWidth: 1
                         }]
                     },
-                    options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Minuti' }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (tooltipItem) {
+                                        let index = tooltipItem.dataIndex;
+                                        let durationInMinutes = durationsInMinutes[index];
+                                        let hours = Math.floor(durationInMinutes / 60);
+                                        let minutes = durationInMinutes % 60;
+                                        return `Dur: ${hours}h ${minutes}m (${extSwingData[index].time_swing_type})`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // 2. Fix per "Ext. Swing With Too Long Anomalies" (Miglioramento parsing)
+            document.addEventListener("DOMContentLoaded", function () {
+                const canvas = document.getElementById('extTimeSwingTooLongChart');
+                if (!canvas) return;
+
+                let complexData = [
+                        @foreach ($data['extremely_time_swing_with_too_long_glucose_anomalies'] ?? [] as $swing)
+                    {
+                        day: "{{ \Carbon\Carbon::parse($swing['day'])->format('d/m/Y') }}",
+                        durSwing: "{{ \Carbon\Carbon::parse($swing['duration_time_swing'])->format('H:i') }}",
+                        // Passiamo la stringa grezza, la puliamo in JS con regex più potente
+                        rawAnom: "{{ $swing['anomalous_durations'] }}"
+                    },
+                    @endforeach
+                ];
+
+                let days = complexData.map(d => d.day);
+
+                // Funzione Helper Robusta per convertire stringhe sporche in ore
+                const parseDirtyDuration = (t) => {
+                    if (!t) return 0;
+                    // Rimuove tutto ciò che non è numero o due punti (es. "Extremely_high event: ")
+                    let cleanTime = t.replace(/[^0-9:]/g, '');
+                    // Se la stringa inizia con :, lo togliamo
+                    if(cleanTime.startsWith(':')) cleanTime = cleanTime.substring(1);
+
+                    let parts = cleanTime.split(":");
+                    if (parts.length < 2) return 0;
+                    return parseFloat(parts[0]) + parseFloat(parts[1]) / 60;
+                };
+
+                let ctx = canvas.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: days,
+                        datasets: [
+                            {
+                                label: 'Swing Duration (h)',
+                                data: complexData.map(d => parseDirtyDuration(d.durSwing)),
+                                backgroundColor: 'rgba(52, 58, 64, 0.6)', // Dark per lo swing
+                                borderColor: 'rgba(52, 58, 64, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Anomaly Duration (h)',
+                                data: complexData.map(d => parseDirtyDuration(d.rawAnom)),
+                                backgroundColor: 'rgba(111, 66, 193, 0.6)', // Purple per l'anomalia extreme
+                                borderColor: 'rgba(111, 66, 193, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {display: true, text: 'Ore'}
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        let val = context.raw;
+                                        let h = Math.floor(val);
+                                        let m = Math.round((val - h) * 60);
+                                        return context.dataset.label + ": " + h + "h " + m + "m";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // --- 7. Frequent Ext. Time Swings (NEW CHARTS) ---
+
+
+            // --- 7. Frequent Ext. Time Swings (FIXED & ROBUST) ---
+            document.addEventListener("DOMContentLoaded", function () {
+                // 1. Recupero Elementi Canvas con Safety Check
+                const canvasFreq = document.getElementById('tooFrequentExtremelyTimeSwingsFrequencyChart');
+                const canvasDur = document.getElementById('tooFrequentExtremelyTimeSwingsDurationChart');
+
+                // Se i canvas non esistono nella pagina (es. modale non caricata), fermiamo l'esecuzione per evitare errori console
+                if (!canvasFreq || !canvasDur) return;
+
+                // 2. Costruzione Dati (Blade -> JS)
+                // Usiamo un nome variabile univoco per evitare conflitti con altri grafici
+                let extremelyFreqData = [
+                        @foreach ($data['too_frequent_extremely_time_swings'] ?? [] as $swing)
+                        @if(isset($swing['Events']) && count($swing['Events']) > 0)
+                    {
+                        // Prendiamo il giorno dal primo evento disponibile
+                        day: "{{ \Carbon\Carbon::parse($swing['Events'][0]['Day'])->format('d/m/Y') }}",
+                        freq: {{ $swing['Number of Time Swings'] ?? 0 }},
+                        // Raccogliamo tutte le durate di quel giorno
+                        raw_durations: [
+                            @foreach ($swing['Events'] as $ev)
+                                "{{ $ev['Duration time swing'] ?? '00:00' }}",
+                            @endforeach
+                        ]
+                    },
+                    @endif
+                    @endforeach
+                ];
+
+                // 3. Preparazione Dati per Chart.js
+                let labels = extremelyFreqData.map(d => d.day);
+                // Rimuoviamo duplicati dai giorni per le label (se necessario)
+                let uniqueLabels = [...new Set(labels)];
+
+                // Mappiamo i dati sulla base delle labels uniche
+                let freqValues = uniqueLabels.map(label => {
+                    let item = extremelyFreqData.find(d => d.day === label);
+                    return item ? item.freq : 0;
                 });
 
-                // 7B. Duration Chart (Average duration per day)
-                let avgDurs = freqData.map(d => {
-                    let totalMin = 0;
+                // Calcolo Durata Media in Minuti per giorno
+                let avgDurValues = uniqueLabels.map(label => {
+                    let item = extremelyFreqData.find(d => d.day === label);
+                    if (!item || item.raw_durations.length === 0) return 0;
+
+                    let totalMinutes = 0;
                     let count = 0;
-                    d.durs.forEach(t => {
-                        let [h, m] = t.split(":").map(Number);
-                        totalMin += h * 60 + m;
-                        count++;
+
+                    item.raw_durations.forEach(timeStr => {
+                        // Pulizia stringa e parsing manuale per evitare errori di Carbon/Date JS
+                        // Accetta formati "HH:mm" o "HH:mm:ss"
+                        let parts = timeStr.split(':');
+                        if (parts.length >= 2) {
+                            let h = parseInt(parts[0], 10);
+                            let m = parseInt(parts[1], 10);
+                            if (!isNaN(h) && !isNaN(m)) {
+                                totalMinutes += (h * 60) + m;
+                                count++;
+                            }
+                        }
                     });
-                    return count > 0 ? totalMin / count : 0;
+
+                    return count > 0 ? Math.round(totalMinutes / count) : 0;
                 });
 
-                let ctxDur = document.getElementById('tooFrequentExtremelyTimeSwingsDurationChart').getContext('2d');
-                new Chart(ctxDur, {
+                // 4. Inizializzazione Grafico Frequenza
+                new Chart(canvasFreq.getContext('2d'), {
                     type: 'bar',
                     data: {
-                        labels: uniqueDays,
+                        labels: uniqueLabels,
                         datasets: [{
-                            label: 'Avg Duration (min)',
-                            data: avgDurs,
-                            backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
+                            label: 'Frequency (Count)',
+                            data: freqValues,
+                            backgroundColor: 'rgba(111, 66, 193, 0.6)', // Purple (in linea con la card)
                             borderColor: 'rgba(111, 66, 193, 1)',
                             borderWidth: 1
                         }]
                     },
-                    options: {responsive: true, scales: {y: {beginAtZero: true}}}
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 } // Numeri interi per la frequenza
+                            }
+                        }
+                    }
+                });
+
+                // 5. Inizializzazione Grafico Durata Media
+                new Chart(canvasDur.getContext('2d'), {
+                    type: 'bar', // O 'line' se preferisci vedere il trend
+                    data: {
+                        labels: uniqueLabels,
+                        datasets: [{
+                            label: 'Avg Duration (Minutes)',
+                            data: avgDurValues,
+                            backgroundColor: 'rgba(52, 58, 64, 0.6)', // Dark/Grey per differenziare
+                            borderColor: 'rgba(52, 58, 64, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Minuti' }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let val = context.raw;
+                                        let h = Math.floor(val / 60);
+                                        let m = val % 60;
+                                        return `Avg Duration: ${h}h ${m}m (${val} min)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 });
             });
 
@@ -2435,8 +2662,8 @@
                             {
                                 label: 'Swing Duration (h)',
                                 data: complexData.map(d => toHours(d.durSwing)),
-                                backgroundColor: 'rgba(111, 66, 193, 0.5)', // Purple
-                                borderColor: 'rgba(111, 66, 193, 1)',
+                                backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                                borderColor: 'rgba(255, 159, 64, 1)',
                                 borderWidth: 1
                             },
                             {
