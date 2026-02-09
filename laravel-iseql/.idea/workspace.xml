@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/backend-iseql.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/commandlinetools/Laravel_09_05_25__20_18_a.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/commandlinetools/Laravel_09_05_25__20_18_a.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/laravel-iseql.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/laravel-iseql.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/Auth/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/CsvController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/FeedbackController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/FeedbackController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/NotificationController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/PatientController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/PatientController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/API/UserController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,12 +178,14 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;PHP Script.serve (0.0.0.0).executor&quot;: &quot;Run&quot;,
     &quot;PHP Script.serve (Real Device).executor&quot;: &quot;Run&quot;,
     &quot;PHP Script.serve.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev-davide&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Applications/MAMP/htdocs/ISEQL/laravel-iseql&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -198,7 +193,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.tools&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -227,8 +222,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-PS-252.28238.9" />
-        <option value="bundled-php-predefined-a98d8de5180a-58f58c5035b3-com.jetbrains.php.sharedIndexes-PS-252.28238.9" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PS-253.30387.85" />
+        <option value="bundled-php-predefined-a98d8de5180a-0e0d91225499-com.jetbrains.php.sharedIndexes-PS-253.30387.85" />
       </set>
     </attachedChunks>
   </component>
@@ -296,6 +291,27 @@
       <workItem from="1763826996838" duration="1664000" />
       <workItem from="1763828891135" duration="2702000" />
       <workItem from="1763833051708" duration="30000" />
+      <workItem from="1763834048368" duration="643000" />
+      <workItem from="1763883404161" duration="6475000" />
+      <workItem from="1764148895262" duration="4558000" />
+      <workItem from="1764235272965" duration="7403000" />
+      <workItem from="1764266928539" duration="356000" />
+      <workItem from="1764320750825" duration="3445000" />
+      <workItem from="1764506571922" duration="995000" />
+      <workItem from="1765266113476" duration="1563000" />
+      <workItem from="1765279960372" duration="6347000" />
+      <workItem from="1765357783919" duration="6318000" />
+      <workItem from="1765444502236" duration="639000" />
+      <workItem from="1765466410216" duration="620000" />
+      <workItem from="1766394485513" duration="3827000" />
+      <workItem from="1766414221703" duration="25000" />
+      <workItem from="1766828672630" duration="735000" />
+      <workItem from="1767705566108" duration="114000" />
+      <workItem from="1769527815176" duration="4634000" />
+      <workItem from="1769587794814" duration="3209000" />
+      <workItem from="1769597304955" duration="7143000" />
+      <workItem from="1769805703398" duration="31000" />
+      <workItem from="1769863860413" duration="24000" />
     </task>
     <servers />
   </component>

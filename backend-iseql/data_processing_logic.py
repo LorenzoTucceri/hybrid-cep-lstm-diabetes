@@ -150,6 +150,7 @@ def process_csv():
 
             file.write(f"{start_str},{end_str},{label}\n")
 
+    '''
     try:
         result = subprocess.run(
             ["../cpp-iseql/build/src/iseql", "test-eventi", ""],
@@ -185,6 +186,7 @@ def process_csv():
 
     except subprocess.CalledProcessError as e:
         print(f"Errore durante l'esecuzione del programma C: {e}")
+    '''
 
     iseq = ISEQL()
     for interval_labeling in results[0]:
