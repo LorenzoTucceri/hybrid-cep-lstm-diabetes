@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style>
+        body { background-color: #f6f9fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f6f9fc; padding-bottom: 40px; }
+        .main { background-color: #ffffff; margin: 40px auto; width: 100%; max-width: 600px; border-radius: 12px; border-spacing: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
+        .header { background-color: #556ee6; padding: 30px; text-align: center; }
+        .content { padding: 40px; text-align: left; color: #495057; line-height: 1.6; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #adb5bd; }
+        .button { background-color: #556ee6; color: #ffffff !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block; margin: 20px 0; }
+        h1 { color: #343a40; font-size: 22px; margin-top: 0; }
+        p { margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <table class="main">
+        <tr>
+            <td class="header">
+                <img src="<?php echo e(URL::asset('/assets/images/logo-light.svg')); ?>" alt="Glucose Analysis" height="40">
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <h1>Registration Invitation</h1>
+                <p>Hello <strong><?php echo e($clienteName); ?> <?php echo e($clienteSurname); ?></strong>,</p>
+                <p>Dr. <strong><?php echo e($userName); ?> <?php echo e($userSurname); ?></strong> has invited you to join <strong>Glucose Analysis</strong>.</p>
+                <p>By signing up, you will be able to access your personal dashboard, track your health data, and communicate directly with your doctor.</p>
+
+                <div style="text-align: center;">
+                    <a href="<?php echo e($link); ?>" class="button">Create Your Account</a>
+                </div>
+
+                <p style="font-size: 12px; color: #74788d;">If the button above doesn't work, copy and paste the following link into your browser:<br>
+                    <a href="<?php echo e($link); ?>" style="color: #556ee6;"><?php echo e($link); ?></a></p>
+            </td>
+        </tr>
+    </table>
+    <div class="footer">
+        <p>© <?php echo e(date('Year')); ?> Glucose Analysis. All rights reserved.<br>
+            Professional Health Monitoring System.</p>
+    </div>
+</div>
+</body>
+</html>
+<?php /**PATH /Users/lorenzotucceri/Progetti/ISEQL/laravel-iseql/resources/views/emails/invitoIscrizione.blade.php ENDPATH**/ ?>

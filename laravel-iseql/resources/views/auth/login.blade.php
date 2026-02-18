@@ -139,6 +139,11 @@
                                                 <i class="mdi mdi-lock me-1"></i> Forgot your password?
                                             </a>
                                         @endif
+                                            <p class="mb-0 mt-3">Don't have an account?
+                                                <a href="{{ route('register_doctor') }}" class="text-primary fw-medium">
+                                                    Register as Doctor
+                                                </a>
+                                            </p>
                                     </div>
                                 </form>
                             </div>
@@ -146,7 +151,7 @@
                     </div>
 
                     <div class="mt-5 text-center">
-                        <p class="text-muted">© <script>document.write(new Date().getFullYear())</script> Glucose Analysis. Crafted with <i class="mdi mdi-heart text-danger"></i></p>
+                        <p class="text-muted">© <script>document.write(new Date().getFullYear())</script> Glucose Analysis. </p>
                     </div>
 
                 </div>

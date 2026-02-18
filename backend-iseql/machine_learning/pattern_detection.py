@@ -7,6 +7,7 @@ import utils
 # MAPPE DI CONVERSIONE STATI
 # -------------------------------------------------------
 
+
 STATE_NAME = {
     "a": "EXTREMELY_HIGH",
     "b": "HIGH",

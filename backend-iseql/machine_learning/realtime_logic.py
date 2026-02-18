@@ -138,8 +138,8 @@ class DexcomRealTimeService:
         last_pred = forecast[-1]
 
         # Soglie definite da te
-        HYPO_THRESH = 90.0
-        HYPER_THRESH = 170.0
+        HYPO_THRESH = 80.0
+        HYPER_THRESH = 180.0
         SWING_THRESH = 40.0
 
         # 1. PERICOLO ASSOLUTO: Ipoglicemia (Immediata o Persistente)

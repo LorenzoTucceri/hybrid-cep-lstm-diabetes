@@ -137,6 +137,36 @@ class ClinicalEnsembleAdaptive:
                 current_minutes += dur
         return sliced_seq
 
+    def compute_clinical_metrics(self, sequence):
+        """
+        Calcola metriche cliniche oggettive dalla sequenza completa.
+        """
+        if not sequence:
+            return None
+
+        # Espansione minuto per minuto (coerente con training)
+        glucose_values = []
+        for state, dur, val in sequence:
+            glucose_values.extend([val] * int(dur))
+
+        gl = np.array(glucose_values)
+
+        if len(gl) < 10:
+            return None
+
+        TBR = np.mean(gl < 70) * 100
+        TIR = np.mean((gl >= 70) & (gl <= 180)) * 100
+        TAR = np.mean(gl > 180) * 100
+        GV = np.std(gl)
+
+        return {
+            "TBR": TBR,
+            "TIR": TIR,
+            "TAR": TAR,
+            "GV": GV,
+            "AVG": np.mean(gl)
+        }
+
     def predict_smart(self, intervals):
         """
         Input: list of tuples (symbol, start, end, label, DURATION, AVG_GLUCOSE)
@@ -253,27 +283,33 @@ class ClinicalEnsembleAdaptive:
         # =========================================================
         # SAFETY GUARDRAILS (Hard-Coded Clinical Rules)
         # =========================================================
+
+        metrics = self.compute_clinical_metrics(sequence)
+
         final_diagnosis = ai_label
         explanation = f"AI Diagnosis: {ai_label} ({int(ens_probs[ai_class] * 100)}% conf). " + insight_msg
 
-        # Clinical Override (Independent of AI)
-        if avg_g > 180:
-            final_diagnosis = "RED"
-            explanation = "Override: RED. Critical average Hyperglycemia (> 180 mg/dL)."
-        elif avg_g < 70:
-            final_diagnosis = "RED"
-            explanation = "Override: RED. Critical average Hypoglycemia (< 70 mg/dL)."
-        elif 150 < avg_g <= 180 or 70 <= avg_g < 80:
-            if ai_label == "GREEN":
-                final_diagnosis = "YELLOW"
-                explanation = "Override: YELLOW. Borderline average values, caution required."
+        if metrics:
 
-        return {
-            "status": "success",
-            "diagnosis": final_diagnosis,
-            "confidence": round(float(np.max(ens_probs)) * 100, 1),
-            "days_analyzed": round(total_days, 1),
-            "models_used": runnable,
-            "clinical_message": explanation,
-            "details": {k: v.tolist() for k, v in single_preds.items()}
-        }
+            TBR = metrics["TBR"]
+            TIR = metrics["TIR"]
+            TAR = metrics["TAR"]
+            GV = metrics["GV"]
+
+            # --- HARD RED CONDITIONS ---
+            if TBR > 10 or TAR > 40 or GV > 70 or TIR < 55:
+                final_diagnosis = "RED"
+                explanation = (
+                    f"Override: RED. Critical clinical metrics detected "
+                    f"(TBR={TBR:.1f}%, TAR={TAR:.1f}%, GV={GV:.1f})."
+                )
+
+            # --- BORDERLINE YELLOW CONDITIONS ---
+            elif TBR > 4 or TAR > 25 or GV > 50 or TIR < 70:
+                if ai_label == "GREEN":
+                    final_diagnosis = "YELLOW"
+                    explanation = (
+                        f"Override: YELLOW. Borderline clinical instability "
+                        f"(TIR={TIR:.1f}%, TBR={TBR:.1f}%, GV={GV:.1f})."
+                    )
+

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\CsvController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,21 +26,27 @@ Auth::routes();
 
 
 
-//Creare dei middleware che permettano l'accesso solo agli admin,operatori
-// e alle imprese possesori di quei file;
-//aggiungere condizione per l'impresa
-//aggiustare url completo per le sottocartelle
-
 
 
 
 
 
 Route::get('/', [App\Http\Controllers\UserController::class, 'root'])->name('root');
-Route::get('{any}', [App\Http\Controllers\UserController::class, 'index'])->name('index');
 Route::get('/register/{token}', [RegisterController::class, 'showRegistrationForm'])->name('register.token');
 Route::post('/register/{token}', [RegisterController::class, 'register'])->name('register.token.submit');
 Route::post('/resetPassword', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('resetPassword');
+Route::view('/register/doctor/view', "auth/register_doctor")->name('register_doctor');
+Route::post('/register/doctor/upload', [App\Http\Controllers\UserController::class, 'registerDoctor'])->name('registerDoctor');
+Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+
+// 2. Gestisce il POST del form e invia l'email
+Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+// 3. Mostra il form per inserire la NUOVA password (dopo aver cliccato il link nella mail)
+Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+
+// 4. Gestisce il cambio effettivo della password
+Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -94,6 +102,7 @@ Route::middleware(['auth', 'role:3'])->group(function () {
 
 });
 
+Route::get('{any}', [App\Http\Controllers\UserController::class, 'index'])->name('index');
 
 
 

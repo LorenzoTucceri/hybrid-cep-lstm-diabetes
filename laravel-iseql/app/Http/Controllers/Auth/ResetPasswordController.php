@@ -19,6 +19,8 @@ class ResetPasswordController extends Controller
 {
     use RedirectsUsers;
 
+    protected $redirectTo = '/';
+
     /**
      * Display the password reset view for the given token.
      *

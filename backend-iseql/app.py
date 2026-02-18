@@ -91,6 +91,7 @@ def process_csv():
     for i in intervals_legacy:
         iseq.add_interval(Interval(i[1], i[2], i[0], i[3], i[2] - i[1]))
 
+
     totals_and_durations = analysis.analyze_glucose_data(iseq.get_intervals(), iseq)
     ts_dur = iseq.find_time_swing_with_too_long_glucose_anomalies()
     ts_freq = iseq.find_too_frequent_time_swings()

@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['registerDoctor']);
     }
 
     /**
@@ -129,6 +129,43 @@ class UserController extends Controller
 
         return back()->with('success', 'User added successfully!');
     }
+
+
+
+    public function registerDoctor(Request $request)
+    {
+        // 1. Validazione dei dati in ingresso
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'], // 'confirmed' controlla che password e password_confirmation coincidano
+        ]);
+
+        try {
+            // 2. Creazione dell'utente
+            $user = User::create([
+                'name' => $request->input('name'),
+                'surname' => $request->input('surname'),
+                'email' => $request->input('email'),
+                'password' => Hash::make($request->input('password')),
+                'role_id' => 3, // Assegnazione forzata ruolo Dottore
+                'patient_id' => null,
+            ]);
+
+            // 3. Login automatico dell'utente appena registrato
+            Auth::login($user);
+
+            // 4. Redirect alla Dashboard (o alla root)
+            return redirect()->route('root')->with('success', 'Registration successful! Welcome.');
+
+        } catch (\Exception $e) {
+            // Gestione errori imprevisti
+            return back()->withErrors(['error' => 'Error creating account. Please try again.']);
+        }
+    }
+
+
     public function searchUser($id)
     {
         try {

@@ -465,9 +465,9 @@
                     <div class="d-flex align-items-center mb-4">
                         <div class="flex-shrink-0 me-3">
                             <div class="avatar-sm">
-                                <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-20">
-                                    <i class="bx bx-calendar-exclamation"></i>
-                                </span>
+                          <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-20">
+    <i class="bx bx-error-circle"></i>
+</span>
                             </div>
                         </div>
                         <div class="flex-grow-1">
@@ -1173,16 +1173,20 @@
                                             <th>Day</th>
                                             <th>Total</th>
                                             <th>High</th>
-                                            <th>Low</th>
-                                        </tr>
+                                            <th>Ext. High</th> <th>Low</th>
+                                            <th>Ext. Low</th>  </tr>
                                         </thead>
                                         <tbody>
                                         @foreach ($data['too_frequent_glucose_anomalies'] as $f)
                                             <tr>
                                                 <td>{{ $f['day'] }}</td>
                                                 <td>{{ $f['total_count'] }}</td>
+
                                                 <td>{{ $f['high_count'] }}</td>
+                                                <td>{{ $f['extremely_high_count'] }}</td>
+
                                                 <td>{{ $f['low_count'] }}</td>
+                                                <td>{{ $f['extremely_low_count'] }}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -1463,8 +1467,9 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="card-title mb-0 d-flex align-items-center">
-                                    <span class="avatar-title rounded-circle bg-soft-danger text-danger font-size-16 me-2"
-                                          style="width: 30px; height: 30px;"> <i class="bx bx-transfer"></i></span>
+                                    <span
+                                        class="avatar-title rounded-circle bg-soft-danger text-danger font-size-16 me-2"
+                                        style="width: 30px; height: 30px;"> <i class="bx bx-transfer"></i></span>
                                     Extremely Time Swings
                                     <a href="#" class="ms-2 text-muted" data-bs-toggle="modal"
                                        data-bs-target="#extremelyTimeSwingInfoModal"><i
@@ -1483,8 +1488,10 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                <strong>Extremely Time Swings</strong> refer to rapid fluctuations in glucose levels,
-                                                where values shift to <strong>extremely high</strong> or <strong>extremely low</strong>
+                                                <strong>Extremely Time Swings</strong> refer to rapid fluctuations in
+                                                glucose levels,
+                                                where values shift to <strong>extremely high</strong> or <strong>extremely
+                                                    low</strong>
                                                 within a two-hour period.
                                             </p>
                                         </div>
@@ -1568,8 +1575,10 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                This refers to <strong>frequent Extreme Time Swings</strong> occurring within a single day,
-                                                characterized by repeated episodes of <strong>extremely high</strong> or <strong>extremely low</strong>
+                                                This refers to <strong>frequent Extreme Time Swings</strong> occurring
+                                                within a single day,
+                                                characterized by repeated episodes of <strong>extremely high</strong> or
+                                                <strong>extremely low</strong>
                                                 glucose levels.
                                             </p>
                                         </div>
@@ -1697,10 +1706,13 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>
-                                                This refers to <strong>extremely complex swings</strong> characterized by an
+                                                This refers to <strong>extremely complex swings</strong> characterized
+                                                by an
                                                 <strong>anomalous duration</strong> of extreme glucose events, where
-                                                <strong>extremely high</strong> levels persist for at least <strong>45 minutes</strong>
-                                                and <strong>extremely low</strong> levels last for at least <strong>10 minutes</strong>.
+                                                <strong>extremely high</strong> levels persist for at least <strong>45
+                                                    minutes</strong>
+                                                and <strong>extremely low</strong> levels last for at least <strong>10
+                                                    minutes</strong>.
                                             </p>
                                         </div>
                                     </div>
@@ -2397,7 +2409,7 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                title: { display: true, text: 'Minuti' }
+                                title: {display: true, text: 'Minuti'}
                             }
                         },
                         plugins: {
@@ -2441,7 +2453,7 @@
                     // Rimuove tutto ciò che non è numero o due punti (es. "Extremely_high event: ")
                     let cleanTime = t.replace(/[^0-9:]/g, '');
                     // Se la stringa inizia con :, lo togliamo
-                    if(cleanTime.startsWith(':')) cleanTime = cleanTime.substring(1);
+                    if (cleanTime.startsWith(':')) cleanTime = cleanTime.substring(1);
 
                     let parts = cleanTime.split(":");
                     if (parts.length < 2) return 0;
@@ -2582,7 +2594,7 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                ticks: { stepSize: 1 } // Numeri interi per la frequenza
+                                ticks: {stepSize: 1} // Numeri interi per la frequenza
                             }
                         }
                     }
@@ -2607,13 +2619,13 @@
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                title: { display: true, text: 'Minuti' }
+                                title: {display: true, text: 'Minuti'}
                             }
                         },
                         plugins: {
                             tooltip: {
                                 callbacks: {
-                                    label: function(context) {
+                                    label: function (context) {
                                         let val = context.raw;
                                         let h = Math.floor(val / 60);
                                         let m = val % 60;

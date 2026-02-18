@@ -1,92 +1,48 @@
-<!-- resources/views/emails/invitoIscrizione.blade.php -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <style>
-        /* General styles */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            color: #333;
-            background-color: #f9f9f9;
-        }
-        table {
-            width: 100%;
-            border-spacing: 0;
-        }
-        td {
-            vertical-align: top;
-        }
-
-        /* Main content */
-        .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Logo styles */
-        .email-logo {
-            max-width: 150px;
-            height: auto;
-            width: 100%;
-        }
-
-        /* Paragraph styles */
-        p {
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        a {
-            text-decoration: none;
-            color: #007BFF;
-        }
-
-        /* Media queries for mobile devices */
-        @media screen and (max-width: 600px) {
-            .email-container {
-                padding: 15px;
-            }
-
-            .email-logo {
-                max-width: 120px;
-            }
-
-            p {
-                font-size: 16px;
-            }
-        }
+        body { background-color: #f6f9fc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f6f9fc; padding-bottom: 40px; }
+        .main { background-color: #ffffff; margin: 40px auto; width: 100%; max-width: 600px; border-radius: 12px; border-spacing: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden; }
+        .header { background-color: #556ee6; padding: 30px; text-align: center; }
+        .content { padding: 40px; text-align: left; color: #495057; line-height: 1.6; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #adb5bd; }
+        .button { background-color: #556ee6; color: #ffffff !important; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block; margin: 20px 0; }
+        h1 { color: #343a40; font-size: 22px; margin-top: 0; }
+        p { margin-bottom: 15px; }
     </style>
 </head>
 <body>
-<table>
-    <tr>
-        <td align="left">
-            <div class="email-container">
-                <table style="width: 100%;">
-                    <tr>
-                        <td style="text-align: left;">
-                            <p>Hello {{ $clienteName }} {{ $clienteSurname }},</p>
-                        </td>
-                    </tr>
-                </table>
+<div class="wrapper">
+    <table class="main">
+        <tr>
+            <td class="header">
+                <img src="{{ URL::asset('/assets/images/logo-light.svg') }}" alt="Glucose Analysis" height="40">
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <h1>Registration Invitation</h1>
+                <p>Hello <strong>{{ $clienteName }} {{ $clienteSurname }}</strong>,</p>
+                <p>Dr. <strong>{{ $userName }} {{ $userSurname }}</strong> has invited you to join <strong>Glucose Analysis</strong>.</p>
+                <p>By signing up, you will be able to access your personal dashboard, track your health data, and communicate directly with your doctor.</p>
 
-                <p>My name is {{ $userName }} {{ $userSurname }},<br>
-                    I invite you to sign up for the app using the following link:<br>
-                    <a href="{{ $link }}" target="_blank">{{ $link }}</a><br>
-                    to access your personal section.</p>
+                <div style="text-align: center;">
+                    <a href="{{ $link }}" class="button">Create Your Account</a>
+                </div>
 
-                <p>Have a great day.</p>
-            </div>
-        </td>
-    </tr>
-</table>
+                <p style="font-size: 12px; color: #74788d;">If the button above doesn't work, copy and paste the following link into your browser:<br>
+                    <a href="{{ $link }}" style="color: #556ee6;">{{ $link }}</a></p>
+            </td>
+        </tr>
+    </table>
+    <div class="footer">
+        <p>© {{ date('Year') }} Glucose Analysis. All rights reserved.<br>
+            Professional Health Monitoring System.</p>
+    </div>
+</div>
 </body>
 </html>
