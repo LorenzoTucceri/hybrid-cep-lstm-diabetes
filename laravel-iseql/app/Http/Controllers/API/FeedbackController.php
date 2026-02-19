@@ -15,19 +15,6 @@ use Illuminate\Support\Facades\Validator;
  * @author Lorenzo Tucceri Cimini
  */
 class FeedbackController extends Controller {
-    public function feedbackCount(Request $request) {
-        // Calcolo del numero di feedback.
-        $count = Feedback::whereHas("file", function ($query) use ($request) {
-            $query->where("patient_id", $request->user()->patient_id);
-        })->count();
-
-        return response()->json(
-            [
-                "success" => true,
-                "feedback_count" => $count
-            ]);
-    }
-
     public function saveFeedback(Request $request) {
         // Validazione dei dati.
         $validator = Validator::make($request->all(), [
@@ -36,18 +23,17 @@ class FeedbackController extends Controller {
             "file_id" => "required|exists:files,id"
         ]);
         if ($validator->fails()) {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => $validator->errors()->first()
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first()
+            ]);
         }
 
         // Ricerca del file CSV per ID.
         $csv = File::find($request->file_id);
 
         // Aggiornamento/creazione del feedback e notifica in base al ruolo.
-        if ($request->user()->role->name === "Doctor") {
+        if ($request->user()->role->name === "Doctor") { // Se dottore.
             Feedback::updateOrCreate([
                 "file_id" => $csv->id,
                 "doctor_id" => $request->user()->id
@@ -64,7 +50,7 @@ class FeedbackController extends Controller {
                 ]);
             }
         }
-        else {
+        else { // Se paziente.
             Feedback::updateOrCreate([
                 "file_id" => $csv->id,
                 "doctor_id" => $request->user()->patient->doctor_id
@@ -79,11 +65,10 @@ class FeedbackController extends Controller {
             ]);
         }
 
-        return response()->json(
-            [
-                "success" => true,
-                "message" => "Feedback saved successfully."
-            ]);
+        return response()->json([
+            "success" => true,
+            "message" => "Feedback saved successfully."
+        ]);
     }
 
     public function feedback(int $id) {
@@ -91,19 +76,17 @@ class FeedbackController extends Controller {
         $feedback = Feedback::where("file_id", $id)->first();
 
         if ($feedback) {
-            return response()->json(
-                [
-                    "success" => true,
-                    "message" => "Feedback found successfully.",
-                    "feedback" => $feedback
-                ]);
+            return response()->json([
+                "success" => true,
+                "message" => "Feedback found successfully.",
+                "feedback" => $feedback
+            ]);
         }
         else {
-            return response()->json(
-                [
-                    "success" => false,
-                    "message" => "Feedback not found."
-                ]);
+            return response()->json([
+                "success" => false,
+                "message" => "Feedback not found."
+            ]);
         }
     }
 }

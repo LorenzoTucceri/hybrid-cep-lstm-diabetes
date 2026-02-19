@@ -19,12 +19,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/internal/model-ready', [App\Http\Controllers\CsvController::class, 'markModelReady'])->name('internal.modelReady');
+
 // Login.
 Route::post("/login", [LoginController::class, "login"]);
 
-Route::post('/internal/model-ready', [App\Http\Controllers\CsvController::class, 'markModelReady'])->name('internal.modelReady');
 // Rotte da proteggere.
 Route::middleware(["auth:sanctum"])->group(function () {
+    Route::get('/check-model-status/{id}', function($id) {
+        // Qui $id è l'ID di Laravel (es. 1).
+        $patient = \App\Models\Patient::find($id);
+
+        return response()->json([
+            'ready' => (bool)$patient->has_trained_model,
+            'sensor_id' => $patient->sensor_id // Utile per debug.
+        ]);
+    });
+
     // Logout.
     Route::post("/logout", [LoginController::class, "logout"]);
 
@@ -62,19 +73,4 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::put("/notifications/{id}", [NotificationController::class, "markNotificationAsRead"]);
     Route::delete("/notifications", [NotificationController::class, "deleteNotifications"]);
     Route::delete("/notifications/{id}", [NotificationController::class, "deleteNotification"]);
-
-    Route::get('/check-model-status/{id}', function($id) {
-        $patient = \App\Models\Patient::find($id);
-        return response()->json([
-            'ready' => (bool)$patient->has_trained_model,
-            'sensor_id' => $patient->sensor_id
-        ]);
-    });
-    Route::get('/check-model-status/{id}', function($id) {
-        $patient = \App\Models\Patient::find($id);
-        return response()->json([
-            'ready' => (bool)$patient->has_trained_model,
-            'sensor_id' => $patient->sensor_id
-        ]);
-    });
 });
