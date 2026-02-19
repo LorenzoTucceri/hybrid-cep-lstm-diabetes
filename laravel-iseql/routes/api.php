@@ -71,11 +71,10 @@ Route::middleware(["auth:sanctum"])->group(function () {
         ]);
     });
     Route::get('/check-model-status/{id}', function($id) {
-        // Qui $id è l'ID di Laravel (es. 1)
         $patient = \App\Models\Patient::find($id);
         return response()->json([
             'ready' => (bool)$patient->has_trained_model,
-            'sensor_id' => $patient->sensor_id // utile per debug
+            'sensor_id' => $patient->sensor_id
         ]);
     });
 });
