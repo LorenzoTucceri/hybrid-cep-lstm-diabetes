@@ -269,7 +269,6 @@ class ISEQL:
 
 
 
-    #DA TESTARE
     def find_too_frequent_extremely_time_swings(self,extremely_time_swing_threshold=timedelta(minutes=30), min_ts=2):
         extremely_time_swings_too_frequent = []
         daily_intervals = self.create_daily_intervals()  # Ensure this returns a dict with intervals for each day
@@ -300,7 +299,6 @@ class ISEQL:
 
         return extremely_time_swings_too_frequent
 
-    #DA TESTARE
     def find_extremely_time_swing_with_too_long_glucose_anomalies(self, time_swings=None):
         extremely_time_swings_duration = []
         anomalous_duration = self.find_too_long_glucose_anomalies()

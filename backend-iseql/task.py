@@ -10,7 +10,7 @@ celery_app = Celery('iseql_tasks', broker=Config.CELERY_BROKER_URL, backend=Conf
 
 @celery_app.task
 def train_patient_model_async(patient_id, csv_path):
-    print(f"🚀 [CELERY] Avvio training per ID Interno: {patient_id}")
+    print(f" [CELERY] Avvio training per ID Interno: {patient_id}")
     save_path = os.path.join(Config.MODELS_DIR_FORECASTING, f"patient_{patient_id}.pth")
 
     success, msg = train_patient_specific_model(csv_path, save_path)
@@ -18,7 +18,7 @@ def train_patient_model_async(patient_id, csv_path):
     if success:
         try:
             payload = {'patient_id': str(patient_id)}
-            print(f"📡 [DEBUG] Notifico Laravel: {payload}")
+            print(f" [DEBUG] Notifico Laravel: {payload}")
             response = requests.post(Config.LARAVEL_API_URL, data=payload, timeout=5)
 
             if response.status_code == 200:

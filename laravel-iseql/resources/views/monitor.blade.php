@@ -4,7 +4,7 @@
     <div class="container-fluid py-4 bg-gray-100">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="mb-1 fw-bold text-dark">🩺 Live Monitor</h2>
+                <h2 class="mb-1 fw-bold text-dark">Live Monitor</h2>
                 <p class="text-muted mb-0">Real-time connection with Dexcom Cloud & AI Forecasting</p>
             </div>
             <div class="text-end">

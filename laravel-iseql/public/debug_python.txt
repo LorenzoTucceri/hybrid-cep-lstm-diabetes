@@ -10,3 +10,5 @@ Richiesta arrivata: 23:51:00
 Payload: {"patient_id":"514009853113.0"}
 Richiesta arrivata: 00:00:41
 Payload: {"patient_id":"SIM_DX_001"}
+Richiesta arrivata: 11:55:22
+Payload: {"patient_id":"122"}

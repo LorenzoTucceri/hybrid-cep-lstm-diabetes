@@ -51,20 +51,20 @@ def process_csv():
         ids = glucose_data['ID trasmettitore'].unique()
         if len(ids) > 0: patient_id = str(ids[0]).strip()
 
-    print(f"👤 Paziente: {patient_id}")
+    print(f" Paziente: {patient_id}")
 
     # 3. Logica Training
     training_info = "Modello presente o dati insufficienti."
     if patient_id != "guest_unknown":
         model_path = os.path.join(Config.MODELS_DIR_FORECASTING, f"patient_{patient_id}.pth")
         if os.path.exists(model_path):
-            training_info = "Modello ATTIVO ✅"
+            training_info = "Modello ATTIVO "
         else:
             col_date = 'Data e ora (AAAA-MM-GGThh:mm:ss)'
             delta = glucose_data[col_date].max() - glucose_data[col_date].min()
             if delta.days >= 1:
                 train_patient_model_async.delay(patient_id, file_path)
-                training_info = "⚠️ Training in background ⏳"
+                training_info = " Training in background "
 
     # 4. Analisi Dati (AI + Detector)
     gmi, avg = calculate_gmi(glucose_data['Valore del glucosio (mg/dL)'])

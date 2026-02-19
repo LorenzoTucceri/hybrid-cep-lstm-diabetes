@@ -276,7 +276,7 @@ class ClinicalEnsembleAdaptive:
             # If history differs from current
             if label_90 != ai_label:
                 if label_90 == "GREEN" and ai_label in ["YELLOW", "RED"]:
-                    insight_msg = " ⚠️ Warning: Deterioration detected compared to stable history."
+                    insight_msg = "  Warning: Deterioration detected compared to stable history."
                 elif label_90 in ["RED", "YELLOW"] and ai_label == "GREEN":
                     insight_msg = " ✅ Positive signs: Improvement detected compared to history."
 
