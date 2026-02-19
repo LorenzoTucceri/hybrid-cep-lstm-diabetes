@@ -1,10 +1,8 @@
 <?php $__env->startSection('title'); ?> Personal Profile <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('css'); ?>
-    <!-- bootstrap datepicker -->
     <link href="<?php echo e(URL::asset('/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.css')); ?>" rel="stylesheet">
-
-    <!-- dropzone css -->
+    
     <link href="<?php echo e(URL::asset('/assets/libs/dropzone/dropzone.min.css')); ?>" rel="stylesheet" type="text/css" />
 <?php $__env->stopSection(); ?>
 
@@ -14,151 +12,207 @@
         <?php $__env->slot('li_1'); ?> Profile <?php $__env->endSlot(); ?>
         <?php $__env->slot('title'); ?> Personal Profile <?php $__env->endSlot(); ?>
     <?php echo $__env->renderComponent(); ?>
+
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-xl-4">
+            <div class="card overflow-hidden">
+                <div class="bg-primary-subtle bg-primary bg-soft">
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="text-primary p-3">
+                                <h5 class="text-primary">Welcome Back!</h5>
+                                <p><?php echo e(Auth::user()->name); ?></p>
+                            </div>
+                        </div>
+                        <div class="col-5 align-self-end">
+                            <i class="bx bx-pulse text-primary" style="font-size: 6rem; opacity: 0.3; margin-right: 10px; margin-bottom: -10px;"></i>                        </div>
+                    </div>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="avatar-md profile-user-wid mb-4">
+                                <img src="/images/avatar-default.jpeg" alt="" class="img-thumbnail rounded-circle">
+
+                            </div>
+                            <h5 class="font-size-15 text-truncate"><?php echo e(Auth::user()->name); ?> <?php echo e(Auth::user()->surname); ?></h5>
+                            <p class="text-muted mb-0 text-truncate"><?php echo e(Auth::user()->role->name); ?></p> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Update Profile</h4>
+                    <h4 class="card-title mb-4">Personal Info</h4>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap mb-0">
+                            <tbody>
+                            <tr>
+                                <th scope="row">Full Name :</th>
+                                <td><?php echo e(Auth::user()->name); ?> <?php echo e(Auth::user()->surname); ?></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">E-mail :</th>
+                                <td><?php echo e(Auth::user()->email); ?></td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-8">
+
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Edit Details</h4>
+
+                    <?php if(\Session::has('success')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="mdi mdi-check-all me-2"></i>
+                            <?php echo e(Session::get('success')); ?>
+
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
                     <?php $__errorArgs = ["update"];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo e($message); ?>
-
-                    </div>
+                    <div class="alert alert-danger" role="alert"><?php echo e($message); ?></div>
                     <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                    <?php if(\Session::has('success')): ?>
-                        <div class="alert alert-success" role="alert">
-                            <?php echo e(Session::get('success')); ?>
 
+                    <form method="post" action="<?php echo e(route('updateProfile')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">First Name</label>
+                                    <input type="text" class="form-control <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                           value="<?php echo e(Auth::user()->name); ?>" id="name" name="name" required
+                                           placeholder="Enter first name">
+                                    <?php $__errorArgs = ['name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="surname" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control <?php $__errorArgs = ['surname'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                           value="<?php echo e(Auth::user()->surname); ?>" id="surname" name="surname" required
+                                           placeholder="Enter last name">
+                                    <?php $__errorArgs = ['surname'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input id="email" name="email" value="<?php echo e(Auth::user()->email); ?>" type="email"
+                                   class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>"
+                                   placeholder="Enter email">
+                            <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                            <div class="invalid-feedback"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary w-md">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Security / Change Password</h4>
+
+                    <?php if(\Session::has('successPasswordUpdate')): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="mdi mdi-check-all me-2"></i>
+                            <?php echo e(Session::get('successPasswordUpdate')); ?>
+
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     <?php endif; ?>
-                    <form method="post" action="<?php echo e(route('updateProfile')); ?>" enctype="multipart/form-data"> <?php echo csrf_field(); ?>
-                        <div class="row mb-4">
-                            <label for="email" class="col-form-label col-lg-2">Email</label>
-                            <div class="col-lg-10">
-                                <input id="email" name="email" value="<?php echo e(Auth::user()->email); ?>" type="email" class="form-control <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                       placeholder="Enter email">
-                                <?php $__errorArgs = ['email'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong><?php echo e($message); ?></strong>
-                                </span>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <label for="name" class="col-form-label col-lg-2">First Name</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                       value="<?php echo e(Auth::user()->name); ?>" id="name" name="name" autofocus required
-                                       placeholder="Enter first name">
-                                <?php $__errorArgs = ['name'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                    <strong><?php echo e($message); ?></strong>
-                                </span>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
-                        </div>
-                        <div class="row mb-4">
-                            <label for="surname" class="col-form-label col-lg-2">Last Name</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control <?php $__errorArgs = ['surname'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                       value="<?php echo e(Auth::user()->surname); ?>" id="surname" name="surname" autofocus required
-                                       placeholder="Enter last name">
-                                <?php $__errorArgs = ['surname'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                   <strong><?php echo e($message); ?></strong>
-                                </span>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
-                        </div>
-                        <div class="row justify-content-end">
-                            <div class="col-lg-10">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                        </div>
-                    </form><br>
-                    <h4 class="card-title mb-4">Update Password</h4>
+
                     <?php $__errorArgs = ["errorPasswordUpdate"];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo e($message); ?>
-
-                    </div>
+                    <div class="alert alert-danger" role="alert"><?php echo e($message); ?></div>
                     <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
-                    <?php if(\Session::has('successPasswordUpdate')): ?>
-                        <div class="alert alert-success" role="alert">
-                            <?php echo e(Session::get('successPasswordUpdate')); ?>
 
-                        </div>
-                    <?php endif; ?>
-                    <form method="post" action="<?php echo e(route('updatePassword')); ?>"> <?php echo csrf_field(); ?>
-                        <div class="row mb-4">
-                            <label for="oldPassword" class="col-form-label col-lg-2">Current Password</label>
-                            <div class="col-lg-10">
-                                <div class="input-group auth-pass-inputgroup <?php $__errorArgs = ['oldPassword'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                                    <input type="password"
-                                           class="form-control  <?php $__errorArgs = ['oldPassword'];
+                    <form method="post" action="<?php echo e(route('updatePassword')); ?>">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('PUT'); ?>
+
+                        <div class="mb-3">
+                            <label for="oldPassword" class="form-label">Current Password</label>
+                            <div class="input-group auth-pass-inputgroup">
+                                <input type="password" class="form-control <?php $__errorArgs = ['oldPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -166,18 +220,16 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                           id="oldPassword"  placeholder="Enter current password"
-                                           aria-label="Password" name="oldPassword" autofocus aria-describedby="password-addon"  required>
-                                    <button class="btn btn-light " type="button"  onclick="changeTypeBox0()"><i
-                                            class="mdi mdi-eye-outline" id="changeEye0"></i></button></div>
+                                       id="oldPassword" name="oldPassword" placeholder="Enter current password" required>
+                                <button class="btn btn-light ms-0" type="button" onclick="togglePassword('oldPassword', this)">
+                                    <i class="mdi mdi-eye-outline"></i>
+                                </button>
                                 <?php $__errorArgs = ['oldPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                   <strong><?php echo e($message); ?></strong>
-                                </span>
+                                <div class="invalid-feedback"><?php echo e($message); ?></div>
                                 <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
@@ -185,19 +237,12 @@ unset($__errorArgs, $__bag); ?>
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <label for="newPassword" class="col-form-label col-lg-2">New Password</label>
-                            <div class="col-lg-10">
-                                <div class="input-group auth-pass-inputgroup <?php $__errorArgs = ['newPassword'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                                    <input type="password"
-                                           class="form-control  <?php $__errorArgs = ['newPassword'];
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="newPassword" class="form-label">New Password</label>
+                                    <div class="input-group auth-pass-inputgroup">
+                                        <input type="password" class="form-control <?php $__errorArgs = ['newPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -205,37 +250,28 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                           id="newPassword"  placeholder="Enter new password"
-                                           aria-label="Password" name="newPassword" autofocus aria-describedby="password-addon" required >
-                                    <button class="btn btn-light " type="button"  onclick="changeTypeBox1()"><i
-                                            class="mdi mdi-eye-outline" id="changeEye1"></i></button></div>
-                                <?php $__errorArgs = ['newPassword'];
+                                               id="newPassword" name="newPassword" placeholder="Enter new password" required>
+                                        <button class="btn btn-light ms-0" type="button" onclick="togglePassword('newPassword', this)">
+                                            <i class="mdi mdi-eye-outline"></i>
+                                        </button>
+                                        <?php $__errorArgs = ['newPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                   <strong><?php echo e($message); ?></strong>
-                                </span>
-                                <?php unset($message);
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mb-4">
-                            <label for="confirmPassword" class="col-form-label col-lg-2">Confirm Password</label>
-                            <div class="col-lg-10">
-                                <div class="input-group auth-pass-inputgroup <?php $__errorArgs = ['confirmPassword'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>">
-                                    <input type="password"
-                                           class="form-control  <?php $__errorArgs = ['confirmPassword'];
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                                    <div class="input-group auth-pass-inputgroup">
+                                        <input type="password" class="form-control <?php $__errorArgs = ['confirmPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -243,74 +279,60 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>"
-                                           id="confirmPassword"  placeholder="Confirm password"
-                                           aria-label="Password1" name="confirmPassword" autofocus aria-describedby="password-addon1" required >
-                                    <button class="btn btn-light " type="button"  onclick="changeTypeBox()"><i
-                                            class="mdi mdi-eye-outline" id="changeEye"></i></button></div>
-                                <?php $__errorArgs = ['confirmPassword'];
+                                               id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+                                        <button class="btn btn-light ms-0" type="button" onclick="togglePassword('confirmPassword', this)">
+                                            <i class="mdi mdi-eye-outline"></i>
+                                        </button>
+                                        <?php $__errorArgs = ['confirmPassword'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?>
-                                <span class="invalid-feedback" role="alert">
-                                         <strong><?php echo e($message); ?></strong>
-                                    </span>
-                                <?php unset($message);
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                        <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row justify-content-end">
-                            <div class="col-lg-10">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-danger w-md">Update Password</button>
                         </div>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
-    <!-- end row -->
 <?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('script'); ?>
-    <!-- bootstrap datepicker -->
     <script src="<?php echo e(URL::asset('/assets/libs/bootstrap-datepicker/bootstrap-datepicker.min.js')); ?>"></script>
-    <!-- dropzone plugin -->
+    
     <script src="<?php echo e(URL::asset('/assets/libs/dropzone/dropzone.min.js')); ?>"></script>
 
     <script>
+        /**
+         * Gestisce la visibilità della password.
+         * @param {string} inputId - L'ID del campo input
+         * @param {HTMLElement} btnElement - L'elemento bottone cliccato (this)
+         */
+        function togglePassword(inputId, btnElement) {
+            var input = document.getElementById(inputId);
+            // Trova l'icona dentro il bottone cliccato
+            var icon = btnElement.querySelector('i');
 
-        function changeTypeBox0(){
-            if(document.getElementById("oldPassword").type=="password"){
-                document.getElementById("oldPassword").type = "text"
-                document.getElementById("changeEye0").className="mdi mdi-eye-off-outline"
-            }
-            else{
-                document.getElementById("oldPassword").type = "password"
-                document.getElementById("changeEye0").className="mdi mdi-eye-outline"
-            }
-        }
-
-        function changeTypeBox1(){
-            if(document.getElementById("newPassword").type=="password"){
-                document.getElementById("newPassword").type = "text"
-                document.getElementById("changeEye1").className="mdi mdi-eye-off-outline"
-            }
-            else{
-                document.getElementById("newPassword").type = "password"
-                document.getElementById("changeEye1").className="mdi mdi-eye-outline"
-            }
-        }
-
-        function changeTypeBox(){
-            if(document.getElementById("confirmPassword").type=="password"){
-                document.getElementById("confirmPassword").type = "text"
-                document.getElementById("changeEye").className="mdi mdi-eye-off-outline"
-            }
-            else{
-                document.getElementById("confirmPassword").type = "password"
-                document.getElementById("changeEye").className="mdi mdi-eye-outline"
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("mdi-eye-outline");
+                icon.classList.add("mdi-eye-off-outline");
+            } else {
+                input.type = "password";
+                icon.classList.remove("mdi-eye-off-outline");
+                icon.classList.add("mdi-eye-outline");
             }
         }
     </script>

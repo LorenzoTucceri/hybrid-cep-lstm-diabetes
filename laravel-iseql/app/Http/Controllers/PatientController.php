@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\InviteToken;
+
 use App\Mail\InvitoIscrizione;
 use App\Models\File;
 use App\Models\Patient;
@@ -14,10 +14,13 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use App\Models\InviteToken;
+
 
 class PatientController extends Controller
 {
@@ -28,7 +31,7 @@ class PatientController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except("markModelReady");
     }
 
     /**
@@ -49,19 +52,19 @@ class PatientController extends Controller
         return view('index');
     }
 
-    public function updatePatient(Request $request)
-    {
 
+    public function addPatient(Request $request)
+    {
+        // 1. Controllo manuale se l'email esiste già
+        if (Patient::where('email', $request->email)->exists()) {
+            return back()->withErrors(['error' => 'Email già presente']);
+        }
+
+        // 2. Validazione degli altri campi (ho rimosso 'unique' da email perché controllato sopra)
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'surname' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('patients', 'email')->ignore($request->patient_id)
-            ],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'birth' => ['required', 'date'],
             'gender' => ['required', 'in:Male,Female'],
             'telephone_number' => ['nullable', 'string', 'max:255'],
@@ -69,11 +72,59 @@ class PatientController extends Controller
             'doctor' => ['required', 'exists:users,id'],
         ]);
 
+        DB::beginTransaction();
+
         try {
-            // Recupera il paziente tramite l'ID (client_id) dalla richiesta
+            Patient::create([
+                'name' => $request->get('name'),
+                'surname' => $request->get('surname'),
+                'email' => $request->get('email'),
+                'doctor_id' => $request->get('doctor'),
+                'birth' => $request->get('birth'),
+                'telephone_number' => $request->get('telephone_number'),
+                'address' => $request->get('address'),
+                'gender' => $request->get('gender'),
+            ]);
+
+            DB::commit();
+
+            return back()->with('success', 'The patient has been successfully added!');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Fallback di sicurezza nel caso il controllo manuale fallisse per concorrenza
+            return back()->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()]);
+        }
+    }
+
+    public function updatePatient(Request $request)
+    {
+        // 1. Controllo manuale: esiste un ALTRO paziente con questa email?
+        $emailExists = Patient::where('email', $request->email)
+            ->where('id', '!=', $request->patient_id) // Escludi se stesso
+            ->exists();
+
+        if ($emailExists) {
+            return back()->withErrors(['error' => 'Email già presente']);
+        }
+
+        // 2. Validazione (rimosso Rule::unique perché gestito sopra)
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'birth' => ['required', 'date'],
+            'gender' => ['required', 'in:Male,Female'],
+            'telephone_number' => ['nullable', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'doctor' => ['required', 'exists:users,id'],
+        ]);
+
+        DB::beginTransaction();
+
+        try {
             $patient = Patient::findOrFail($request->patient_id);
 
-            // Aggiorna il paziente con i dati dalla richiesta
             $patient->update([
                 'name' => $request->get('name'),
                 'surname' => $request->get('surname'),
@@ -88,52 +139,10 @@ class PatientController extends Controller
             DB::commit();
 
             return back()->with('success', 'Patient information updated successfully!');
+
         } catch (ModelNotFoundException $e) {
             DB::rollback();
             return back()->withErrors(['error' => 'Patient not found.']);
-        } catch (QueryException $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'Error updating patient: ' . $e->getMessage()]);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()]);
-        }
-    }
-
-    public function addPatient(Request $request)
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:patients,email'],  // Validazione email unica
-            'birth' => ['required', 'date'],  // Validazione per una data corretta
-            'gender' => ['required', 'in:Male,Female'],
-            'telephone_number' => ['nullable', 'string', 'max:255'],  // Opzionale
-            'address' => ['required', 'string', 'max:255'],  // Obbligatorio
-            'doctor' => ['required', 'exists:users,id'],  // Validazione per il doctor
-        ]);
-
-        DB::beginTransaction();
-
-        try {
-
-            $patient = Patient::create([
-                'name' => $request->get('name'),
-                'surname' => $request->get('surname'),
-                'email' => $request->get('email'),
-                'doctor_id' => $request->get('doctor'),
-                'birth' => $request->get('birth'),
-                'telephone_number' => $request->get('telephone_number'),
-                'address' => $request->get('address'),
-                'gender' => $request->get('gender'),
-            ]);
-
-            DB::commit();
-
-            return back()->with('success', 'The patient has been successfully added!');
-        } catch (QueryException $e) {
-            DB::rollback();
-            return back()->withErrors(['error' => 'Error adding patient: ' . $e->getMessage()]);
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()]);
@@ -307,60 +316,62 @@ class PatientController extends Controller
         }
     }
 
-    public
-    function sendRegistration($patientId)
+    public function sendRegistration($patientId)
     {
+        Log::debug("Inizio processo invio registrazione per Patient ID: " . $patientId);
+
         try {
-            // Recupera i dati del cliente e dell'utente attualmente loggato
             $patient = \App\Models\Patient::find($patientId);
             $user = Auth::user();
 
-            // Verifica se il cliente esiste
             if (!$patient) {
-                return back()->withErrors([
-                    'error' => 'Paziente non trovato.',
-                ]);
+                Log::warning("Paziente non trovato nel database.");
+                return back()->withErrors(['error' => 'Paziente non trovato.']);
             }
 
-            // Controlla se esiste già un utente con la stessa email
-            $existingUser = User::where('email', $patient->email)->first();
+            Log::info("Paziente trovato: " . $patient->email);
+
+            $existingUser = \App\Models\User::where('email', $patient->email)->first();
             if ($existingUser) {
-                return back()->withErrors([
-                    'error' => "Esiste già un utente registrato con l'email {$patient->email}.",
-                ]);
+                Log::warning("Email già registrata come utente: " . $patient->email);
+                return back()->withErrors(['error' => "Esiste già un utente registrato con l'email {$patient->email}."]);
             }
 
-            // Genera un token univoco per l'invito
             $token = Str::random(32);
-            $expires_at = now()->addHours(48); // Il link di registrazione scade dopo 48 ore
+            $expires_at = now()->addHours(48);
 
-            // Salva il token nel database
-            InviteToken::create([
+            Log::debug("Generazione Token: " . $token);
+
+            // Debug creazione Token
+            $invite = InviteToken::create([
                 'email' => $patient->email,
                 'token' => $token,
                 'expires_at' => $expires_at,
             ]);
 
-            // Crea il link di registrazione con il token
+            if ($invite) {
+                Log::info("Record InviteToken creato con successo nel database.");
+            }
+
             $link = route('register.token', ['token' => $token]);
+            Log::debug("Link generato: " . $link);
 
-            // Invia l'email con il link di registrazione
-            Mail::to($patient->email)->send(new InvitoIscrizione($patient, $user, $link));
+            // PROVA INVIO MAIL
+            Log::info("Tentativo invio email via " . config('mail.mailers.smtp.host', 'default mailer'));
 
-            // Aggiungi nome e cognome del cliente nel messaggio di successo
-            return back()->with([
-                'success' => "Email inviata con successo a {$patient->name} {$patient->surname}!",
-            ]);
+            Mail::to($patient->email)->send(new \App\Mail\InvitoIscrizione($patient, $user, $link));
+
+            Log::info("Email inviata correttamente senza eccezioni.");
+
+            return back()->with('success', "Email inviata con successo a {$patient->name} {$patient->surname}!");
 
         } catch (\Exception $e) {
-            // Registra l'errore per il debug
+            Log::error("ERRORE CRITICO INVIO REGISTRAZIONE: " . $e->getMessage());
+            Log::error($e->getTraceAsString()); // Questo logga tutto il percorso dell'errore
 
-            // Ritorna alla pagina precedente con un messaggio di errore
             return back()->withErrors([
-                'error' => 'Errore durante l\'invio dell\'email. Riprova più tardi.',
+                'error' => 'Errore tecnico: ' . $e->getMessage(),
             ]);
         }
     }
-
-
 }

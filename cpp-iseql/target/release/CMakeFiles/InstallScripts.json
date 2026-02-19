@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/target/release/cmake_install.cmake",
+		"/Users/lorenzotucceri/Progetti/ISEQL/cpp-iseql/target/release/src/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
