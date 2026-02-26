@@ -14,7 +14,7 @@ from config import Config
 from task import train_patient_model_async
 from services.data_processing import load_and_clean_data, create_interval_labeling_csv
 from services.legacy_iseql import run_legacy_analysis
-from machine_learning.lstm_logic import ClinicalEnsembleAdaptive
+from machine_learning.lstm_logic import ClinicalHybridPredictor
 from iseql.interval_action_detector import IntervalActionDetector
 from iseql.iseql import ISEQL
 from iseql.interval import Interval
@@ -27,7 +27,8 @@ Config.init_dirs()
 app = Flask(__name__)
 CORS(app)
 
-lstm_engine = ClinicalEnsembleAdaptive(model_dir_path=Config.MODELS_DIR)
+specific_model_path = os.path.join(Config.MODELS_DIR, "model_60d.pth")
+lstm_engine = ClinicalHybridPredictor(model_path=specific_model_path)
 
 
 @app.route('/process-csv', methods=['POST'])
@@ -78,9 +79,21 @@ def process_csv():
     create_interval_labeling_csv(intervals)
 
     try:
-        lstm_result = lstm_engine.predict_smart(intervals)
+        # CAMBIA predict_smart in predict
+        lstm_result = lstm_engine.predict(intervals)
+
+        # Aggiungi questo log per vedere cosa succede nel terminale Flask
+        print(f"✅ [SUCCESS] Risultato AI: {lstm_result['diagnosis']} con confidenza {lstm_result['confidence']}%")
+
     except Exception as e:
-        lstm_result = {"status": "error", "diagnosis": "N/A"}
+        # Stampa l'errore reale nel terminale per il debug
+        print(f"❌ [ERROR] Fallimento durante predict: {str(e)}")
+        lstm_result = {
+            "status": "error",
+            "diagnosis": "N/A",
+            "clinical_message": f"Errore interno: {str(e)}",
+            "confidence": 0  # Forza a 0 in caso di crash
+        }
 
     # 5. Analisi Legacy (C++ / ISEQL)
     intervals_legacy = [i[:4] for i in intervals]

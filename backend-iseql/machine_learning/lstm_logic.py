@@ -1,7 +1,6 @@
-import pandas as pd
+import os
 import numpy as np
 import torch
-import os
 from torch import nn
 
 # ==================================================================================
@@ -10,15 +9,15 @@ from torch import nn
 DEFAULT_MODEL_DIR = "../data/models_opt"
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# Output ufficiale per il frontend
 INT_TO_LABEL = {0: "RED", 1: "YELLOW", 2: "GREEN"}
-# Internal Mapping (must match training keys, but these are internal)
-TARGET_TO_INT = {"rosso": 0, "giallo": 1, "verde": 2}
 STATE_ID = {"extremely_low": 0, "low": 1, "normal": 2, "high": 3, "extremely_high": 4}
 NUM_STATES = 5
 
 
+
 # ==================================================================================
-# 2. NEURAL NETWORK ARCHITECTURE (MATCHING TRAINING EXACTLY)
+# 2. NEURAL NETWORK ARCHITECTURE
 # ==================================================================================
 class AttentionBlock(nn.Module):
     def __init__(self, h_dim):
@@ -49,7 +48,7 @@ class LSTMAttentionClassifier(nn.Module):
 
 
 # ==================================================================================
-# 3. FEATURE ENGINEERING (ALIGNED WITH 'build_compressed_features_v2')
+# 3. FEATURE ENGINEERING
 # ==================================================================================
 def transform_glucose_risk(g):
     g_clipped = np.clip(g, 20, 600)
@@ -57,73 +56,56 @@ def transform_glucose_risk(g):
 
 
 def build_features_prod(run_list):
-    """
-    Exact replica of build_compressed_features_v2 used in training.
-    Output shape: (T, 18)
-    """
     T = len(run_list)
-    if T == 0: return np.zeros((1, 18))
+    if T == 0: return np.zeros((1, 18), dtype=np.float32)
 
-    # Extract raw data
     states = np.array([STATE_ID.get(s, 2) for s, _, _ in run_list], dtype=int)
     durs = np.array([d for _, d, _ in run_list], dtype=float)
     gs = np.array([g for *_, g in run_list], dtype=float)
 
-    # 1. One-Hot Encoding Current State (5 features)
     state_oh = np.eye(NUM_STATES)[states]
-
-    # 2. One-Hot Encoding Previous State (5 features)
     prev_s = np.roll(states, 1);
     prev_s[0] = states[0]
     prev_oh = np.eye(NUM_STATES)[prev_s]
-
-    # 3. Duration Features (2 features)
     dur_norm = np.clip(durs / 240.0, 0, 1)
     log_dur = np.log1p(durs)
-
-    # 4. Glucose Dynamics (2 features)
     g_delta = gs - np.roll(gs, 1);
     g_delta[0] = 0
     with np.errstate(divide='ignore', invalid='ignore'):
         roc = np.nan_to_num(g_delta / durs)
-
-    # 5. Risk & Load Metrics (4 features)
     risk = transform_glucose_risk(gs)
     load = (gs - 100) * (durs / 60.0)
     zsc = (gs - 140) / 50.0
-    roll_risk = np.convolve(risk, np.ones(5) / 5, mode='same')
+    roll_risk = np.convolve(risk, np.ones(5) / 5, mode='same') if T >= 5 else risk
 
-    # Stack: 5 + 5 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 18 Features
     feats = np.column_stack([state_oh, prev_oh, dur_norm, log_dur, zsc, g_delta, roc, risk, roll_risk, load])
     return np.nan_to_num(feats).astype(np.float32)
 
 
+
 # ==================================================================================
-# 4. INFERENCE ENGINE (CLINICAL BACKEND)
-# ==================================================================================
-class ClinicalEnsembleAdaptive:
-    def __init__(self, model_dir_path=None):
+class ClinicalHybridPredictor:
+    def __init__(self, model_path=None):
         self.device = DEVICE
-        self.models = {}
-        search_path = model_dir_path if model_dir_path else DEFAULT_MODEL_DIR
-        print(f"[LSTM INIT] Loading models from: {search_path}")
+        self.model_60d = None
 
-        # Load all available models (15, 30, 60, 90)
-        for d in [15, 30, 60, 90]:
-            path = os.path.join(search_path, f"model_{d}d.pth")
-            if os.path.exists(path):
-                try:
-                    # Input dim fixed at 18 as per training
-                    m = LSTMAttentionClassifier(input_dim=18).to(self.device)
-                    m.load_state_dict(torch.load(path, map_location=self.device))
-                    m.eval()
-                    self.models[d] = m
-                    print(f"   ✅ Model {d}d ready.")
-                except Exception as e:
-                    print(f"   ❌ Error {d}d: {e}")
+        # Se non passi un path, usa quello di default
+        path = model_path if model_path else os.path.join(DEFAULT_MODEL_DIR, "model_60d.pth")
+        print(f"\n[INIT] 🔍 Ricerca modello in: {path}")
 
-    def extract_slice(self, full_sequence, days):
-        target_minutes = days * 1440
+        if os.path.exists(path):
+            try:
+                self.model_60d = LSTMAttentionClassifier(input_dim=18).to(self.device)
+                self.model_60d.load_state_dict(torch.load(path, map_location=self.device))
+                self.model_60d.eval()
+                print("   ✅ [INIT] Modello Core M60 caricato correttamente.")
+            except Exception as e:
+                print(f"   ❌ [INIT] ERRORE caricamento file .pth: {e}")
+        else:
+            print(f"   ⚠️ [INIT] ATTENZIONE: Il file {path} NON ESISTE.")
+
+    def extract_60d_slice(self, full_sequence):
+        target_minutes = 60 * 1440
         current_minutes = 0
         sliced_seq = []
         for event in reversed(full_sequence):
@@ -137,179 +119,72 @@ class ClinicalEnsembleAdaptive:
                 current_minutes += dur
         return sliced_seq
 
-    def compute_clinical_metrics(self, sequence):
-        """
-        Calcola metriche cliniche oggettive dalla sequenza completa.
-        """
-        if not sequence:
-            return None
-
-        # Espansione minuto per minuto (coerente con training)
+    # --- QUESTO ERA IL METODO MANCANTE NEI TUOI LOG ---
+    def calculate_clinical_metrics(self, sequence):
         glucose_values = []
-        for state, dur, val in sequence:
+        for _, dur, val in sequence:
             glucose_values.extend([val] * int(dur))
-
         gl = np.array(glucose_values)
-
-        if len(gl) < 10:
-            return None
-
-        TBR = np.mean(gl < 70) * 100
-        TIR = np.mean((gl >= 70) & (gl <= 180)) * 100
-        TAR = np.mean(gl > 180) * 100
-        GV = np.std(gl)
+        if len(gl) < 1: return None
 
         return {
-            "TBR": TBR,
-            "TIR": TIR,
-            "TAR": TAR,
-            "GV": GV,
-            "AVG": np.mean(gl)
+            "TBR": np.mean(gl < 70) * 100,
+            "TIR": np.mean((gl >= 70) & (gl <= 180)) * 100,
+            "TAR": np.mean(gl > 180) * 100,
+            "GV": np.std(gl)
         }
 
-    def predict_smart(self, intervals):
-        """
-        Input: list of tuples (symbol, start, end, label, DURATION, AVG_GLUCOSE)
-        """
-        if not intervals:
-            return {"status": "error", "message": "No data available", "diagnosis": "N/A"}
+    def predict(self, intervals):
+        print("\n" + "=" * 50)
+        print("🚀 [PREDICT] Avvio nuova inferenza...")
 
-        # Map labels from Detector to LSTM internal labels
-        state_map = {
-            'extremely_high': 'extremely_high', 'high': 'high',
-            'normal': 'normal', 'low': 'low', 'extremely_low': 'extremely_low',
-            'hyper': 'high', 'hypo': 'low'
-        }
+        # Inizializziamo a 0 per sicurezza
+        ai_label = "GREEN"
+        ai_confidence = 0
 
         sequence = []
-
-        # Parse frontend input
+        state_map = {'extremely_high': 'extremely_high', 'high': 'high', 'normal': 'normal', 'low': 'low',
+                     'extremely_low': 'extremely_low'}
         for item in intervals:
-            if len(item) < 6: continue
-            label_raw = str(item[3]).lower().strip()
-            duration_minutes = item[4]
-            avg_val = item[5]
+            label = str(item[3]).lower().strip()
+            state = state_map.get(label, 'normal')
+            sequence.append((state, max(1, int(item[4])), float(item[5])))
 
-            state = 'normal'
-            if label_raw in state_map:
-                state = state_map[label_raw]
-            else:
-                for k, v in state_map.items():
-                    if k in label_raw: state = v; break
+        # 1. AI PREDICTION
+        if self.model_60d:
+            sub_seq_60 = self.extract_60d_slice(sequence)
+            if len(sub_seq_60) > 0:
+                feat = build_features_prod(sub_seq_60)
+                feat_t = torch.tensor(feat).unsqueeze(0).to(self.device)
+                l_t = torch.tensor([len(sub_seq_60)]).to(self.device)
+                with torch.no_grad():
+                    logits = self.model_60d(feat_t, l_t)
+                    probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
+                    ai_idx = np.argmax(probs)
+                    ai_label = INT_TO_LABEL[ai_idx]
+                    ai_confidence = int(probs[ai_idx] * 100)
+                    print(f"   🧠 [AI] Predizione: {ai_label} ({ai_confidence}%)")
 
-            sequence.append((state, max(1, int(duration_minutes)), float(avg_val)))
-
-        if not sequence:
-            return {"status": "error", "message": "Could not build sequence", "diagnosis": "N/A"}
-
-        # Global stats for Guardrails
-        total_minutes = sum(x[1] for x in sequence)
-        total_days = total_minutes / 1440.0
-
-        if total_days > 0:
-            avg_g = sum(x[1] * x[2] for x in sequence) / total_minutes
-        else:
-            avg_g = 100
-
-        runnable = [d for d in [15, 30, 60, 90] if d in self.models]
-        if not runnable: return {"status": "error", "message": "No models loaded", "diagnosis": "N/A"}
-
-        probs_sum = np.zeros(3)
-        active_weight = 0
-        single_preds = {}
-
-        # --- ENSEMBLE LOGIC (Aligned with Stress Test) ---
-        # --- ENSEMBLE LOGIC (With Per-Model Debug Prints) ---
-        print(f"\n--- [DEBUG MODELS] Analyzing {total_days:.1f} days of data ---")
-
-        with torch.no_grad():
-            for days in runnable:
-                model = self.models[days]
-                sub_seq = self.extract_slice(sequence, days)
-
-                if not sub_seq:
-                    print(f"   [Model {days:2d}d]: No data in window. Skipping.")
-                    single_preds[days] = np.array([0.0, 0.0, 0.0])
-                    continue
-
-                feat = build_features_prod(sub_seq)
-                feat_t = torch.tensor(feat, dtype=torch.float32).unsqueeze(0).to(self.device)
-                l_t = torch.tensor([len(sub_seq)]).to(self.device)
-
-                logits = model(feat_t, l_t)
-                probs = torch.softmax(logits, dim=1).cpu().numpy()[0]
-                single_preds[days] = probs
-
-                # --- STAMPA DI DEBUG PER SINGOLO MODELLO ---
-                m_class = np.argmax(probs)
-                m_label = INT_TO_LABEL[m_class]
-                m_conf = probs[m_class] * 100
-                print(
-                    f"   [Model {days:2d}d]: Prediction={m_label:6s} | Confidence={m_conf:5.1f}% | (R:{probs[0]:.2f}, Y:{probs[1]:.2f}, G:{probs[2]:.2f})")
-
-                # --- WEIGHTING STRATEGY ---
-                w = 1.0
-
-
-                probs_sum += probs * w
-                active_weight += w
-
-        print(f"--- [DEBUG END] ---\n")
-
-        if active_weight == 0: return {"status": "error", "message": "Prediction failed", "diagnosis": "N/A"}
-
-        ens_probs = probs_sum / active_weight
-        ai_class = np.argmax(ens_probs)
-        ai_label = INT_TO_LABEL[ai_class]
-
-        # =========================================================
-        # TREND ANALYSIS (History vs Recent)
-        # =========================================================
-        insight_msg = ""
-
-        # Use 90d (if available) as historical baseline and ensemble as "today"
-        if 90 in single_preds and np.sum(single_preds[90]) > 0:
-            probs_90 = single_preds[90]
-            class_90 = np.argmax(probs_90)
-            label_90 = INT_TO_LABEL[class_90]
-
-            # If history differs from current
-            if label_90 != ai_label:
-                if label_90 == "GREEN" and ai_label in ["YELLOW", "RED"]:
-                    insight_msg = "  Warning: Deterioration detected compared to stable history."
-                elif label_90 in ["RED", "YELLOW"] and ai_label == "GREEN":
-                    insight_msg = " ✅ Positive signs: Improvement detected compared to history."
-
-        # =========================================================
-        # SAFETY GUARDRAILS (Hard-Coded Clinical Rules)
-        # =========================================================
-
-        metrics = self.compute_clinical_metrics(sequence)
-
+        # 2. GUARDRAIL
+        metrics = self.calculate_clinical_metrics(sequence)
         final_diagnosis = ai_label
-        explanation = f"AI Diagnosis: {ai_label} ({int(ens_probs[ai_class] * 100)}% conf). " + insight_msg
+        explanation = f"AI Analysis confirms stable profile ({ai_confidence}% conf)."
 
         if metrics:
-
-            TBR = metrics["TBR"]
-            TIR = metrics["TIR"]
-            TAR = metrics["TAR"]
-            GV = metrics["GV"]
-
-            # --- HARD RED CONDITIONS ---
+            TBR, TIR, TAR, GV = metrics["TBR"], metrics["TIR"], metrics["TAR"], metrics["GV"]
+            # Logica Override
             if TBR > 10 or TAR > 40 or GV > 70 or TIR < 55:
                 final_diagnosis = "RED"
-                explanation = (
-                    f"Override: RED. Critical clinical metrics detected "
-                    f"(TBR={TBR:.1f}%, TAR={TAR:.1f}%, GV={GV:.1f})."
-                )
+                explanation = f"CRITICAL OVERRIDE: Severe clinical instability (TIR:{TIR:.1f}%)."
+            elif (TBR > 4 or TAR > 25 or GV > 50 or TIR < 70) and ai_label == "GREEN":
+                final_diagnosis = "YELLOW"
+                explanation = f"CAUTION OVERRIDE: Borderline metrics (TIR:{TIR:.1f}%)."
 
-            # --- BORDERLINE YELLOW CONDITIONS ---
-            elif TBR > 4 or TAR > 25 or GV > 50 or TIR < 70:
-                if ai_label == "GREEN":
-                    final_diagnosis = "YELLOW"
-                    explanation = (
-                        f"Override: YELLOW. Borderline clinical instability "
-                        f"(TIR={TIR:.1f}%, TBR={TBR:.1f}%, GV={GV:.1f})."
-                    )
-
+        print(f"🏁 [PREDICT] Risultato: {final_diagnosis} (Conf: {ai_confidence}%)")
+        return {
+            "status": "success",
+            "diagnosis": final_diagnosis,
+            "confidence": ai_confidence,
+            "clinical_message": explanation,
+            "days_analyzed": int(sum(x[1] for x in sequence) / 1440)
+        }

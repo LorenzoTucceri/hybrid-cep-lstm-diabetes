@@ -72,57 +72,58 @@ class DexcomRealTimeService:
         """
         Ciclo principale: Connessione -> Download -> Previsione -> Analisi Rischio
         """
+        # --- Connessione se necessario ---
         if not self.dexcom:
             success, msg = self.connect()
-            if not success: return {"error": msg}
+            if not success:
+                return {"error": msg}
 
         try:
-            # --- FIX: Scarica 120 min per coprire comodamente i 90 min di input ---
+            # Scarica 120 minuti di letture (copre comodamente INPUT_WINDOW)
             readings = self.dexcom.get_glucose_readings(minutes=120, max_count=30)
-
-            if not readings or len(readings) < 1:
+            if not readings:
                 return {"error": "Nessun dato glucosio ricevuto dal sensore."}
 
             # Ordina per tempo (fondamentale)
             sorted_readings = sorted(readings, key=lambda r: r.datetime)
             current_glucose = sorted_readings[-1]
 
-            # Preparazione Input per LSTM
+            # Preparazione input LSTM
             values_list = [r.value for r in sorted_readings]
 
-            # Padding se mancano dati (ora serve riempire fino a 18)
+            # Padding se mancano dati fino a INPUT_WINDOW
             if len(values_list) < INPUT_WINDOW:
                 missing = INPUT_WINDOW - len(values_list)
                 final_input = [values_list[0]] * missing + values_list
             else:
                 final_input = values_list[-INPUT_WINDOW:]
 
-            # Inferenza AI
+            # Normalizzazione e reshape
             norm_input = [self.normalize(x) for x in final_input]
-            # Reshape corretto: (1, 18, 1)
             input_tensor = torch.FloatTensor(norm_input).view(1, INPUT_WINDOW, 1).to(self.device)
 
+            # --- Inferenza modello ---
             try:
                 model = self._load_patient_model()
                 with torch.no_grad():
                     preds_scaled = model(input_tensor).numpy().flatten()
-
                 preds_mgdl = [int(self.denormalize(x)) for x in preds_scaled]
 
-                # Calcolo orari futuri (fino a 60 min -> 12 step)
-                future_times = []
-                last_time = current_glucose.datetime
-                for i in range(1, OUTPUT_WINDOW + 1):
-                    future_times.append((last_time + pd.Timedelta(minutes=i * 5)).strftime("%H:%M"))
-
+                # Calcolo orari futuri (OUTPUT_WINDOW * 5 min)
+                future_times = [(current_glucose.datetime + pd.Timedelta(minutes=5 * i)).strftime("%H:%M")
+                                for i in range(1, OUTPUT_WINDOW + 1)]
             except (FileNotFoundError, RuntimeError) as e:
                 return {"error": str(e)}
 
-            # Costruzione Risposta JSON
+            # --- Normalizzazione trend_arrow ---
+            trend_raw = current_glucose.trend_arrow
+            trend_arrow = self._normalize_trend(trend_raw)
+
+            # --- Costruzione risposta JSON ---
             return {
                 "current_value": current_glucose.value,
-                "trend_arrow": current_glucose.trend_arrow,
-                "trend_desc": current_glucose.trend_description,
+                "trend_arrow": trend_arrow,
+                "trend_desc": current_glucose.trend_description or "",
                 "timestamp": current_glucose.datetime.strftime("%H:%M:%S"),
                 "forecast_values": preds_mgdl,
                 "forecast_times": future_times,
@@ -131,6 +132,16 @@ class DexcomRealTimeService:
 
         except Exception as e:
             return {"error": f"Errore runtime analisi: {str(e)}"}
+
+
+    def _normalize_trend(self, trend):
+        """
+        Normalizza eventuali valori strani o Unicode in trend Dexcom standard
+        """
+        if not trend or trend in ["–", "—", "-", "–\u2013"]:
+            return "steady"
+        return trend.lower()
+
 
     def _analyze_risk(self, current, forecast):
         min_forecast = min(forecast)

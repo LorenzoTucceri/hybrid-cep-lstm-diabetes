@@ -27,12 +27,11 @@ Route::post("/login", [LoginController::class, "login"]);
 // Rotte da proteggere.
 Route::middleware(["auth:sanctum"])->group(function () {
     Route::get('/check-model-status/{id}', function($id) {
-        // Qui $id è l'ID di Laravel (es. 1).
         $patient = \App\Models\Patient::find($id);
 
         return response()->json([
             'ready' => (bool)$patient->has_trained_model,
-            'sensor_id' => $patient->sensor_id // Utile per debug.
+            'sensor_id' => $patient->sensor_id
         ]);
     });
 

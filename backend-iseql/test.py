@@ -182,6 +182,10 @@ def run_benchmark(full_df):
 # 3. PLOTTING FUNCTIONS
 # =============================================================================
 
+# =============================================================================
+# 3. PLOTTING FUNCTIONS
+# =============================================================================
+
 def plot_performance_metrics(data_times):
     print("Generating Performance & Scalability Graphs with CALCULATED data...")
 
@@ -201,76 +205,116 @@ def plot_performance_metrics(data_times):
         growth_rates[method] = np.mean(rates) if rates else 0.0
 
     # Configurazione Plot
-    plt.rcParams.update({'font.size': 12, 'figure.figsize': (14, 8)})
+    plt.rcParams.update({'font.size': 12})
     colors = plt.cm.tab10(np.linspace(0, 1, 10))
     markers = ['o', 's', '^', 'D', 'v', 'P', '*', 'X', 'd']
 
     short_names = [
-        "Offline Action Det.",
-        "Time Swing (C++)", "Freq. Time Swings", "Swing w/ Long Anom.",
-        "Freq. Gluc. Anom.", "Long Gluc. Anom.",
-        "Extr. Swing (C++)", "Extr. Swing Freq.", "Extr. Swing Long"
+        "Offline Interval Action Detection",
+        "Find Time Swing (C++)",
+        "Find Too Frequent Time Swings",
+        "Find Time Swing With Too Long Anomalies",
+        "Find Too Frequent Glucose Anomalies",
+        "Find Too Long Glucose Anomalies",
+        "Find Extremely Time Swing (C++)",
+        "Find Extremely Time Swing Too Frequent",
+        "Find Extremely Time Swing Too Long"
     ]
 
     # Ordiniamo le chiavi per coerenza tra i grafici
     method_keys = list(data_times.keys())
 
-    # --- GRAFICO 1: SCALABILITÀ ---
-    plt.figure()
+    # ==========================================================
+    # --- GRAFICO 1: SCALABILITÀ (Allargato con legenda sotto) ---
+    # ==========================================================
+    fig, ax = plt.subplots(figsize=(14, 8))  # Più largo per riempire la pagina LaTeX
+
     for idx, method in enumerate(method_keys):
         times = data_times[method]
-        plt.plot(dataset_sizes, times, marker=markers[idx % len(markers)], label=method,
-                 linewidth=2, markersize=8, color=colors[idx % len(colors)])
-    plt.yscale('log')
-    plt.xlabel('Dataset Size (%)', fontsize=14, fontweight='bold')
-    plt.ylabel('Execution Time (seconds) [Log Scale]', fontsize=14, fontweight='bold')
-    plt.title('Scalability: Execution Time vs Dataset Size (Calculated)', fontsize=16, pad=20)
-    plt.grid(True, which="both", ls="--", alpha=0.5)
-    plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left', borderaxespad=0., fontsize=10)
-    plt.tight_layout()
-    plt.savefig('grafico_scalabilita.png')
+        ax.plot(dataset_sizes, times, marker=markers[idx % len(markers)], label=short_names[idx],
+                linewidth=2.5, markersize=9, color=colors[idx % len(colors)])
+
+    ax.set_yscale('log')
+    ax.set_xlabel('Dataset Size (%)', fontsize=14, fontweight='bold')
+    ax.set_ylabel('Execution Time (seconds) [Log Scale]', fontsize=14, fontweight='bold')
+    ax.set_title('Scalability: Execution Time vs Dataset Size', fontsize=16, pad=20)
+    ax.grid(True, which="both", ls="--", alpha=0.5)
+
+    # Legenda spostata SOTTO il grafico, divisa in 3 colonne
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.12), ncol=3, fontsize=11, frameon=True)
+
+    # Aggiustamento margini: molto spazio in basso (bottom=0.28) per la legenda a 3 righe
+    fig.subplots_adjust(bottom=0.28, left=0.08, right=0.96, top=0.92)
+    fig.savefig('grafico_scalabilita.png', dpi=300)
+    plt.close(fig)
     print(" -> Saved: grafico_scalabilita.png")
 
+    # ==========================================================
     # --- GRAFICO 2: TEMPO MEDIO ---
-    plt.figure()
+    # ==========================================================
+    fig, ax = plt.subplots(figsize=(14, 8))
     avg_values = [avg_times[m] for m in method_keys]
 
-    bars = plt.bar(short_names, avg_values, color=colors[:len(method_keys)], edgecolor='black')
-    plt.yscale('log')
-    plt.ylabel('Average Time (seconds) [Log Scale]', fontsize=14, fontweight='bold')
-    plt.title('Efficiency: Average Execution Time by Method', fontsize=16, pad=20)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.grid(axis='y', which='both', linestyle='--', alpha=0.5)
+    bars = ax.bar(short_names, avg_values, color=colors[:len(method_keys)], edgecolor='black', width=0.6)
+    ax.set_yscale('log')
+
+    max_val = max(avg_values)
+    ax.set_ylim(bottom=min(avg_values) * 0.5, top=max_val * 5)
+
+    ax.set_ylabel('Average Time (seconds) [Log Scale]', fontsize=14, fontweight='bold')
+    ax.set_title('Efficiency: Average Execution Time by Method', fontsize=16, pad=20)
+
+    ax.set_xticks(range(len(short_names)))
+    ax.set_xticklabels(short_names, rotation=35, ha='right', fontsize=11)
+    ax.grid(axis='y', which='both', linestyle='--', alpha=0.5)
+
     for bar in bars:
         yval = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width() / 2, yval * 1.15,
-                 f'{yval:.1e}', ha='center', va='bottom', fontsize=9, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig('grafico_tempo_medio.png')
+        ax.text(bar.get_x() + bar.get_width() / 2, yval * 1.2,
+                f'{yval:.2e}', ha='center', va='bottom', fontsize=10, fontweight='bold')
+
+    fig.subplots_adjust(bottom=0.25, left=0.1, right=0.95, top=0.9)
+    fig.savefig('grafico_tempo_medio.png', dpi=300)
+    plt.close(fig)
     print(" -> Saved: grafico_tempo_medio.png")
 
+    # ==========================================================
     # --- GRAFICO 3: GROWTH RATE ---
-    plt.figure()
+    # ==========================================================
+    fig, ax = plt.subplots(figsize=(14, 8))
     rate_values = [growth_rates[m] for m in method_keys]
-    bars = plt.bar(short_names, rate_values, color=colors[:len(method_keys)], edgecolor='black')
 
-    plt.ylabel('Average Growth Rate', fontsize=14, fontweight='bold')
-    plt.title('Stability: Average Growth Rate by Method', fontsize=16, pad=20)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.grid(axis='y', linestyle='--', alpha=0.5)
-    plt.axhline(0, color='black', linewidth=0.8)
+    bars = ax.bar(short_names, rate_values, color=colors[:len(method_keys)], edgecolor='black', width=0.6)
+
+    y_min, y_max = min(rate_values), max(rate_values)
+    margin = (y_max - y_min) * 0.15 if y_max != y_min else 0.1
+    ax.set_ylim(y_min - margin, y_max + margin)
+
+    ax.set_ylabel('Average Growth Rate', fontsize=14, fontweight='bold')
+    ax.set_title('Stability: Average Growth Rate by Method', fontsize=16, pad=20)
+
+    ax.set_xticks(range(len(short_names)))
+    ax.set_xticklabels(short_names, rotation=35, ha='right', fontsize=11)
+    ax.grid(axis='y', linestyle='--', alpha=0.5)
+    ax.axhline(0, color='black', linewidth=1.2)
 
     for bar in bars:
         yval = bar.get_height()
-        # Posiziona il testo sopra o sotto la barra a seconda del segno
-        y_offset = 0.01 if yval >= 0 else -0.05
-        plt.text(bar.get_x() + bar.get_width() / 2, yval + y_offset,
-                 f'{yval:.3f}', ha='center', va='bottom', fontsize=10, fontweight='bold')
-    plt.tight_layout()
-    plt.savefig('grafico_growth_rate.png')
+        y_offset = (y_max - y_min) * 0.02
+        if yval >= 0:
+            va = 'bottom'
+            y_pos = yval + y_offset
+        else:
+            va = 'top'
+            y_pos = yval - y_offset
+
+        ax.text(bar.get_x() + bar.get_width() / 2, y_pos,
+                f'{yval:.3f}', ha='center', va=va, fontsize=10, fontweight='bold')
+
+    fig.subplots_adjust(bottom=0.25, left=0.1, right=0.95, top=0.9)
+    fig.savefig('grafico_growth_rate.png', dpi=300)
+    plt.close(fig)
     print(" -> Saved: grafico_growth_rate.png")
-
-
 # =============================================================================
 # 4. CLINICAL PLOTS (Rimane uguale, usa i dati finali)
 # =============================================================================
@@ -289,7 +333,8 @@ def main():
 
     # 1. Carica CSV
     try:
-        glucose_data = pd.read_csv('data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133917.csv', delimiter=';')
+        glucose_data = pd.read_csv('data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133917.csv',
+                                   delimiter=';')
         cols = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                 'Valore del glucosio (mg/dL)']
         glucose_data = glucose_data[cols].iloc[18:]
@@ -303,8 +348,43 @@ def main():
     # 3. Genera Grafici Performance con i dati calcolati
     plot_performance_metrics(calculated_times)
 
-    # 4. (Opzionale) Analisi Clinica Completa sul 100% per gli altri grafici
-    # Qui useresti perform_full_analysis e plot_clinical_results come prima
+    # =======================================================
+    # 4. ESTRAZIONE NUMERI PER LA TABELLA DELLA TESI (100%)
+    # =======================================================
+    print("\n--- Estrazione Dati Clinici per la Tabella (su 100% dei dati) ---")
+    detector = IntervalActionDetector(glucose_data)
+    _, results = measure_execution_time(detector.offline_interval_action_detection)
+
+    iseq = ISEQL()
+    intervals_list = []
+    for item in results[0]:
+        duration = item[2] - item[1]
+        new_int = Interval(item[1], item[2], item[0], item[3], duration)
+        iseq.add_interval(new_int)
+        intervals_list.append(new_int)
+
+    write_intervals_for_cpp(intervals_list)
+
+    # Calcoliamo gli eventi reali
+    time_swings = run_cpp_analysis_mode("time-swing")
+    ext_time_swings = run_cpp_analysis_mode("extremely-time-swing")
+    freq_anomalies = iseq.find_too_frequent_glucose_anomalies()
+
+    try:
+        too_long = iseq.find_too_long_glucose_anomalies()
+        num_too_long = len(too_long)
+    except AttributeError:
+        # Fallback se il metodo manca
+        num_too_long = len([i for i in intervals_list if i.duration.total_seconds() > 3600])
+
+    print("===================================================")
+    print("DATI DA INSERIRE NELLA TABELLA LATEX:")
+    print(f"Time Swings (Oscillazioni Rapide): {len(time_swings)}")
+    print(f"Extremely Time Swings: {len(ext_time_swings)}")
+    print(f"Too Long Glucose Anomalies: {num_too_long}")
+    print(f"Giornate con anomalie troppo frequenti: {len(freq_anomalies)}")
+    print("===================================================")
+
     print("\nBenchmark completed and graphs saved.")
 
 
@@ -352,6 +432,9 @@ def analyze_glucose_data(intervals, iseq_instance=None):
         'totals': totals,
         'durations': durations
     }
+
+
+
 
 if __name__ == "__main__":
     main()
