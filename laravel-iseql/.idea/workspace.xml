@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/notebook/test_lstm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/test_lstm.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/services/legacy_iseql.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/services/legacy_iseql.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
-    </list>
+    <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -360,6 +354,7 @@
       <workItem from="1772271312960" duration="470000" />
       <workItem from="1772273704590" duration="47000" />
       <workItem from="1772278594565" duration="2267000" />
+      <workItem from="1772284309724" duration="29000" />
     </task>
     <servers />
   </component>
