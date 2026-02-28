@@ -118,6 +118,8 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+
+
             const user = document.getElementById('raw_user').value;
             const pass = document.getElementById('raw_pass').value;
             const pid = document.getElementById('raw_pid').value;
@@ -258,6 +260,31 @@
                 document.getElementById('lastUpdate').innerText = 'Last update: ' + timeStr;
                 document.getElementById('currentValue').innerText = data.current_value;
                 document.getElementById('trendDesc').innerText = data.trend_desc;
+
+
+// --- NUOVO: // Aggiornamento freccia
+                const trendArrowEl = document.getElementById('trendArrow');
+
+// Pulizia e normalizzazione: rimuove spazi e sostituisce dash strani
+                let trend = data.trend_arrow ? data.trend_arrow.toString().trim().toLowerCase() : null;
+
+// Gestione dei valori “strani” che Dexcom può mandare
+                if (trend === null || trend === "" || ["–", "—", "-", "–\u2013", "none"].includes(trend)) {
+                    trend = "steady";
+                }
+
+                switch(trend) {
+                    case "steady": trendArrowEl.innerHTML = "→"; break;
+                    case "double_up": trendArrowEl.innerHTML = "⇈"; break;
+                    case "single_up": trendArrowEl.innerHTML = "↑"; break;
+                    case "fortyfive_up": trendArrowEl.innerHTML = "↗"; break;
+                    case "double_down": trendArrowEl.innerHTML = "⇊"; break;
+                    case "single_down": trendArrowEl.innerHTML = "↓"; break;
+                    case "fortyfive_down": trendArrowEl.innerHTML = "↘"; break;
+                    default:
+                        trendArrowEl.innerHTML = "->";
+                        console.warn("Unknown trend_arrow received:", trend);
+                }
 
                 // Risk Colors logic... (omitted for brevity, keep your existing logic here)
                 const riskEl = document.getElementById('riskAnalysis');

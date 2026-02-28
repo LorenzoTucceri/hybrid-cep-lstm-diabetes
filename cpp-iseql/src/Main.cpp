@@ -155,7 +155,7 @@ int main(int /*argc*/, const char* argv[])
     {
         // Leggi gli eventi dal file "eventi.txt"
         //
-        std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        std::vector<Event> events = readEventsFromFile("eventi.txt");
         //std::vector<Event> events = readEventsFromFile("../../backend-iseql/eventi.txt");
 
         if (events.empty())
@@ -228,7 +228,7 @@ int main(int /*argc*/, const char* argv[])
     {
         // Leggi gli eventi dal file "eventi.txt"
         //
-        std::vector<Event> events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        std::vector<Event> events = readEventsFromFile("eventi.txt");
         //std::vector<Event> events = readEventsFromFile("../../backend-iseql/eventi.txt");
 
         if (events.empty())
@@ -306,7 +306,7 @@ int main(int /*argc*/, const char* argv[])
         }
 
         // Leggi tutti gli eventi dal CSV
-        std::vector<Event> raw_events = readEventsFromFile("/Users/lorenzotucceri/Progetti/ISEQL/backend-iseql/eventi.txt");
+        std::vector<Event> raw_events = readEventsFromFile("eventi.txt");
         if (raw_events.empty())
         {
             std::cerr << "Errore: nessun evento letto dal file." << std::endl;
