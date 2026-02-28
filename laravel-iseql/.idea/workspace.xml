@@ -5,40 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac6275c3-7d46-42b8-a9bb-c1546b6ad45f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/dataset_online_10_pazienti.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133917.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133927.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133927.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133933.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133933.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133939.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133939.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_134020.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_134120.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_134120.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/dexcom_esterno.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/dexcom_esterno.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel3.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel4.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/glucoseLevel4.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/glucose_level_giallo.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/glucose_level_giallo.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/csv/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/csv/intervalli_glucosio.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1746528014_glucoseLevel4.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1746528014_glucoseLevel4.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1747210866_glucoseLevel2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1747210866_glucoseLevel2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1757945298_glucoseLevel2.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/data/laravel_csv/1757945298_glucoseLevel2.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/eventi.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/eventi.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/grafico_growth_rate.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/grafico_risultati_clinici.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/grafico_scalabilita.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/grafico_tempo_medio.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/intervalli_glucosio.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/machine_learning/lstm_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/machine_learning/lstm_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/machine_learning/realtime_logic.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/machine_learning/realtime_logic.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/notebook/lstm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/lstm.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend-iseql/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/notebook/test_lstm.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/notebook/test_lstm.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../backend-iseql/services/legacy_iseql.py" beforeDir="false" afterPath="$PROJECT_DIR$/../backend-iseql/services/legacy_iseql.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../cpp-iseql/cmake-build-debug/Testing/Temporary/LastTest.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/monitor.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/monitor.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/patientDetails.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/6cd040050937a457053e93b917f9e378.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/framework/views/f2c79dfc51d9b5fae110f3ee435a8b05.php" beforeDir="false" afterPath="$PROJECT_DIR$/storage/framework/views/f2c79dfc51d9b5fae110f3ee435a8b05.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -386,6 +357,9 @@
       <workItem from="1771838539729" duration="45000" />
       <workItem from="1772029032723" duration="1513000" />
       <workItem from="1772032920150" duration="627000" />
+      <workItem from="1772271312960" duration="470000" />
+      <workItem from="1772273704590" duration="47000" />
+      <workItem from="1772278594565" duration="2267000" />
     </task>
     <servers />
   </component>
