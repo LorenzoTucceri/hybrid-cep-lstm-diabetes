@@ -1,4 +1,3 @@
-@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\Auth\AuthController;
