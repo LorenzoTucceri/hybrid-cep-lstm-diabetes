@@ -1,12 +1,14 @@
-import multiprocessing
+# import multiprocessing
 import os
 
+'''
 if __name__ == '__main__':
     try:
         multiprocessing.set_start_method('spawn', force=True)
     except RuntimeError:
         pass
     os.environ['OBJC_DISABLE_INITIALIZE_FORK_SAFETY'] = 'YES'
+'''
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
