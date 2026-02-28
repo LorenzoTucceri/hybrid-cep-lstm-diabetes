@@ -19,22 +19,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/internal/model-ready', [App\Http\Controllers\CsvController::class, 'markModelReady'])->name('internal.modelReady');
-
 // Login.
 Route::post("/login", [LoginController::class, "login"]);
 
 // Rotte da proteggere.
 Route::middleware(["auth:sanctum"])->group(function () {
-    Route::get('/check-model-status/{id}', function($id) {
-        $patient = \App\Models\Patient::find($id);
-
-        return response()->json([
-            'ready' => (bool)$patient->has_trained_model,
-            'sensor_id' => $patient->sensor_id
-        ]);
-    });
-
     // Logout.
     Route::post("/logout", [LoginController::class, "logout"]);
 
