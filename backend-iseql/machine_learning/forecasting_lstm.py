@@ -93,13 +93,13 @@ def train_patient_specific_model(csv_path, save_path):
         # LOG NEL TERMINALE OGNI 5 EPOCHE (O ANCHE OGNI 1 SE PREFERISCI)
         if (epoch + 1) % 5 == 0 or epoch == 0:
             avg_loss = epoch_loss / len(loader)
-            print(f"   ⏳ Epoca {epoch + 1}/{EPOCHS} | Loss: {avg_loss:.6f}")
+            print(f"    Epoca {epoch + 1}/{EPOCHS} | Loss: {avg_loss:.6f}")
 
     # Salvataggio
     try:
         torch.save(model.state_dict(), save_path)
         duration = round(time.time() - start_time, 2)
-        print(f"💾 [TRAINING] Completato in {duration}s. Modello salvato.")
+        print(f" [TRAINING] Completato in {duration}s. Modello salvato.")
         return True, "Successo"
     except Exception as e:
         return False, str(e)

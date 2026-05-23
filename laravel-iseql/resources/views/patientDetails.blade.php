@@ -616,8 +616,17 @@
                                             class="card-body text-center d-flex flex-column justify-content-center align-items-center {{ $colorClass }} {{ $textColor }} rounded">
                                             <i class='bx {{ $icon }}' style="font-size: 4rem; margin-bottom: 10px;"></i>
                                             <h5 class="card-title {{ $textColor }} mb-1">Clinical Profile</h5>
-                                            <h2 class="mb-0 {{ $textColor }}">{{ $diag }}</h2>
-                                        </div>
+                                            <h2 class="mb-0 {{ $textColor }}">
+                                                @if($diag == "YELLOW")
+                                                    WARNING
+                                                @elseif($diag == "RED")
+                                                    CRITICAL
+                                                @elseif($diag == "GREEN")
+                                                    STABLE
+                                                @else
+                                                    {{ $diag }}
+                                                @endif
+                                            </h2>                                        </div>
                                     </div>
                                 </div>
 
@@ -1962,6 +1971,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
                     @section('script')
                         <script>
                             $(document).ready(function () {
@@ -2722,7 +2735,6 @@
                                 });
                             });
 
-                            // --- 7. Frequent Ext. Time Swings (NEW CHARTS) ---
 
 
                             // --- 7. Frequent Ext. Time Swings (FIXED & ROBUST) ---

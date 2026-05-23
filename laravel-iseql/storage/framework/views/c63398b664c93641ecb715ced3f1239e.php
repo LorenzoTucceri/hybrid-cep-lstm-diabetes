@@ -19,8 +19,19 @@
 <div class="wrapper">
     <table class="main">
         <tr>
-            <td class="header">
-                <img src="<?php echo e(URL::asset('/assets/images/logo-light.svg')); ?>" alt="Glucose Analysis" height="40">
+            <td class="header" style="text-align: center; padding: 30px; background-color: #556ee6;">
+                <!-- wrapper del cerchio -->
+                <div style="
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        background-color: #ffffff;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 60px;">
+                    <!-- logo centrato dentro il cerchio -->
+                    <img src="<?php echo e(asset('assets/images/logo3.png')); ?>" alt="Logo" style="height:40px; vertical-align:middle;">
+                </div>
             </td>
         </tr>
         <tr>

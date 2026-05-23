@@ -621,8 +621,18 @@
                                             class="card-body text-center d-flex flex-column justify-content-center align-items-center <?php echo e($colorClass); ?> <?php echo e($textColor); ?> rounded">
                                             <i class='bx <?php echo e($icon); ?>' style="font-size: 4rem; margin-bottom: 10px;"></i>
                                             <h5 class="card-title <?php echo e($textColor); ?> mb-1">Clinical Profile</h5>
-                                            <h2 class="mb-0 <?php echo e($textColor); ?>"><?php echo e($diag); ?></h2>
-                                        </div>
+                                            <h2 class="mb-0 <?php echo e($textColor); ?>">
+                                                <?php if($diag == "YELLOW"): ?>
+                                                    WARNING
+                                                <?php elseif($diag == "RED"): ?>
+                                                    CRITICAL
+                                                <?php elseif($diag == "GREEN"): ?>
+                                                    STABLE
+                                                <?php else: ?>
+                                                    <?php echo e($diag); ?>
+
+                                                <?php endif; ?>
+                                            </h2>                                        </div>
                                     </div>
                                 </div>
 
@@ -1970,6 +1980,10 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
                     <?php $__env->startSection('script'); ?>
                         <script>
                             $(document).ready(function () {

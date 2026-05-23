@@ -307,12 +307,12 @@ class CsvController extends Controller
             $patient->has_trained_model = true;
             $patient->save();
 
-            Log::info("✅ SUCCESSO! Modello attivato per paziente: " . $patient->name . " (ID DB: " . $patient->id . ")");
+            Log::info(" SUCCESSO! Modello attivato per paziente: " . $patient->name . " (ID DB: " . $patient->id . ")");
             return response()->json(['status' => 'success'], 200);
         }
 
         // 5. Errore se ancora non trovato
-        Log::error("❌ FALLIMENTO TOTALE. Nessun paziente trovato per ID: " . $incomingId);
+        Log::error(" FALLIMENTO TOTALE. Nessun paziente trovato per ID: " . $incomingId);
         return response()->json(['status' => 'error', 'message' => 'Patient not found'], 404);
     }
 

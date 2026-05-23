@@ -22,9 +22,9 @@ def train_patient_model_async(patient_id, csv_path):
             response = requests.post(Config.LARAVEL_API_URL, data=payload, timeout=5)
 
             if response.status_code == 200:
-                print(f"✅ [CELERY] Successo!")
+                print(f" [CELERY] Successo!")
             else:
-                print(f"❌ [CELERY] Errore Laravel: {response.text}")
+                print(f" [CELERY] Errore Laravel: {response.text}")
         except Exception as e:
             print(f" [CELERY] Errore connessione: {e}")
 

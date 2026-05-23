@@ -333,7 +333,7 @@ def main():
 
     # 1. Carica CSV
     try:
-        glucose_data = pd.read_csv('data/csv/Clarity_Esporta_Tucceri_Cimini_Lorenzo_2025-12-19_133917.csv',
+        glucose_data = pd.read_csv('data/csv/patient_1/Clarity_Esporta_patient_1_2025-12-19_133917.csv',
                                    delimiter=';')
         cols = ['Tipo di evento', 'Sottotipo di evento', 'Data e ora (AAAA-MM-GGThh:mm:ss)',
                 'Valore del glucosio (mg/dL)']

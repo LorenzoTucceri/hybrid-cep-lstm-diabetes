@@ -121,7 +121,7 @@ class ISEQL:
                 time_swings.append((interval1, interval2))
         return time_swings
 
-    #DA TESTARE
+
     def find_extremely_time_swing(self, time_threshold=timedelta(minutes=30)):
         extremely_time_swings = []
         for i in range(len(self.intervals) - 2):

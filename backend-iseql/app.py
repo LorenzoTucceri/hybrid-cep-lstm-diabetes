@@ -83,11 +83,11 @@ def process_csv():
         lstm_result = lstm_engine.predict(intervals)
 
         # Aggiungi questo log per vedere cosa succede nel terminale Flask
-        print(f"✅ [SUCCESS] Risultato AI: {lstm_result['diagnosis']} con confidenza {lstm_result['confidence']}%")
+        print(f" [SUCCESS] Risultato AI: {lstm_result['diagnosis']} con confidenza {lstm_result['confidence']}%")
 
     except Exception as e:
         # Stampa l'errore reale nel terminale per il debug
-        print(f"❌ [ERROR] Fallimento durante predict: {str(e)}")
+        print(f" [ERROR] Fallimento durante predict: {str(e)}")
         lstm_result = {
             "status": "error",
             "diagnosis": "N/A",

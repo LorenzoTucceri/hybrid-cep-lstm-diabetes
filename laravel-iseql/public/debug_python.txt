@@ -12,3 +12,17 @@ Richiesta arrivata: 00:00:41
 Payload: {"patient_id":"SIM_DX_001"}
 Richiesta arrivata: 11:55:22
 Payload: {"patient_id":"122"}
+Richiesta arrivata: 14:36:58
+Payload: {"patient_id":"122"}
+Richiesta arrivata: 14:39:38
+Payload: {"patient_id":"374570872510.0"}
+Richiesta arrivata: 14:41:12
+Payload: {"patient_id":"374570872510.0"}
+Richiesta arrivata: 14:47:53
+Payload: {"patient_id":"509070330186.0"}
+Richiesta arrivata: 14:49:36
+Payload: {"patient_id":"509070330186.0"}
+Richiesta arrivata: 14:52:39
+Payload: {"patient_id":"509070330186.0"}
+Richiesta arrivata: 15:00:07
+Payload: {"patient_id":"121"}

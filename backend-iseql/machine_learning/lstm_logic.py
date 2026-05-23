@@ -98,11 +98,11 @@ class ClinicalHybridPredictor:
                 self.model_60d = LSTMAttentionClassifier(input_dim=18).to(self.device)
                 self.model_60d.load_state_dict(torch.load(path, map_location=self.device))
                 self.model_60d.eval()
-                print("   ✅ [INIT] Modello Core M60 caricato correttamente.")
+                print("    [INIT] Modello Core M60 caricato correttamente.")
             except Exception as e:
-                print(f"   ❌ [INIT] ERRORE caricamento file .pth: {e}")
+                print(f"    [INIT] ERRORE caricamento file .pth: {e}")
         else:
-            print(f"   ⚠️ [INIT] ATTENZIONE: Il file {path} NON ESISTE.")
+            print(f"   ️ [INIT] ATTENZIONE: Il file {path} NON ESISTE.")
 
     def extract_60d_slice(self, full_sequence):
         target_minutes = 60 * 1440
